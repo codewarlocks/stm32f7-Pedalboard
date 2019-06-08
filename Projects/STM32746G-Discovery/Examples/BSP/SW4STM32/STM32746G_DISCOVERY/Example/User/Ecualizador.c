@@ -34,9 +34,9 @@ void init_eq()
 	for(i_eq = 1; i_eq < N-1; i_eq++)
 		fb_eq[i_eq] = 20 * pow(2, i_eq-1);
 	//ganancias
-	Vo_eq[0] = 0.25;Vo_eq[1] = 2;Vo_eq[2] = 3;
-  Vo_eq[3] = 4;Vo_eq[4] = 0.5;Vo_eq[5] = 0.25;
-	Vo_eq[6] = 0.75;Vo_eq[7] = 0.75;Vo_eq[8] = 4;Vo_eq[9] = 0.25;
+	Vo_eq[0] = 1;Vo_eq[1] = 1;Vo_eq[2] = 1;
+  Vo_eq[3] = 1;Vo_eq[4] = 1;Vo_eq[5] = 1;
+	Vo_eq[6] = 1;Vo_eq[7] = 1;Vo_eq[8] = 1;Vo_eq[9] = 1;
   eq_parametros();
 }
 

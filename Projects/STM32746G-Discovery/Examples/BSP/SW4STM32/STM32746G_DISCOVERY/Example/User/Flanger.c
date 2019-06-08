@@ -22,12 +22,6 @@ int cont_f = 0;
 float32_t delay_f = 0, frac_f = 0, aux1_f = 0, aux2_f = 0, aux3_f = 0, aux4_f = 0, aux5_f = 0;
 int d_f = 0;
 
-//	public static LFO LFO0 = new LFO(55,0.2,8,1);
-//	public static LFO LFO1 = new LFO(45,0.2,8,1);
-//	public static LFO LFO2 = new LFO(35,0.2,8,1);
-//	public static LFO LFO3 = new LFO(25,0.2,8,1);
-//	public static LFO LFO4 = new LFO(15,0.2,8,1);
-
 int line1_f[FLANGER_SIZE] = {0};
 int line2_f[FLANGER_SIZE] = {0};
 int line3_f[FLANGER_SIZE] = {0};

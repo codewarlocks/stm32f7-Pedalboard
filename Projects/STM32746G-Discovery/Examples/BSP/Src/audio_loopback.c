@@ -115,24 +115,7 @@ typedef struct
 static TS_StateTypeDef rawTouchState;
 static GUITouchState touchState;
 __IO uint32_t isPressed = 0;
-static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
-		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla5252 = { .pixels = perilla52x52x25,
-		.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet whaonda = { .pixels = whaondas,
-		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet vibratoonda = { .pixels = vibratoondas,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet tremoloonda = { .pixels = tremoloondas,
-		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
-				CM_ARGB8888};//CM_RGB888
+
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -169,6 +152,9 @@ int AP1_line[556];
 int AP2_line[441];
 int AP3_line[341];
 /*variables REVERV----------------------*/
+
+//Declaracion de objeto pedales
+PedalElement Vibrato, Tremolo, Ringmode, Phaser, Octavador, Flanger, Ecualizador, Distorsion, Delay, Chorus, Autowah;
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -187,6 +173,8 @@ void AudioLoopback_demo (void)
   chorus_parametros();
   flanger_parametros();
   init_autowah();
+  init_eq();
+  phaser_parametros();
   Demo_fondito();
   BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
   audio_rec_buffer_state = BUFFER_OFFSET_NONE;
@@ -198,10 +186,7 @@ void AudioLoopback_demo (void)
   BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
   BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
   BSP_LCD_SelectLayer(1);
-  initAppGUI();
-  init_pedales_link();
-  init_pantalla_link();
-  init_push();
+  initPedal();
   while (1)
   {
     cont++;
@@ -404,38 +389,7 @@ void DrawScreen(int num)
 	BSP_LCD_DrawBitmap(0, 0, uwInternelBuffer);
 }
 
-void initAppGUI() {
-	gui[0] = initGUI(3, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[0]->items[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, &perilla5252, Delay_Feedback);//manu phaser 18+30, 18+10
-	gui[0]->items[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, &perilla5252,Delay_Time);
-	gui[0]->items[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
 
-	gui[1] = initGUI(3, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[1]->items[0] = guiDialButton(0, "", 167, 40, 0.0f, 0.045f, &perilla4241, Tremolo_Depth);//manu phaser 18+30, 18+10
-	gui[1]->items[1] = guiDialButton(1, "", 269, 39, 0.0f, 0.045f, &perilla4241,Tremolo_Rate);
-	gui[1]->items[2] = guiDialButton(2, "", 220, 66, 0.0f, 0.045f, &tremoloonda,Tremolo_Mod);
-
-	gui[2] = initGUI(3, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[2]->items[0] = guiDialButton(0, "", 180, 43, 0.0f, 0.045f, &perilla4241, Vibrato_Rate);//manu phaser 18+30, 18+10
-	gui[2]->items[1] = guiDialButton(1, "", 257, 43, 0.0f, 0.045f, &perilla4241,Vibrato_Depth);
-	gui[2]->items[2] = guiDialButton(2, "", 223, 86, 0.0f, 0.045f, &vibratoonda,Vibrato_Mod);
-
-	gui[3] = initGUI(2, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[3]->items[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, &perilla5252, NULL);//manu phaser 18+30, 18+10
-	gui[3]->items[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, &perilla5252,NULL);
-
-	gui[4] = initGUI(4, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[4]->items[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, &perilla4241, Autowah_Depth);//manu phaser 18+30, 18+10
-	gui[4]->items[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, &perilla4241,Autowah_Rate);
-	gui[4]->items[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, &perilla4241,Autowah_Volume);
-	gui[4]->items[3] = guiDialButton(2, "", 319, 41, 0.0f, 0.045f, &whaonda,Autowah_Mod);
-
-	gui[5] = initGUI(1, &UI_FONT, LCD_COLOR_BLACK, LCD_COLOR_LIGHTGRAY);
-	gui[5]->items[0] = guiDialButton(0, "", 223, 73, 0.0f, 0.045f, &perilla3535, Ringmod_Rate);//manu phaser 18+30, 18+10
-
-	//gui[0]->items[3] = guiPushButton(4, "", 10, 80+100, 0.0f, &soloSheet, Push_State_Delay);//Push_State
-	guiForceRedraw(gui[0]);
-}
 
 void handlePushMenuButton(LinkElement *bt, GUITouchState *touch) {
 	if (touch->touchDetected) {
@@ -500,35 +454,6 @@ void linkUpdate(LinkElement **link, GUITouchState *touch)
 			LinkElement *e = link[i];
 			e->handler(e, touch);
 		}
-}
-
-LinkElement* guiPush(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb)
-{
-	LinkElement* e=calloc(1,sizeof(LinkElement));
-		e->nombre=nombre;
-		e->x=x;
-		e->y=y;
-		e->width=width;
-		e->height=height;
-		e->callback=cb;
-		e->handler=handlePushMenuButton;
-		e->states=GUI_OFF;
-		return e;
-}
-
-LinkElement* guiLink(uint8_t nombre, uint8_t perillas, uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb)
-{
-
-	LinkElement* e=calloc(1,sizeof(LinkElement));
-	e->nombre=nombre;
-	e->cant_per=perillas;
-	e->x=x;
-	e->y=y;
-	e->width=width;
-	e->height=height;
-	e->callback=cb;
-	e->handler=handleLinkButton;
-	return e;
 }
 
 void LinkCallback(LinkElement *e)
@@ -725,59 +650,6 @@ void LinkPedalCallback(LinkElement *e)
 	 	 seleccion_pedal=20;
 	 	 break;
 	}
-}
-
-void init_push()
-{
-	//PEDALES MENU
-	push_menu[0][0]=guiPush(DELAY,80,16+110/2,58,110/2,PushCallback);
-	push_menu[0][1]=guiPush(TREMOLO,195,16+110/2,80,110/2,PushCallback);
-	push_menu[0][2]=guiPush(VIBRATO,332,16+110/2,57,110/2,PushCallback);
-	push_menu[0][3]=guiPush(DISTORSION,80,147+110/2,58,110/2,PushCallback);
-	push_menu[0][4]=guiPush(WHA,185,158+88/2,100,88/2,PushCallback);
-	push_menu[0][5]=guiPush(RINGMOD,326,147+110/2,68,110/2,PushCallback);
-
-	//PEDALES
-	push_pedales[0]=guiPush(DELAY,225,189,31,33,PushCallback);
-	push_pedales[1]=guiPush(TREMOLO,222,203,36,36,PushCallback);
-	push_pedales[2]=guiPush(VIBRATO,221,188,37,37,PushCallback);
-	push_pedales[3]=guiPush(DISTORSION,223,184,35,35,PushCallback);
-	push_pedales[4]=guiPush(WHA,218,213,41,41,PushCallback);
-	push_pedales[5]=guiPush(RINGMOD,223,210,35,34,PushCallback);
-
-}
-
-void init_pantalla_link()
-{
-	link_menu[0][0]=guiLink(DELAY, 3,80,16,58,110/2,LinkCallback);
-	link_menu[0][1]=guiLink(TREMOLO, 3,195,16,80,110/2,LinkCallback);
-	link_menu[0][2]=guiLink(VIBRATO, 3,332,16,57,110/2,LinkCallback);
-	link_menu[0][3]=guiLink(DISTORSION, 2,80,147,58,110/2,LinkCallback);
-	link_menu[0][4]=guiLink(WHA,4,185,158,100,88/2,LinkCallback);
-	link_menu[0][5]=guiLink(RINGMOD,1,326,147,68,110/2,LinkCallback);
-}
-
-void init_pedales_link()
-{
-	link_pedales[0][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[0][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[0][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[1][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[1][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[1][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[2][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[2][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[2][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[3][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[3][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[3][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[4][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[4][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[4][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[5][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[5][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[5][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-
 }
 
 /**

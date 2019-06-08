@@ -4,7 +4,28 @@
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
 #include "gui/gui.h"
+#include "gui/link.h"
 #include "ex03/macros.h"
+#include "main.h"
+#include "string.h"
+#include "gui/leds.h"
+#include "gui/tremoloondas.h"
+#include "gui/vibratoondas.h"
+#include "gui/whaondas.h"
+#include "gui/perilla35x35x25.h"
+#include "gui/perilla42x41x25.h"
+#include "gui/perilla52x52x25.h"
+
+#define DELAY 0
+#define TREMOLO 1
+#define VIBRATO 2
+#define DISTORSION 3
+#define WHA 4
+#define RINGMOD 5
+#define IZQUIERDA 0
+#define MENU 14
+#define DERECHA 1
+#define HOME 2
 
 // private functions
 
@@ -16,6 +37,27 @@ static DMA2D_HandleTypeDef hDma2dHandler;
 
 extern LTDC_HandleTypeDef hLtdcHandler;
 static void LL_ConvertLineToARGB8888(void *src,void *dst,uint32_t xstride,uint32_t color_mode);
+
+//Varibales Perillas
+static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
+		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet perilla5252 = { .pixels = perilla52x52x25,
+		.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
+		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet whaonda = { .pixels = whaondas,
+		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet vibratoonda = { .pixels = vibratoondas,
+		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet tremoloonda = { .pixels = tremoloondas,
+		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
+				CM_ARGB8888};//CM_RGB888
+//
 
 // push button functions
 
@@ -196,6 +238,14 @@ GUIElement *guiPushButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 	return e;
 }
 
+PerillaElement* initPerilla (uint8_t num)
+{
+	PerillaElement *gui = (PerillaElement *) calloc(1, sizeof(PerillaElement));
+	gui->perillas = (GUIElement **) calloc(num, sizeof(GUIElement *));
+	gui->numItems = num;
+	return gui;
+}
+
 GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol) {
 	GUI *gui = (GUI *) calloc(1, sizeof(GUI));
 	gui->items = (GUIElement **) calloc(num, sizeof(GUIElement *));
@@ -204,6 +254,12 @@ GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol) {
 	gui->bgColor = bgCol;
 	gui->textColor = textCol;
 	return gui;
+}
+
+void PedalForceRedraw(PedalElement *gui) {
+	for (uint8_t i = 0; i < gui->perilla->numItems; i++) {
+		gui->perilla->perillas[i]->state |= GUI_DIRTY;
+	}
 }
 
 void guiForceRedraw(GUI *gui) {
@@ -252,3 +308,115 @@ static void LL_ConvertLineToARGB8888(void *src,
     }
   }
 }
+
+void initAppGUI() {
+	Delay = initPerilla(3);
+	Delay->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, &perilla5252, Delay_Feedback);
+	Delay->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, &perilla5252,Delay_Time);
+	Delay->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
+
+	Tremolo = initGUI(3);
+	Tremolo->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.0f, 0.045f, &perilla4241, Tremolo_Depth);
+	Tremolo->perilla->perillas[1] = guiDialButton(1, "", 269, 39, 0.0f, 0.045f, &perilla4241,Tremolo_Rate);
+	Tremolo->perilla->perillas[2] = guiDialButton(2, "", 220, 66, 0.0f, 0.045f, &tremoloonda,Tremolo_Mod);
+
+	Vibrato = initGUI(3);
+	Vibrato->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.0f, 0.045f, &perilla4241, Vibrato_Rate);
+	Vibrato->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.0f, 0.045f, &perilla4241,Vibrato_Depth);
+	Vibrato->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 0.0f, 0.045f, &vibratoonda,Vibrato_Mod);
+
+	Distorsion = initGUI(2);
+	Distorsion->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, &perilla5252, NULL);
+	Distorsion->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, &perilla5252,NULL);
+
+	Autowah = initGUI(4);
+	Autowah->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, &perilla4241, Autowah_Depth);
+	Autowah->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, &perilla4241,Autowah_Rate);
+	Autowah->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, &perilla4241,Autowah_Volume);
+	Autowah->perilla->perillas[3] = guiDialButton(2, "", 319, 41, 0.0f, 0.045f, &whaonda,Autowah_Mod);
+
+	Ringmode = initGUI(1);
+	Ringmode->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.0f, 0.045f, &perilla3535, Ringmod_Rate);
+}
+
+LinkElement* guiPush(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han)
+{
+	LinkElement* e=calloc(1,sizeof(LinkElement));
+		e->nombre=nombre;
+		e->x=x;
+		e->y=y;
+		e->width=width;
+		e->height=height;
+		e->callback=cb;
+		e->handler=han;
+		return e;
+}
+
+void init_push()
+{
+	//PEDALES Menu
+	Delay->push->push_menu=guiPush(DELAY,80,16+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Tremolo->push->push_menu=guiPush(TREMOLO,195,16+110/2,80,110/2,PushCallback, handlePushMenuButton);
+	Vibrato->push->push_menu=guiPush(VIBRATO,332,16+110/2,57,110/2,PushCallback, handlePushMenuButton);
+	Distorsion->push->push_menu=guiPush(DISTORSION,80,147+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Autowah->push->push_menu=guiPush(WHA,185,158+88/2,100,88/2,PushCallback, handlePushMenuButton);
+	Ringmode->push->push_menu=guiPush(RINGMOD,326,147+110/2,68,110/2,PushCallback, handlePushMenuButton);
+
+	//PEDALES Individuales
+	Delay->push->push_indiv=guiPush(DELAY,225,189,31,33,PushCallback, handlePushMenuButton);
+	Tremolo->push->push_indiv=guiPush(TREMOLO,222,203,36,36,PushCallback, handlePushMenuButton);
+	Vibrato->push->push_indiv=guiPush(VIBRATO,221,188,37,37,PushCallback, handlePushMenuButton);
+	Distorsion->push->push_indiv=guiPush(DISTORSION,223,184,35,35,PushCallback, handlePushMenuButton);
+	Autowah->push->push_indiv=guiPush(WHA,218,213,41,41,PushCallback, handlePushMenuButton);
+	Ringmode->push->push_indiv=guiPush(RINGMOD,223,210,35,34,PushCallback, handlePushMenuButton);
+
+	//PEDALES estados
+	Delay->push->push_state=GUI_OFF;
+	Tremolo->push->push_state=GUI_OFF;
+	Vibrato->push->push_state=GUI_OFF;
+	Distorsion->push->push_state=GUI_OFF;
+	Autowah->push->push_state=GUI_OFF;
+	Ringmode->push->push_state=GUI_OFF;
+}
+
+void init_pantalla_link()
+{
+	link_menu[0][0]=guiLink(DELAY, 3,80,16,58,110/2,LinkCallback);
+	link_menu[0][1]=guiLink(TREMOLO, 3,195,16,80,110/2,LinkCallback);
+	link_menu[0][2]=guiLink(VIBRATO, 3,332,16,57,110/2,LinkCallback);
+	link_menu[0][3]=guiLink(DISTORSION, 2,80,147,58,110/2,LinkCallback);
+	link_menu[0][4]=guiLink(WHA,4,185,158,100,88/2,LinkCallback);
+	link_menu[0][5]=guiLink(RINGMOD,1,326,147,68,110/2,LinkCallback);
+}
+
+void init_pedales_link()
+{
+	link_pedales[0][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[0][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[0][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+	link_pedales[1][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[1][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[1][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+	link_pedales[2][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[2][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[2][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+	link_pedales[3][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[3][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[3][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+	link_pedales[4][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[4][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[4][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+	link_pedales[5][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
+	link_pedales[5][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
+	link_pedales[5][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
+
+}
+
+void initPedal (void)
+{
+	initAppGUI();
+	init_pedales_link();
+	init_pantalla_link();
+	init_push();
+}
+

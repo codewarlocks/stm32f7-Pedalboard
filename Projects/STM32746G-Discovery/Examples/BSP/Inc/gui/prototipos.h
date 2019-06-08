@@ -84,3 +84,31 @@ int octavador(int);
 int AP_filter(int in, int* line, int delay, int cont);
 int FBCF_filter(int in, int line[], int delay, int cont, int inst);
 int reverb (int entrada);
+
+// Phaser.c
+void phaser_parametros();
+int phaser(int);
+int Phaser_AP1(int, int);
+float Phaser_LFO(int);
+void Phaser_Rate(GUIElement*);
+void Push_State_Phaser(GUIElement*);
+int Get_State_Phaser();
+
+// Ecualizador.c
+void init_eq();
+void eq_parametros();
+int ecualizador(int);
+int eq_peak(int,int);
+int eq_shelve(int,int);
+void EQ_Gain_0 (GUIElement*);
+void EQ_Gain_1 (GUIElement*);
+void EQ_Gain_2 (GUIElement*);
+void EQ_Gain_3 (GUIElement*);
+void EQ_Gain_4 (GUIElement*);
+void EQ_Gain_5 (GUIElement*);
+void EQ_Gain_6 (GUIElement*);
+void EQ_Gain_7 (GUIElement*);
+void EQ_Gain_8 (GUIElement*);
+void EQ_Gain_9 (GUIElement*);
+void Push_State_EQ (GUIElement*);
+int Get_State_EQ (void);

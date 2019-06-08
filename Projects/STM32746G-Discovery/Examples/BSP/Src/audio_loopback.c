@@ -68,7 +68,7 @@
 /** @addtogroup STM32F7xx_HAL_Examples
   * @{
   */
-
+//gato
 /** @addtogroup BSP
   * @{
   */

@@ -226,7 +226,7 @@ GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 	return e;
 }
 
-GUIElement *guiPushButton(uint8_t id, char *label, uint16_t x, uint16_t y,
+GUIElement *initPushLinkButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 		float val, SpriteSheet *sprite, GUICallback cb) {
 	GUIElement *e = guiElement(id, label, x, y, sprite, cb);
 	PushButtonState *pb = (PushButtonState *) calloc(1,
@@ -238,14 +238,6 @@ GUIElement *guiPushButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 	return e;
 }
 
-PerillaElement* initPerilla (uint8_t num)
-{
-	PerillaElement *gui = (PerillaElement *) calloc(1, sizeof(PerillaElement));
-	gui->perillas = (GUIElement **) calloc(num, sizeof(GUIElement *));
-	gui->numItems = num;
-	return gui;
-}
-
 GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol) {
 	GUI *gui = (GUI *) calloc(1, sizeof(GUI));
 	gui->items = (GUIElement **) calloc(num, sizeof(GUIElement *));
@@ -254,12 +246,6 @@ GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol) {
 	gui->bgColor = bgCol;
 	gui->textColor = textCol;
 	return gui;
-}
-
-void PedalForceRedraw(PedalElement *gui) {
-	for (uint8_t i = 0; i < gui->perilla->numItems; i++) {
-		gui->perilla->perillas[i]->state |= GUI_DIRTY;
-	}
 }
 
 void guiForceRedraw(GUI *gui) {
@@ -309,37 +295,28 @@ static void LL_ConvertLineToARGB8888(void *src,
   }
 }
 
-void initAppGUI() {
-	Delay = initPerilla(3);
-	Delay->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, &perilla5252, Delay_Feedback);
-	Delay->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, &perilla5252,Delay_Time);
-	Delay->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
+//Escritas por nosotros
 
-	Tremolo = initGUI(3);
-	Tremolo->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.0f, 0.045f, &perilla4241, Tremolo_Depth);
-	Tremolo->perilla->perillas[1] = guiDialButton(1, "", 269, 39, 0.0f, 0.045f, &perilla4241,Tremolo_Rate);
-	Tremolo->perilla->perillas[2] = guiDialButton(2, "", 220, 66, 0.0f, 0.045f, &tremoloonda,Tremolo_Mod);
+void linkUpdatePedales(LinkElement **link, GUITouchState *touch)
+{
 
-	Vibrato = initGUI(3);
-	Vibrato->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.0f, 0.045f, &perilla4241, Vibrato_Rate);
-	Vibrato->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.0f, 0.045f, &perilla4241,Vibrato_Depth);
-	Vibrato->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 0.0f, 0.045f, &vibratoonda,Vibrato_Mod);
-
-	Distorsion = initGUI(2);
-	Distorsion->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, &perilla5252, NULL);
-	Distorsion->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, &perilla5252,NULL);
-
-	Autowah = initGUI(4);
-	Autowah->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, &perilla4241, Autowah_Depth);
-	Autowah->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, &perilla4241,Autowah_Rate);
-	Autowah->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, &perilla4241,Autowah_Volume);
-	Autowah->perilla->perillas[3] = guiDialButton(2, "", 319, 41, 0.0f, 0.045f, &whaonda,Autowah_Mod);
-
-	Ringmode = initGUI(1);
-	Ringmode->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.0f, 0.045f, &perilla3535, Ringmod_Rate);
+		for (uint8_t i = 0; i < 3; i++) {
+			LinkElement *e = link[i];
+			e->handler(e, touch);
+		}
 }
 
-LinkElement* guiPush(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han)
+void linkUpdate(LinkElement **link, GUITouchState *touch)
+{
+
+		for (uint8_t i = 0; i < 6; i++) {
+			LinkElement *e = link[i];
+			e->handler(e, touch);
+		}
+}
+
+//Init / Redraw
+LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han)
 {
 	LinkElement* e=calloc(1,sizeof(LinkElement));
 		e->nombre=nombre;
@@ -352,71 +329,414 @@ LinkElement* guiPush(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16
 		return e;
 }
 
-void init_push()
+PerillaElement* initPerilla (uint8_t num)
 {
+	PerillaElement *gui = (PerillaElement *) calloc(1, sizeof(PerillaElement));
+	gui->perillas = (GUIElement **) calloc(num, sizeof(GUIElement *));
+	gui->numItems = num;
+	return gui;
+}
+
+void PedalForceRedraw(PedalElement *gui) {
+	for (uint8_t i = 0; i < gui->perilla->numItems; i++) {
+		gui->perilla->perillas[i]->state |= GUI_DIRTY;
+	}
+}
+//
+
+//Handles
+void handlePushMenuButton(PedalElement *bt, GUITouchState *touch) {
+	if (touch->touchDetected) {
+		// touch detected...
+		uint16_t x = touch->touchX[0];
+		uint16_t y = touch->touchY[0];
+		if (x >= bt->push->push_menu->x && x < bt->push->push_menu->x + bt->push->push_menu->width && y >= bt->push->push_menu->y && y < bt->push->push_menu->y + bt->push->push_menu->height) {
+			switch (bt->push->push_state) {
+			case GUI_OFF:
+				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				break;
+			case GUI_ON:
+				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				break;
+			default:
+				break;
+			}
+		}
+	} else if (bt->push->push_state & GUI_HOVER) {
+		// clear hover flag
+		bt->push->push_state &= ~((uint16_t) GUI_HOVER);
+		// mark dirty (force redraw)
+		bt->push->push_state |= GUI_DIRTY;
+		// invert on/off bitmask
+		bt->push->push_state ^= GUI_ONOFF_MASK;
+		if (bt->push->push_menu->callback != NULL) {
+			bt->push->push_menu->callback(bt);
+		}
+	}
+}
+
+void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch) {
+	if (touch->touchDetected) {
+		// touch detected...
+		uint16_t x = touch->touchX[0];
+		uint16_t y = touch->touchY[0];
+		if (x >= bt->push->push_indiv->x && x < bt->push->push_indiv->x + bt->push->push_indiv->width && y >= bt->push->push_indiv->y && y < bt->push->push_indiv->y + bt->push->push_indiv->height) {
+			switch (bt->push->push_state) {
+			case GUI_OFF:
+				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				break;
+			case GUI_ON:
+				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				break;
+			default:
+				break;
+			}
+		}
+	} else if (bt->push->push_state & GUI_HOVER) {
+		// clear hover flag
+		bt->push->push_state &= ~((uint16_t) GUI_HOVER);
+		// mark dirty (force redraw)
+		bt->push->push_state |= GUI_DIRTY;
+		// invert on/off bitmask
+		bt->push->push_state ^= GUI_ONOFF_MASK;
+		if (bt->push->push_indiv->callback != NULL) {
+			bt->push->push_indiv->callback(bt);
+		}
+	}
+}
+
+void handleLinkButton(PedalElement *bt, GUITouchState *touch)
+{
+	if (touch->touchDetected)
+	{
+		// touch detected...
+			uint16_t x = touch->touchX[0];
+			uint16_t y = touch->touchY[0];
+			if (x >= bt->link->x && x < bt->link->x + bt->link->width && y >= bt->link->y && y < bt->link->y + bt->link->height)
+			{
+				bt->link->callback(bt);
+			}
+	}
+}
+
+void handleDerechaButton(PedalElement *bt, GUITouchState *touch)
+{
+	if (touch->touchDetected)
+	{
+		// touch detected...
+			uint16_t x = touch->touchX[0];
+			uint16_t y = touch->touchY[0];
+			if (x >= bt->botones->flecha_derecha->x && x < bt->botones->flecha_derecha->x + bt->botones->flecha_derecha->width && y >= bt->botones->flecha_derecha->y && y < bt->botones->flecha_derecha->y + bt->botones->flecha_derecha->height)
+			{
+				bt->botones->flecha_derecha->callback(bt);
+			}
+	}
+}
+
+void handleIzquierdaButton(PedalElement *bt, GUITouchState *touch)
+{
+	if (touch->touchDetected)
+	{
+		// touch detected...
+			uint16_t x = touch->touchX[0];
+			uint16_t y = touch->touchY[0];
+			if (x >= bt->botones->flecha_izquierda->x && x < bt->botones->flecha_izquierda->x + bt->botones->flecha_izquierda->width && y >= bt->botones->flecha_izquierda->y && y < bt->botones->flecha_izquierda->y + bt->botones->flecha_izquierda->height)
+			{
+				bt->botones->flecha_izquierda->callback(bt);
+			}
+	}
+}
+
+void handleHomeButton(PedalElement *bt, GUITouchState *touch)
+{
+	if (touch->touchDetected)
+	{
+		// touch detected...
+			uint16_t x = touch->touchX[0];
+			uint16_t y = touch->touchY[0];
+			if (x >= bt->botones->home->x && x < bt->botones->home->x + bt->botones->home->width && y >= bt->botones->home->y && y < bt->botones->home->y + bt->botones->home->height)
+			{
+				bt->botones->home->callback(bt);
+			}
+	}
+}
+//
+
+//Callbacks
+void LinkCallback(PedalElement *e)
+{
+	switch(e->link->nombre)
+	{
+		case DELAY:
+			DrawScreen(DELAY);
+			pedal_individual=1;
+			seleccion_pedal=DELAY;
+		break;
+	    case TREMOLO:
+		    DrawScreen(TREMOLO);
+			pedal_individual=1;
+			seleccion_pedal=TREMOLO;
+	    break;
+	    case VIBRATO:
+		    DrawScreen(VIBRATO);
+			pedal_individual=1;
+			seleccion_pedal=VIBRATO;
+	    break;
+	    case DISTORSION:
+	    	DrawScreen(DISTORSION);
+	    	seleccion_pedal=DISTORSION;
+			pedal_individual=1;
+	    break;
+	    case WHA:
+		    DrawScreen(WHA);
+			pedal_individual=1;
+			seleccion_pedal=WHA;
+	    break;
+	    case RINGMOD:
+		    DrawScreen(RINGMOD);
+			pedal_individual=1;
+			seleccion_pedal=RINGMOD;
+	    break;
+	}
+	PedalForceRedraw(e);
+
+}
+
+void PushCallback(PedalElement *e)
+{
+
+	if (e->push->push_state & (GUI_DIRTY|GUI_HOVER))
+	{
+			uint8_t states = e->push->push_state & GUI_ONOFF_MASK;
+			if (pedal_individual==0)
+			{
+				if(states == GUI_ON)
+				{
+					switch(e->push->push_menu->nombre)
+					{
+						case DELAY:
+							drawBitmapRaw(89,99,5,5, (uint8_t*)delayprendidomenu, CM_ARGB8888, 1);
+							break;
+						case TREMOLO:
+							drawBitmapRaw(231,25,8,8, (uint8_t*)tremoloprendidomenu, CM_ARGB8888, 1);
+							break;
+						case VIBRATO:
+							drawBitmapRaw(341,99,5,5, (uint8_t*)vibratoprendidomenu, CM_ARGB8888, 1);
+							break;
+						case DISTORSION:
+							drawBitmapRaw(90,229,5,5, (uint8_t*)distorsionprendidomenu, CM_ARGB8888, 1);
+							break;
+						case WHA:
+							drawBitmapRaw(232,207,6,6, (uint8_t*)whaprendidomenu, CM_ARGB8888, 1);
+							break;
+						case RINGMOD:
+							drawBitmapRaw(340,239,6,6, (uint8_t*)ringprendidomenu, CM_ARGB8888, 1);
+							break;
+					}
+				}
+				else
+				{
+					switch(e->push->push_menu->nombre)
+					{
+ 	 	 	 			case DELAY:
+ 	 	 	 				drawBitmapRaw(89,99,5,5, (uint8_t*)delayapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case TREMOLO:
+ 	 	 	 				drawBitmapRaw(231,25,8,8, (uint8_t*)tremoloapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case VIBRATO:
+ 	 	 	 				drawBitmapRaw(341,99,5,5, (uint8_t*)vibratoapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case DISTORSION:
+ 	 	 	 				drawBitmapRaw(90,229,5,5, (uint8_t*)distorsionapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case WHA:
+ 	 	 	 				drawBitmapRaw(232,207,6,6, (uint8_t*)whaapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case RINGMOD:
+ 	 	 	 				drawBitmapRaw(340,239,6,6, (uint8_t*)ringapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				break;
+					}
+				}
+				// clear dirty flag
+			e->push->push_state &= ~((uint16_t) GUI_DIRTY);
+			}
+			else
+			{
+				if(states == GUI_ON)
+				{
+					switch(e->push->push_indiv->nombre)
+					{
+						case DELAY:
+
+							drawBitmapRaw(196,200,10,9, (uint8_t*)Delayledprendido, CM_ARGB8888, 1);
+							break;
+						case TREMOLO:
+							drawBitmapRaw(228,29,23,24, (uint8_t*)LedTremoloprendido, CM_ARGB8888, 1);
+							break;
+						case VIBRATO:
+							drawBitmapRaw(196,200,11,10, (uint8_t*)Vibratoledprendido, CM_ARGB8888, 1);
+							break;
+						case DISTORSION:
+							drawBitmapRaw(198,198,9,9, (uint8_t*)Distorsionledprendido, CM_ARGB8888, 1);
+							break;
+						case WHA:
+							drawBitmapRaw(230,149,19,18, (uint8_t*)Wahledprendido, CM_ARGB8888, 1);
+							break;
+						case RINGMOD:
+							drawBitmapRaw(195,222,10,10, (uint8_t*)Ringledprendido, CM_ARGB8888, 1);
+							break;
+					}
+				}
+				else
+				{
+					switch(e->push->push_indiv->nombre)
+					{
+ 	 	 	 			case DELAY:
+ 	 	 	 				drawBitmapRaw(196,200,10,9, (uint8_t*)Delayledapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case TREMOLO:
+ 	 	 	 				drawBitmapRaw(228,29,23,24, (uint8_t*)LedTremoloapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case VIBRATO:
+ 	 	 	 				drawBitmapRaw(196,200,11,10, (uint8_t*)Vibratoledapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case DISTORSION:
+ 	 	 	 				drawBitmapRaw(198,198,9,9, (uint8_t*)Distorsionledapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case WHA:
+ 	 	 	 				drawBitmapRaw(230,149,19,18, (uint8_t*)Wahledapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+ 	 	 	 			case RINGMOD:
+ 	 	 	 				drawBitmapRaw(195,222,10,10, (uint8_t*)Ringledapagado, CM_ARGB8888, 1);
+ 	 	 	 				break;
+					}
+				}
+				// clear dirty flag
+			e->push->push_state &= ~((uint16_t) GUI_DIRTY);
+			}
+	}
+}
+
+void LinkDerechaCallback(PedalElement *e)
+{
+	 seleccion_pedal++;
+	 DrawScreen(seleccion_pedal);
+	 if(e->push->push_state==GUI_ON)
+	 {
+		 e->push->push_state=GUI_OFF|GUI_HOVER|GUI_DIRTY;
+	 }
+}
+
+void LinkIzquierdaCallback(PedalElement *e)
+{
+	seleccion_pedal--;
+    DrawScreen(seleccion_pedal);
+	if(e->push->push_state==GUI_ON)
+	{
+		e->push->push_state=GUI_OFF|GUI_HOVER|GUI_DIRTY;
+	}
+}
+
+void LinkHomeCallback(PedalElement *e)
+{
+	pedal_individual=0;
+	DrawScreen(MENU);
+	seleccion_pedal=20;
+}
+//
+
+
+void initPedals() {
+	//Inicializo las perillas
+	//Delay
+	Pedales[0] = initPerilla(3);
+	Pedales[0]->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, &perilla5252, Delay_Feedback);
+	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, &perilla5252,Delay_Time);
+	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
+	//Tremolo
+	Pedales[1] = initGUI(3);
+	Pedales[1]->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.0f, 0.045f, &perilla4241, Tremolo_Depth);
+	Pedales[1]->perilla->perillas[1] = guiDialButton(1, "", 269, 39, 0.0f, 0.045f, &perilla4241,Tremolo_Rate);
+	Pedales[1]->perilla->perillas[2] = guiDialButton(2, "", 220, 66, 0.0f, 0.045f, &tremoloonda,Tremolo_Mod);
+	//Vibrato
+	Pedales[2] = initGUI(3);
+	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.0f, 0.045f, &perilla4241, Vibrato_Rate);
+	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.0f, 0.045f, &perilla4241,Vibrato_Depth);
+	Pedales[2]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 0.0f, 0.045f, &vibratoonda,Vibrato_Mod);
+	//Distorsion
+	Pedales[3] = initGUI(2);
+	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, &perilla5252, NULL);
+	Pedales[3]->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, &perilla5252,NULL);
+	//Autowah
+	Pedales[4] = initGUI(4);
+	Pedales[4]->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, &perilla4241, Autowah_Depth);
+	Pedales[4]->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, &perilla4241,Autowah_Rate);
+	Pedales[4]->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, &perilla4241,Autowah_Volume);
+	Pedales[4]->perilla->perillas[3] = guiDialButton(2, "", 319, 41, 0.0f, 0.045f, &whaonda,Autowah_Mod);
+	//Ringmode
+	Pedales[5] = initGUI(1);
+	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.0f, 0.045f, &perilla3535, Ringmod_Rate);
+	//
+
+	//Inicializo los Push (3pdt)
 	//PEDALES Menu
-	Delay->push->push_menu=guiPush(DELAY,80,16+110/2,58,110/2,PushCallback, handlePushMenuButton);
-	Tremolo->push->push_menu=guiPush(TREMOLO,195,16+110/2,80,110/2,PushCallback, handlePushMenuButton);
-	Vibrato->push->push_menu=guiPush(VIBRATO,332,16+110/2,57,110/2,PushCallback, handlePushMenuButton);
-	Distorsion->push->push_menu=guiPush(DISTORSION,80,147+110/2,58,110/2,PushCallback, handlePushMenuButton);
-	Autowah->push->push_menu=guiPush(WHA,185,158+88/2,100,88/2,PushCallback, handlePushMenuButton);
-	Ringmode->push->push_menu=guiPush(RINGMOD,326,147+110/2,68,110/2,PushCallback, handlePushMenuButton);
+	Pedales[0]->push->push_menu=initPushLink(DELAY,80,16+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Pedales[1]->push->push_menu=initPushLink(TREMOLO,195,16+110/2,80,110/2,PushCallback, handlePushMenuButton);
+	Pedales[2]->push->push_menu=initPushLink(VIBRATO,332,16+110/2,57,110/2,PushCallback, handlePushMenuButton);
+	Pedales[3]->push->push_menu=initPushLink(DISTORSION,80,147+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Pedales[4]->push->push_menu=initPushLink(WHA,185,158+88/2,100,88/2,PushCallback, handlePushMenuButton);
+	Pedales[5]->push->push_menu=initPushLink(RINGMOD,326,147+110/2,68,110/2,PushCallback, handlePushMenuButton);
 
 	//PEDALES Individuales
-	Delay->push->push_indiv=guiPush(DELAY,225,189,31,33,PushCallback, handlePushMenuButton);
-	Tremolo->push->push_indiv=guiPush(TREMOLO,222,203,36,36,PushCallback, handlePushMenuButton);
-	Vibrato->push->push_indiv=guiPush(VIBRATO,221,188,37,37,PushCallback, handlePushMenuButton);
-	Distorsion->push->push_indiv=guiPush(DISTORSION,223,184,35,35,PushCallback, handlePushMenuButton);
-	Autowah->push->push_indiv=guiPush(WHA,218,213,41,41,PushCallback, handlePushMenuButton);
-	Ringmode->push->push_indiv=guiPush(RINGMOD,223,210,35,34,PushCallback, handlePushMenuButton);
+	Pedales[0]->push->push_indiv=initPushLink(DELAY,225,189,31,33,PushCallback, handlePushIndividualButton);
+	Pedales[1]->push->push_indiv=initPushLink(TREMOLO,222,203,36,36,PushCallback, handlePushIndividualButton);
+	Pedales[2]->push->push_indiv=initPushLink(VIBRATO,221,188,37,37,PushCallback, handlePushIndividualButton);
+	Pedales[3]->push->push_indiv=initPushLink(DISTORSION,223,184,35,35,PushCallback, handlePushIndividualButton);
+	Pedales[4]->push->push_indiv=initPushLink(WHA,218,213,41,41,PushCallback, handlePushIndividualButton);
+	Pedales[5]->push->push_indiv=initPushLink(RINGMOD,223,210,35,34,PushCallback, handlePushIndividualButton);
 
 	//PEDALES estados
-	Delay->push->push_state=GUI_OFF;
-	Tremolo->push->push_state=GUI_OFF;
-	Vibrato->push->push_state=GUI_OFF;
-	Distorsion->push->push_state=GUI_OFF;
-	Autowah->push->push_state=GUI_OFF;
-	Ringmode->push->push_state=GUI_OFF;
+	Pedales[0]->push->push_state=GUI_OFF;
+	Pedales[1]->push->push_state=GUI_OFF;
+	Pedales[2]->push->push_state=GUI_OFF;
+	Pedales[3]->push->push_state=GUI_OFF;
+	Pedales[4]->push->push_state=GUI_OFF;
+	Pedales[5]->push->push_state=GUI_OFF;
+	//
+
+	//Inicializo los links de los pedales
+	Pedales[0]->link=initPushLink(DELAY, 3,80,16,58,110/2,LinkCallback, handleLinkButton);
+	Pedales[1]->link=initPushLink(TREMOLO, 3,195,16,80,110/2,LinkCallback, handleLinkButton);
+	Pedales[2]->link=initPushLink(VIBRATO, 3,332,16,57,110/2,LinkCallback, handleLinkButton);
+	Pedales[3]->link=initPushLink(DISTORSION, 2,80,147,58,110/2,LinkCallback, handleLinkButton);
+	Pedales[4]->link=initPushLink(WHA,4,185,158,100,88/2,LinkCallback, handleLinkButton);
+	Pedales[5]->link=initPushLink(RINGMOD,1,326,147,68,110/2,LinkCallback, handleLinkButton);
+	//
+
+	//Inicializo los botones de las pantallas individuales de los pedales
+	Pedales[0]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[0]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[0]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+
+	Pedales[1]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[1]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[1]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+
+	Pedales[2]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[2]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[2]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+
+	Pedales[3]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[3]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[3]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+
+	Pedales[4]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[4]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[4]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+
+	Pedales[5]->botones->flecha_derecha=initPushLink(DERECHA,0,417,84,61,107,LinkDerechaCallback, handleDerechaButton);
+	Pedales[5]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
+	Pedales[5]->botones->home=initPushLink(HOME,0,0,0,70,70,LinkHomeCallback, handleHomeButton);
+	//
 }
-
-void init_pantalla_link()
-{
-	link_menu[0][0]=guiLink(DELAY, 3,80,16,58,110/2,LinkCallback);
-	link_menu[0][1]=guiLink(TREMOLO, 3,195,16,80,110/2,LinkCallback);
-	link_menu[0][2]=guiLink(VIBRATO, 3,332,16,57,110/2,LinkCallback);
-	link_menu[0][3]=guiLink(DISTORSION, 2,80,147,58,110/2,LinkCallback);
-	link_menu[0][4]=guiLink(WHA,4,185,158,100,88/2,LinkCallback);
-	link_menu[0][5]=guiLink(RINGMOD,1,326,147,68,110/2,LinkCallback);
-}
-
-void init_pedales_link()
-{
-	link_pedales[0][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[0][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[0][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[1][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[1][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[1][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[2][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[2][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[2][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[3][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[3][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[3][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[4][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[4][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[4][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-	link_pedales[5][0]=guiLink(DERECHA,0,417,84,61,107,LinkPedalCallback);
-	link_pedales[5][1]=guiLink(IZQUIERDA,0,0,84,61,107,LinkPedalCallback);
-	link_pedales[5][2]=guiLink(HOME,0,0,0,70,70,LinkPedalCallback);
-
-}
-
-void initPedal (void)
-{
-	initAppGUI();
-	init_pedales_link();
-	init_pantalla_link();
-	init_push();
-}
-

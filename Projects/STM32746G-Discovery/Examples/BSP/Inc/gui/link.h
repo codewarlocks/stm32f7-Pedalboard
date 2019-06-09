@@ -28,25 +28,37 @@ typedef struct {
 }PushElement;
 
 typedef struct {
+	LinkElement flecha_izquierda;
+	LinkElement flecha_derecha;
+	LinkElement home;
+}MenuElement;
+
+typedef struct {
 	PerillaElement perilla;
 	PushElement push;
+	LinkElement link;
+	MenuElement botones;
 }PedalElement;
 
-
-void PushUpdateState (LinkElement *e1, LinkElement *e2);
 void Demo_fondito(void);
 void DrawScreen(int num);
-void LinkCallback(LinkElement *e);
 void linkUpdate(LinkElement **link, GUITouchState *touch);
 void linkUpdatePedales(LinkElement **link, GUITouchState *touch);
-void handleLinkButton(LinkElement *bt, GUITouchState *touch);
-LinkElement* guiLink(uint8_t nombre,uint8_t perillas, uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb);
-void init_pedales_link(void);
-void init_pantalla_link(void);
-void init_push(void);
-void handlePushMenuButton(LinkElement *bt, GUITouchState *touch);
-LinkElement* guiPush(uint8_t nombre, uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han);
-void PushCallback(LinkElement *e);
-void LinkPedalCallback(LinkElement *e);
-
+LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han)
+PerillaElement* initPerilla (uint8_t num);
+void initPedals (void);
+void PedalForceRedraw(PedalElement *gui)<
+//Handles
+void handlePushMenuButton(PedalElement *bt, GUITouchState *touch);
+void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch);
+void handleLinkButton(PedalElement *bt, GUITouchState *touch);
+void handleDerechaButton(PedalElement *bt, GUITouchState *touch);
+void handleIzquierdaButton(PedalElement *bt, GUITouchState *touch);
+void handleHomeButton(PedalElement *bt, GUITouchState *touch);
+//Callbacks
+void LinkCallback(PedalElement *e);
+void PushCallback(PedalElement *e);
+void LinkDerechaCallback(PedalElement *e);
+void LinkIzquierdaCallback(PedalElement *e);
+void LinkHomeCallback(PedalElement *e);
 //

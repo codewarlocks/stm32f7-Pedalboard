@@ -1,10 +1,10 @@
 #include "gui/gui.h"
-
+/*
 //LINK
 typedef struct LinkElement LinkElement;
-
-typedef void (*LinkHandler)(LinkElement *button,GUITouchState *touchState);
-typedef void (*GUICallbackLink)(LinkElement *button);
+typedef struct PedalElement PedalElement;
+typedef void (*LinkHandler)(PedalElement *button,GUITouchState *touchState);
+typedef void (*GUICallbackLink)(PedalElement *button);
 
 struct LinkElement {
 	uint8_t nombre;
@@ -22,32 +22,32 @@ typedef struct {
 }PerillaElement;
 
 typedef struct {
-	LinkElement push_menu;
-	LinkElement push_indiv;
+	LinkElement *push_menu;
+	LinkElement *push_indiv;
 	int push_state;
 }PushElement;
 
 typedef struct {
-	LinkElement flecha_izquierda;
-	LinkElement flecha_derecha;
-	LinkElement home;
+	LinkElement *flecha_izquierda;
+	LinkElement *flecha_derecha;
+	LinkElement *home;
 }MenuElement;
 
-typedef struct {
-	PerillaElement perilla;
-	PushElement push;
-	LinkElement link;
-	MenuElement botones;
-}PedalElement;
+struct PedalElement{
+	PerillaElement *perilla;
+	PushElement *push;
+	LinkElement *link;
+	MenuElement *botones;
+};
 
 void Demo_fondito(void);
 void DrawScreen(int num);
 void linkUpdate(LinkElement **link, GUITouchState *touch);
 void linkUpdatePedales(LinkElement **link, GUITouchState *touch);
-LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han)
+LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han);
 PerillaElement* initPerilla (uint8_t num);
 void initPedals (void);
-void PedalForceRedraw(PedalElement *gui)<
+void PedalForceRedraw(PedalElement *gui);
 //Handles
 void handlePushMenuButton(PedalElement *bt, GUITouchState *touch);
 void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch);
@@ -61,4 +61,4 @@ void PushCallback(PedalElement *e);
 void LinkDerechaCallback(PedalElement *e);
 void LinkIzquierdaCallback(PedalElement *e);
 void LinkHomeCallback(PedalElement *e);
-//
+//*/

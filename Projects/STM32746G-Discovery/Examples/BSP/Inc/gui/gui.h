@@ -2,6 +2,7 @@
 
 #include "stm32746g_discovery_lcd.h"
 #include "stm32746g_discovery_ts.h"
+//#include "gui/link.h"
 
 #define UI_BG_COLOR   ((uint32_t)0xff59626c)
 #define UI_TEXT_COLOR ((uint32_t)0xffcccccc)
@@ -90,7 +91,7 @@ void drawBitmapRaw(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 
 GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol);
 void guiForceRedraw(GUI *gui);
-void guiUpdate(GUI *gui, GUITouchState *touch);
+
 void guiUpdateTouch(TS_StateTypeDef *raw, GUITouchState *touch);
 
 GUIElement *guiElementCommon(uint8_t id, char *label, uint16_t x, uint16_t y,
@@ -99,3 +100,69 @@ GUIElement *guiPushButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 		float val, SpriteSheet *sprite, GUICallback cb);
 GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 		float val, float sens, SpriteSheet *sprite, GUICallback cb);
+
+//LINK
+typedef struct LinkElement LinkElement;
+typedef struct PedalElement PedalElement;
+typedef void (*LinkHandler)(PedalElement *button,GUITouchState *touchState);
+typedef void (*GUICallbackLink)(PedalElement *button);
+
+struct LinkElement {
+	uint8_t nombre;
+	uint16_t x;
+	uint16_t y;
+	uint16_t width;
+	uint16_t height;
+	GUICallbackLink callback;
+	LinkHandler handler;
+};
+
+typedef struct {
+	GUIElement **perillas;
+	uint8_t numItems;
+}PerillaElement;
+
+typedef struct {
+	LinkElement *push_menu;
+	LinkElement *push_indiv;
+	int push_state;
+}PushElement;
+
+typedef struct {
+	LinkElement *flecha_izquierda;
+	LinkElement *flecha_derecha;
+	LinkElement *home;
+}MenuElement;
+
+struct PedalElement{
+	PerillaElement *perilla;
+	PushElement *push;
+	LinkElement *link;
+	MenuElement *botones;
+};
+/*Escrito por nosotros*/
+void Demo_fondito(void);
+void DrawScreen(int num);
+void linkRequestHandler_menu(PedalElement **bt, GUITouchState *touch);
+void linkRequestHandlers_pedal_individual(PedalElement *bt, GUITouchState *touch);
+LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han);
+PerillaElement* initPerilla (uint8_t num);
+void initPedals (void);
+void PedalForceRedraw(PedalElement *gui);
+//Handles
+void handlePushMenuButton(PedalElement *bt, GUITouchState *touch);
+void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch);
+void handleLinkButton(PedalElement *bt, GUITouchState *touch);
+void handleDerechaButton(PedalElement *bt, GUITouchState *touch);
+void handleIzquierdaButton(PedalElement *bt, GUITouchState *touch);
+void handleHomeButton(PedalElement *bt, GUITouchState *touch);
+//Callbacks
+void LinkCallback(PedalElement *e);
+void PushCallback(PedalElement *e);
+void LinkDerechaCallback(PedalElement *e);
+void LinkIzquierdaCallback(PedalElement *e);
+void LinkHomeCallback(PedalElement *e);
+void PushRequestHandler_menu(PedalElement **bt, GUITouchState *touch);
+/*Escrito por nosotros*/
+
+void guiUpdate(PerillaElement *gui, GUITouchState *touch);

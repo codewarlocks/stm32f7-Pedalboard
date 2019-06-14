@@ -154,7 +154,7 @@ int AP3_line[341];
 /*variables REVERV----------------------*/
 
 //Declaracion de objeto pedales
-PedalElement Pedales[12];
+extern PedalElement **Pedales;
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -186,7 +186,7 @@ void AudioLoopback_demo (void)
   BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
   BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
   BSP_LCD_SelectLayer(1);
-
+  initPedals();
   while (1)
   {
     cont++;
@@ -197,15 +197,15 @@ void AudioLoopback_demo (void)
       {
     	  BSP_TS_GetState(&rawTouchState);
     	  guiUpdateTouch(&rawTouchState, &touchState);
-    	  if(pedal_individual==1){
-    		  	  	  	  guiUpdate(gui[seleccion_pedal], &touchState);
-    		      		  handlePushMenuButton(push_pedales[seleccion_pedal], &touchState);
-    		      		  linkUpdatePedales(link_pedales[seleccion_pedal], &touchState);
-
-    	     	  }
+    	  if(pedal_individual==1)
+    	  {
+    		  guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+    		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+    		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+    	  }
     	  else if(pedal_individual==0){
-    		  linkUpdate(link_menu[0], &touchState);
-    		  linkUpdate(push_menu[0], &touchState);
+    		  PushRequestHandler_menu(Pedales, &touchState);
+			  linkRequestHandler_menu(Pedales, &touchState);
     	  }
     	  cont=0;
      }
@@ -228,10 +228,10 @@ void AudioLoopback_demo (void)
         	for(i_audio=0 ;i_audio<6;i_audio++)
         	{
 
-        		if(push_menu[0][i_audio]->states==GUI_ON || push_pedales[i_audio]->states==GUI_ON)
+        		if((Pedales[i_audio])->push->push_state==GUI_ON)
         		{
 
-        			switch (push_menu[0][i_audio]->nombre)
+        			switch ((Pedales[i_audio])->push->push_menu->nombre)
         			{
         				case DELAY:
         					salida_izq=chorus(salida_izq);
@@ -277,10 +277,10 @@ void AudioLoopback_demo (void)
         		salida_izq=((int)Buffer_in[i]<<8)>>8;
         		for(i_audio=0;i_audio<6;i_audio++)
             	{
-            		if(push_menu[0][i_audio]->states==GUI_ON || push_pedales[i_audio]->states==GUI_ON)
+            		if((Pedales[i_audio])->push->push_state==GUI_ON)
             		{
             			pedal_prendido++;
-            			switch (push_menu[0][i_audio]->nombre)
+            			switch ((Pedales[i_audio])->push->push_menu->nombre)
             			{
             				case DELAY:
             					salida_izq=chorus(salida_izq);

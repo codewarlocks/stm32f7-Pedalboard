@@ -148,7 +148,6 @@ void linkRequestHandlers_pedal_individual(PedalElement *bt, GUITouchState *touch
 LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han);
 PerillaElement* initPerilla (uint8_t num);
 void initPedals (void);
-void PedalForceRedraw(PedalElement *gui);
 //Handles
 void handlePushMenuButton(PedalElement *bt, GUITouchState *touch);
 void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch);
@@ -163,6 +162,8 @@ void LinkDerechaCallback(PedalElement *e);
 void LinkIzquierdaCallback(PedalElement *e);
 void LinkHomeCallback(PedalElement *e);
 void PushRequestHandler_menu(PedalElement **bt, GUITouchState *touch);
+void MenuForceRedraw(void);
+void PedalForceRedraw(PedalElement *gui);
 /*Escrito por nosotros*/
 
 void guiUpdate(PerillaElement *gui, GUITouchState *touch);

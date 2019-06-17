@@ -346,6 +346,15 @@ void PedalForceRedraw(PedalElement *gui) {
 	for (uint8_t i = 0; i < gui->perilla->numItems; i++) {
 		gui->perilla->perillas[i]->state |= GUI_DIRTY;
 	}
+	if(gui->push->push_state==GUI_ON)gui->push->push_state=GUI_DIRTY|GUI_HOVER|GUI_OFF;
+}
+
+void MenuForceRedraw(void)
+{
+	for(int aux_i=0; aux_i<6; aux_i++)
+	{
+		if(Pedales[aux_i]->push->push_state==GUI_ON)Pedales[aux_i]->push->push_state=GUI_DIRTY|GUI_HOVER|GUI_OFF;
+	}
 }
 //
 
@@ -627,26 +636,21 @@ void LinkDerechaCallback(PedalElement *e)
 {
 	 seleccion_pedal++;
 	 DrawScreen(seleccion_pedal);
-	 if(e->push->push_state==GUI_ON)
-	 {
-		 e->push->push_state=GUI_OFF|GUI_HOVER|GUI_DIRTY;
-	 }
+	 PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkIzquierdaCallback(PedalElement *e)
 {
 	seleccion_pedal--;
     DrawScreen(seleccion_pedal);
-	if(e->push->push_state==GUI_ON)
-	{
-		e->push->push_state=GUI_OFF|GUI_HOVER|GUI_DIRTY;
-	}
+    PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkHomeCallback(PedalElement *e)
 {
 	pedal_individual=0;
 	DrawScreen(MENU);
+	MenuForceRedraw();
 	seleccion_pedal=20;
 }
 

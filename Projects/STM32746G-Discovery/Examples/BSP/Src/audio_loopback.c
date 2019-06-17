@@ -222,7 +222,7 @@ void AudioLoopback_demo (void)
     	if(i%2==0)
     	{
         	salida_izq=((int)Buffer_in[i]<<8)>>8;
-        	for(i_audio=0 ;i_audio<6;i_audio++)
+        	for(i_audio=5;i_audio>=0;i_audio--)
         	{
 
         		if((Pedales[i_audio])->push->push_state==GUI_ON)
@@ -231,7 +231,7 @@ void AudioLoopback_demo (void)
         			switch ((Pedales[i_audio])->push->push_menu->nombre)
         			{
         				case DELAY:
-        					salida_izq=chorus(salida_izq);
+        					salida_izq=(int)flanger((float32_t)salida_izq);
         					break;
         				case TREMOLO:
         					salida_izq=tremolo(salida_izq);
@@ -272,7 +272,7 @@ void AudioLoopback_demo (void)
         	if(i%2==0)
         	{
         		salida_izq=((int)Buffer_in[i]<<8)>>8;
-        		for(i_audio=0;i_audio<6;i_audio++)
+        		for(i_audio=5;i_audio>=0;i_audio--)
             	{
             		if((Pedales[i_audio])->push->push_state==GUI_ON)
             		{
@@ -280,7 +280,7 @@ void AudioLoopback_demo (void)
             			switch ((Pedales[i_audio])->push->push_menu->nombre)
             			{
             				case DELAY:
-            					salida_izq=chorus(salida_izq);
+            					salida_izq=(int)flanger((float32_t)salida_izq);
             					break;
             				case TREMOLO:
             					salida_izq=tremolo(salida_izq);

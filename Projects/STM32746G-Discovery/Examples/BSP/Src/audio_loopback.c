@@ -47,7 +47,6 @@
 #include "gui/perilla35x35x25.h"
 #include "gui/perilla42x41x25.h"
 #include "gui/perilla52x52x25.h"
-#include "gui/link.h"
 
 #define DELAY 0
 #define TREMOLO 1
@@ -132,7 +131,6 @@ int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0
 		  {efecto_normal, "efecto normal", 0},
 		  {efecto_delay, "efecto delay", 1},
   };*/
-GUI* gui[7];
 LinkElement *link_menu[2][8], *push_menu[2][8], *link_pedales[13][3], *push_pedales[13];
 /* Private function prototypes -----------------------------------------------*/
 /*variables REVERV----------------------*/
@@ -154,7 +152,7 @@ int AP3_line[341];
 /*variables REVERV----------------------*/
 
 //Declaracion de objeto pedales
-extern PedalElement **Pedales;
+PedalElement* Pedales[12];
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -164,7 +162,6 @@ extern PedalElement **Pedales;
   */
 void AudioLoopback_demo (void)
 {
-
   BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
   //BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
   //BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
@@ -176,6 +173,7 @@ void AudioLoopback_demo (void)
   init_eq();
   phaser_parametros();
   Demo_fondito();
+  initPedals();
   BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
   audio_rec_buffer_state = BUFFER_OFFSET_NONE;
 
@@ -186,7 +184,6 @@ void AudioLoopback_demo (void)
   BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
   BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
   BSP_LCD_SelectLayer(1);
-  initPedals();
   while (1)
   {
     cont++;

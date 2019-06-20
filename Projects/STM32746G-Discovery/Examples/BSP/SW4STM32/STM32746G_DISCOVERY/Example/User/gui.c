@@ -780,6 +780,14 @@ void initPedals() {
 	Pedales[5]->botones->flecha_izquierda=initPushLink(IZQUIERDA,0,84,61,107,LinkIzquierdaCallback, handleIzquierdaButton);
 	Pedales[5]->botones->home=initPushLink(HOME,0,0,70,70,LinkHomeCallback, handleHomeButton);
 	//
+	
+	//Inicializo los pedales con sus funciones
+	Pedales[0]->efecto=delay;
+	Pedales[1]->efecto=phaser;
+	Pedales[2]->efecto=vibrato;
+	Pedales[3]->efecto=distorsion;
+	Pedales[4]->efecto=autowah;
+	Pedales[5]->efecto=ringmod;
 
 }
 

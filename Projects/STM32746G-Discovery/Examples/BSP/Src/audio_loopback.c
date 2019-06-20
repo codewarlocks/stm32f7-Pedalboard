@@ -219,36 +219,14 @@ void AudioLoopback_demo (void)
     audio_rec_buffer_state = BUFFER_OFFSET_NONE;//izquierdo -> mono guitarra red bull
     for(i=0;i<128;i++)
     {
-    	if(i%2==0)
+    	if(i%2==0)//Para solo usar el canal izquierdo
     	{
         	salida_izq=((int)Buffer_in[i]<<8)>>8;
-        	for(i_audio=5;i_audio>=0;i_audio--)
+        	for(i_audio=0;i_audio<6;i_audio++)
         	{
-
         		if((Pedales[i_audio])->push->push_state==GUI_ON)
         		{
-
-        			switch ((Pedales[i_audio])->push->push_menu->nombre)
-        			{
-        				case DELAY:
-        					salida_izq=(int)flanger((float32_t)salida_izq);
-        					break;
-        				case TREMOLO:
-        					salida_izq=tremolo(salida_izq);
-        					break;
-        				case VIBRATO:
-        					salida_izq=vibrato(salida_izq);
-        					break;
-        				case DISTORSION:
-        					salida_izq=distorsion(salida_izq);
-        					break;
-        				case WHA:
-        					salida_izq=autowah(salida_izq);
-        					break;
-        				case RINGMOD:
-        					salida_izq=ringmod(salida_izq);
-        					break;
-        			}
+        			salida_izq=Pedales[i_audio]->efecto(salida_izq);
         		}
         	}
         	Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
@@ -269,35 +247,14 @@ void AudioLoopback_demo (void)
     audio_rec_buffer_state = BUFFER_OFFSET_NONE;
     for(i=128;i<256;i++)
         {
-        	if(i%2==0)
+        	if(i%2==0)//Para solo usar el canal izquierdo
         	{
         		salida_izq=((int)Buffer_in[i]<<8)>>8;
-        		for(i_audio=5;i_audio>=0;i_audio--)
+        		for(i_audio=0;i_audio<6;i_audio++)
             	{
             		if((Pedales[i_audio])->push->push_state==GUI_ON)
             		{
-            			pedal_prendido++;
-            			switch ((Pedales[i_audio])->push->push_menu->nombre)
-            			{
-            				case DELAY:
-            					salida_izq=(int)flanger((float32_t)salida_izq);
-            					break;
-            				case TREMOLO:
-            					salida_izq=tremolo(salida_izq);
-            					break;
-            				case VIBRATO:
-            					salida_izq=vibrato(salida_izq);
-            					break;
-            				case DISTORSION:
-            					salida_izq=distorsion(salida_izq);
-            					break;
-            				case WHA:
-            					salida_izq=autowah(salida_izq);
-            					break;
-            				case RINGMOD:
-            					salida_izq=ringmod(salida_izq);
-            					break;
-            			}
+            			salida_izq=Pedales[i_audio]->efecto(salida_izq);
             		}
             	}
         		Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;

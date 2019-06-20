@@ -106,6 +106,7 @@ typedef struct LinkElement LinkElement;
 typedef struct PedalElement PedalElement;
 typedef void (*LinkHandler)(PedalElement *button,GUITouchState *touchState);
 typedef void (*GUICallbackLink)(PedalElement *button);
+typedef int (*Funcion_Efecto)(int entrada);
 
 struct LinkElement {
 	uint8_t nombre;
@@ -139,6 +140,7 @@ struct PedalElement{
 	PushElement *push;
 	LinkElement *link;
 	MenuElement *botones;
+	Funcion_Efecto efecto;
 };
 /*Escrito por nosotros*/
 void Demo_fondito(void);

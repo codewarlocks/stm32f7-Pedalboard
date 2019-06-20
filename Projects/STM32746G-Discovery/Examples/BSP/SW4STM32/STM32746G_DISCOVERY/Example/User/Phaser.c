@@ -13,18 +13,18 @@ int x1_ph[4],x0_ph[4];
 int y1_ph[4],y0_ph[4];
 
 // parametros de usuario
-float rate_ph = 2;
+float rate_ph = 3;
 int state_ph = 0;
 
 // parametros de desarrollador
-float fmedia_ph = 800, depth_ph = 500, volume_ph = 0.5, fb_ph = 100;
+float fmedia_ph = 1000, depth_ph = 700, volume_ph = 0.5;
 int modulacion_ph = TRIANGULAR;
 
 // parametros del filtro
 float c_ph = 0;
 
 // variables auxiliares
-float finicial_ph = 0, ffinal_ph = 0, fcentral_ph = 800;
+float finicial_ph = 0, ffinal_ph = 0, fcentral_ph = 1000;
 int periodo_ph = 0;
 float deltaf_ph = 0;
 
@@ -64,16 +64,16 @@ float Phaser_LFO(int modulacion_ph)
   if(modulacion_ph == TRIANGULAR)
   {
     if(flag_ph == 0)
-      fcentral_ph = fcentral_ph + 2 * cont_ph * deltaf_ph;
+      fcentral_ph = fcentral_ph + 2 * deltaf_ph;
     if(flag_ph == 1)
-      fcentral_ph = fcentral_ph - 2 * cont_ph * deltaf_ph;
+      fcentral_ph = fcentral_ph - 2 * deltaf_ph;
     if(fcentral_ph >= ffinal_ph || fcentral_ph <= finicial_ph)
     {
       flag_ph = 1 - flag_ph;
       cont_ph = 0;
     }
   }
-  cont_ph++;
+  //cont_ph++;
 	return fcentral_ph;
 }
 

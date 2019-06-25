@@ -74,7 +74,7 @@ float32_t Chorus_LFO(int);
 
 //Flanger.c
 void flanger_parametros();
-float32_t flanger (float32_t);
+int flanger (int);
 float32_t Flanger_LFO(int);
 
 //Octavador.c

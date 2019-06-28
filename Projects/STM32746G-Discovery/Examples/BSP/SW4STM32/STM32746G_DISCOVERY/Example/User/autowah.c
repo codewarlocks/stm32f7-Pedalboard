@@ -14,7 +14,7 @@ int y_0_aw = 0, y_1_aw = 0, y_2_aw = 0;
 
 // parametros de usuario
 float rate_aw = 2, depth_aw = 500, volume_aw = 1;
-int modulacion_aw = CUADRADA, state_aw = 0;
+int modulacion_aw = SINUSOIDAL, state_aw = 0;
 
 // parametros de desarrollador
 float fmedia_aw = 800, fb_aw = 100;

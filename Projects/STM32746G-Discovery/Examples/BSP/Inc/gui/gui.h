@@ -64,6 +64,7 @@ typedef struct {
 	float sensitivity;
 	uint16_t startX;
 	uint16_t startY;
+	uint8_t orientacion;
 } DialButtonState;
 
 typedef struct {
@@ -99,7 +100,7 @@ GUIElement *guiElementCommon(uint8_t id, char *label, uint16_t x, uint16_t y,
 GUIElement *guiPushButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 		float val, SpriteSheet *sprite, GUICallback cb);
 GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
-		float val, float sens, SpriteSheet *sprite, GUICallback cb);
+		float val, float sens, uint8_t orientacion, SpriteSheet *sprite, GUICallback cb);
 
 //LINK
 typedef struct LinkElement LinkElement;

@@ -12,22 +12,22 @@ int time_d = 30000, state_d = 0;
 // variables auxiliares
 int line[DELAY_SIZE];
 
-int cont_d = 0, flag = 0;
+int cont_d = 0, flag_d = 0;
 
 int delay (int entrada)
 {
 	if (cont_d == DELAY_SIZE)
 	{
-		flag = 1;
+		flag_d = 1;
 		cont_d = 0;
 	}
-	if (flag == 0)
+	if (flag_d == 0)
 	{
 		line[cont_d] = entrada * (1-feedback_d);
 		salida_d = entrada * (1-level_d);
 		cont_d++;
 	}
-	if (flag == 1)
+	if (flag_d == 1)
 	{
 		if (cont_d >= time_d)
 		{

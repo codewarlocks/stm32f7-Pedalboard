@@ -14,7 +14,7 @@ int y_0_aw = 0, y_1_aw = 0, y_2_aw = 0;
 
 // parametros de usuario
 float rate_aw = 2, depth_aw = 500, volume_aw = 1;
-int modulacion_aw = SINUSOIDAL, state_aw = 0;
+int modulacion_aw = ENVOLVENTE, state_aw = 0;
 
 // parametros de desarrollador
 float fmedia_aw = 800, fb_aw = 100;
@@ -23,13 +23,15 @@ float fmedia_aw = 800, fb_aw = 100;
 float c_aw = 0, d_aw = 0;
 
 // variables auxiliares
-float32_t finicial_aw = 0, ffinal_aw = 0, fcentral_aw = 0, rateenv_aw;
+float32_t finicial_aw = 0, ffinal_aw = 0, fcentral_aw = 0;
 int periodo_aw = 0;
 float32_t deltaf_aw = 0;
 
+float32_t rateenv1_aw=0, rateenv2_aw=0, periodoenv_aw = 0, deltafenv_aw = 0;
+
 int cont_aw = 0, flag_aw = 0, i_aw = 0;
-float buffer_aw[ENV_SIZE] = {0};
-int envelope_aw = 0;
+float32_t buffer_aw[ENV_SIZE]={0};
+float32_t envelope_aw = 0;
 char texto[20];
 
 float32_t auxcoef_w=0, lp_w=0.99;
@@ -60,7 +62,7 @@ int autowah(int entrada)
 	y_2_aw = y_1_aw;
 	y_1_aw = y_0_aw;
 	y_0_aw = (1+c_aw) * 0.5 * x_0_aw - (1+c_aw) * 0.5 * x_2_aw - d_aw * (1-c_aw) * y_1_aw + c_aw * y_2_aw;
-	salida_aw = 4*(volume_aw * y_0_aw) +x_0_aw;
+	salida_aw = 3*(volume_aw * y_0_aw) +x_0_aw;
 	return salida_aw;
 }
 
@@ -119,35 +121,34 @@ float32_t Autowah_LFO(int modulacion_aw)
 			break;
 
 		case ENVOLVENTE:
-//			rateenv_aw = get_envelope();
-//			rateenv_aw = ((10 - 1000 * rateenv_aw) > 0.1) ? (10 - 1000 * rateenv_aw) : 0.1;
-//			periodo_aw = (float32_t) SR/rateenv_aw;
-//			deltaf_aw = (ffinal_aw - finicial_aw)/periodo_aw;
-//			if(flag_aw == 0)
-//			fcentral_aw = fcentral_aw + 2 * deltaf_aw;
-//			if(flag_aw == 1)
-//			fcentral_aw = fcentral_aw - 2 * deltaf_aw;
-//			if(fcentral_aw >= ffinal_aw || fcentral_aw <= finicial_aw)
-//			{
-//				flag_aw = 1 - flag_aw;
-//				cont_aw = 0;
-//			}
+			rateenv1_aw = x_0_aw/500000;
+			rateenv1_aw = rateenv1_aw*rateenv1_aw;
+			rateenv2_aw = ((10 - 1000 * rateenv1_aw) > 0.1) ? (10 - 1000 * rateenv1_aw) : 0.1;
+			periodoenv_aw = (float32_t) SR/rateenv2_aw;
+			deltafenv_aw = (ffinal_aw - finicial_aw)/periodoenv_aw;
+			if(flag_aw == 0)
+				fcentral_aw = fcentral_aw + 2 * deltafenv_aw;
+			if(flag_aw == 1)
+				fcentral_aw = fcentral_aw - 2 * deltafenv_aw;
+			if(fcentral_aw >= ffinal_aw || fcentral_aw <= finicial_aw)
+				flag_aw = 1 - flag_aw;
 			break;
 	}
 	cont_aw++;
 	return fcentral_aw;
 }
 
-int get_envelope()
-{
-	envelope_aw = envelope_aw - buffer_aw[i_aw];
-	if(i_aw == ENV_SIZE)
-		i_aw = 0;
-	buffer_aw[i_aw] = x_0_aw>>10;///8388607.0; //TODO: verificar para que no haya overflow
-	buffer_aw[i_aw] = buffer_aw[i_aw] * buffer_aw[i_aw];
-	envelope_aw = envelope_aw + buffer_aw [i_aw];
-	return envelope_aw;
-}
+//int get_envelope()
+//{
+//	envelope_aw = envelope_aw - buffer_aw[i_aw];
+//	if(i_aw == ENV_SIZE)
+//		i_aw = 0;
+//	buffer_aw[i_aw] = x_0_aw/10000.0;//8388607.0; //TODO: verificar para que no haya overflow
+//	buffer_aw[i_aw] = buffer_aw[i_aw] * buffer_aw[i_aw];
+//	envelope_aw = envelope_aw + buffer_aw [i_aw];
+//	i_aw++;
+//	return envelope_aw;
+//}
 
 void Autowah_Rate (GUIElement *e)
 {
@@ -183,7 +184,7 @@ void Autowah_Mod (GUIElement *e)
 	else if(db->value > 0.8 && db->value < 1)
 		modulacion_aw = SINUSOIDAL;
 	else if(db->value == 1)
-		modulacion_aw = CUADRADA;
+		modulacion_aw = ENVOLVENTE;
 }
 
 void Push_State_Autowah (GUIElement *e)

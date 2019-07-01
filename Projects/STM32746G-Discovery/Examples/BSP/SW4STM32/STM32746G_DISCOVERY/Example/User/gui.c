@@ -71,39 +71,6 @@ static SpriteSheet tremoloonda = { .pixels = tremoloondas,
 
 // push button functions
 
-void handlePushButton(GUIElement *bt, GUITouchState *touch) {
-	//BSP_AUDIO_OUT_Pause();
-	if (touch->touchDetected) {
-		// touch detected...
-		uint16_t x = touch->touchX[0];
-		uint16_t y = touch->touchY[0];
-		if (x >= bt->x && x < bt->x + bt->width && y >= bt->y
-				&& y < bt->y + bt->height) {
-			switch (bt->state) {
-			case GUI_OFF:
-				bt->state |= GUI_HOVER | GUI_DIRTY;
-				break;
-			case GUI_ON:
-				bt->state |= GUI_HOVER | GUI_DIRTY;
-				break;
-			default:
-				break;
-			}
-		}
-	} else if (bt->state & GUI_HOVER) {
-		// clear hover flag
-		bt->state &= ~((uint16_t) GUI_HOVER);
-		// mark dirty (force redraw)
-		bt->state |= GUI_DIRTY;
-		// invert on/off bitmask
-		bt->state ^= GUI_ONOFF_MASK;
-		if (bt->callback != NULL) {
-			bt->callback(bt);
-		}
-	}
-	//BSP_AUDIO_OUT_Resume();
-}
-
 void renderPushButton(GUIElement *bt) {
 	if (bt->state & (GUI_DIRTY|GUI_HOVER)) {
 		SpriteSheet *sprite = bt->sprite;
@@ -240,18 +207,6 @@ GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 	db->value = val;
 	db->sensitivity = sens;
 	db->orientacion = orientacion;
-	return e;
-}
-
-GUIElement *initPushLinkButton(uint8_t id, char *label, uint16_t x, uint16_t y,
-		float val, SpriteSheet *sprite, GUICallback cb) {
-	GUIElement *e = guiElement(id, label, x, y, sprite, cb);
-	PushButtonState *pb = (PushButtonState *) calloc(1,
-			sizeof(PushButtonState));
-	e->handler = handlePushButton;
-	e->render = renderPushButton;
-	e->userData = pb;
-	pb->value = val;
 	return e;
 }
 
@@ -675,7 +630,7 @@ void initPedals() {
 	Pedales[0]->perilla = initPerilla(3);
 	Pedales[0]->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, PERILLA, &perilla5252, Delay_Feedback);
 	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, PERILLA, &perilla5252,Delay_Time);
-	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, SLIDER, &slider5xpos,Delay_Level);
+	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, PERILLA, &perilla5252,Delay_Level);
 	//Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
 	//Tremolo
 	Pedales[1]=(PedalElement*)calloc(1, sizeof(PedalElement));
@@ -798,11 +753,11 @@ void initPedals() {
 	
 	//Inicializo los pedales con sus funciones
 	Pedales[0]->efecto=delay;
-	Pedales[1]->efecto=phaser;
-	Pedales[2]->efecto=vibrato;
-	Pedales[3]->efecto=distorsion;
+	Pedales[1]->efecto=tremolo;
+	Pedales[2]->efecto=flanger;
+	Pedales[3]->efecto=reverb;
 	Pedales[4]->efecto=autowah;
-	Pedales[5]->efecto=ringmod;
+	Pedales[5]->efecto=chorus;
 
 }
 

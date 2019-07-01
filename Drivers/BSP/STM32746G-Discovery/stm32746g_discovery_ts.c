@@ -73,7 +73,7 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_ts.h"
-
+#include "stm32746g_discovery_audio.h"
 /** @addtogroup BSP
   * @{
   */
@@ -124,7 +124,7 @@ static uint8_t  I2cAddress;
 /**
   * @}
   */ 
-
+int flag_ts=0;
 /** @defgroup STM32746G_DISCOVERY_TS_Private_Function_Prototypes STM32746G_DISCOVERY_TS Private Function Prototypes
   * @{
   */ 
@@ -242,7 +242,12 @@ uint8_t BSP_TS_GetState(TS_StateTypeDef *TS_State)
   
   if(TS_State->touchDetected)
   {
-    for(index=0; index < TS_State->touchDetected; index++)
+	if(flag_ts==0)
+	{
+		BSP_AUDIO_OUT_SetVolume(0);
+		flag_ts=1;
+	}
+	for(index=0; index < TS_State->touchDetected; index++)
     {
       /* Get each touch coordinates */
       tsDriver->GetXY(I2cAddress, &(brute_x[index]), &(brute_y[index]));
@@ -329,7 +334,11 @@ uint8_t BSP_TS_GetState(TS_StateTypeDef *TS_State)
 #endif /* TS_MULTI_TOUCH_SUPPORTED == 1 */
 
   } /* end of if(TS_State->touchDetected != 0) */
-
+  else if (flag_ts==1)
+  {
+	  BSP_AUDIO_OUT_SetVolume(85);
+	  flag_ts=0;
+  }
   return (ts_status);
 }
 
@@ -408,16 +417,16 @@ uint8_t BSP_TS_ResetTouchData(TS_StateTypeDef *TS_State)
 
   if (TS_State != (TS_StateTypeDef *)NULL)
   {
-    TS_State->gestureId = GEST_ID_NO_GESTURE;
+    //TS_State->gestureId = GEST_ID_NO_GESTURE;
     TS_State->touchDetected = 0;
 
     for(index = 0; index < TS_MAX_NB_TOUCH; index++)
     {
       TS_State->touchX[index]       = 0;
       TS_State->touchY[index]       = 0;
-      TS_State->touchArea[index]    = 0;
-      TS_State->touchEventId[index] = TOUCH_EVENT_NO_EVT;
-      TS_State->touchWeight[index]  = 0;
+      //TS_State->touchArea[index]    = 0;
+      //TS_State->touchEventId[index] = TOUCH_EVENT_NO_EVT;
+      //TS_State->touchWeight[index]  = 0;
     }
 
     ts_status = TS_OK;

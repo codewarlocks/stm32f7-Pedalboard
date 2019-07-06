@@ -27,7 +27,7 @@ float32_t finicial_aw = 0, ffinal_aw = 0, fcentral_aw = 0;
 int periodo_aw = 0;
 float32_t deltaf_aw = 0;
 
-float32_t rateenv1_aw=0, rateenv2_aw=0, periodoenv_aw = 0, deltafenv_aw = 0;
+float32_t rateenv_aw=0, periodoenv_aw = 0, deltafenv_aw = 0;
 
 int cont_aw = 0, flag_aw = 0, i_aw = 0;
 float32_t buffer_aw[ENV_SIZE]={0};
@@ -121,18 +121,18 @@ float32_t Autowah_LFO(int modulacion_aw)
 			break;
 
 		case ENVOLVENTE:
-			rateenv1_aw = x_0_aw/500000;
-			rateenv1_aw = rateenv1_aw*rateenv1_aw;
-			rateenv2_aw = ((10 - 1000 * rateenv1_aw) > 0.1) ? (10 - 1000 * rateenv1_aw) : 0.1;
-			periodoenv_aw = (float32_t) SR/rateenv2_aw;
-			deltafenv_aw = (ffinal_aw - finicial_aw)/periodoenv_aw;
-			if(flag_aw == 0)
-				fcentral_aw = fcentral_aw + 2 * deltafenv_aw;
-			if(flag_aw == 1)
-				fcentral_aw = fcentral_aw - 2 * deltafenv_aw;
-			if(fcentral_aw >= ffinal_aw || fcentral_aw <= finicial_aw)
-				flag_aw = 1 - flag_aw;
-			break;
+            rateenv_aw = x_0_aw/10000;
+            rateenv_aw = rateenv_aw*rateenv_aw;
+            rateenv_aw = ((4 * rate_aw - 1000 * rateenv_aw) > rate_aw) ? (4 * rate_aw - 1000 * rateenv_aw) : rate_aw;
+            periodoenv_aw = (float32_t) SR/rateenv_aw;
+            deltafenv_aw = (ffinal_aw - finicial_aw)/periodoenv_aw;
+            if(flag_aw == 0)
+                fcentral_aw = fcentral_aw + 2 * deltafenv_aw;
+            if(flag_aw == 1)
+                fcentral_aw = fcentral_aw - 2 * deltafenv_aw;
+            if(fcentral_aw >= ffinal_aw || fcentral_aw <= finicial_aw)
+                flag_aw = 1 - flag_aw;
+            break;
 	}
 	cont_aw++;
 	return fcentral_aw;

@@ -150,7 +150,7 @@ int AP1_line[556];
 int AP2_line[441];
 int AP3_line[341];
 /*variables REVERV----------------------*/
-
+//Variables pantalla 2
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
 /* Private functions ---------------------------------------------------------*/

@@ -99,13 +99,6 @@ typedef enum
   BUFFER_OFFSET_FULL = 2,
 }BUFFER_StateTypeDef;
 
-typedef struct
-{
-  int   (*DemoFunc)(int);
-  uint8_t DemoName[50];
-  uint32_t DemoIndex;
-}func_efectos;
-
 #define AUDIO_BLOCK_SIZE   ((uint32_t)256)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
 
@@ -118,13 +111,11 @@ __IO uint32_t isPressed = 0;
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint8_t j_home=0;
-uint8_t text[30];
 extern uint32_t  audio_rec_buffer_state;
 unsigned int cont=0;
 int Buffer_in[AUDIO_BLOCK_SIZE],Buffer_out[AUDIO_BLOCK_SIZE], i=0, i_audio=0;
 //Variables Pasabajos
-float control_fcorte=1, cuenta;
+float32_t control_fcorte=1, cuenta;
 int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0, seleccion_pedal=0, pedal_prendido=0;
 /*func_efectos  efectos[] =
   {
@@ -183,8 +174,6 @@ void AudioLoopback_demo (void)
   BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
   BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
   BSP_LCD_SelectLayer(1);
-  DrawScreen(OCTAVADOR);
-  pedal_individual=1;
   while (1)
   {
     cont++;
@@ -197,8 +186,8 @@ void AudioLoopback_demo (void)
     	  guiUpdateTouch(&rawTouchState, &touchState);
     	  if(pedal_individual==1)
     	  {
-    		  //guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-    		  //handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+    		  if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+    		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
     		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
     	  }
     	  else if(pedal_individual==0){

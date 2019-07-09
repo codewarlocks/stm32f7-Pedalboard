@@ -53,9 +53,9 @@ static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
 static SpriteSheet perilla5252 = { .pixels = perilla52x52x25,
 		.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
 				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
+//		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
+//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet whaonda = { .pixels = whaondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
 				CM_ARGB8888};//CM_RGB888
@@ -456,7 +456,7 @@ void LinkCallback(PedalElement *e)
 	    case OCTAVADOR:
 		    DrawScreen(OCTAVADOR);
 			pedal_individual=1;
-			//seleccion_pedal=OCTAVADOR;
+			seleccion_pedal=OCTAVADOR;
 	    break;
 	    case CHORUS:
 		    DrawScreen(CHORUS);
@@ -479,7 +479,7 @@ void LinkCallback(PedalElement *e)
 			seleccion_pedal=REVERB;
 	    break;
 	}
-	//PedalForceRedraw(e);
+	PedalForceRedraw(e);
 
 }
 
@@ -603,14 +603,14 @@ void LinkDerechaCallback(PedalElement *e)
 {
 	 seleccion_pedal++;
 	 DrawScreen(seleccion_pedal);
-	 //PedalForceRedraw(Pedales[seleccion_pedal]);
+	 PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkIzquierdaCallback(PedalElement *e)
 {
 	seleccion_pedal--;
     DrawScreen(seleccion_pedal);
-    //PedalForceRedraw(Pedales[seleccion_pedal]);
+    PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkHomeCallback(PedalElement *e)
@@ -632,7 +632,7 @@ void initPedals() {
 	//Octavador
 	Pedales[1]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[1]->perilla = initPerilla(1);
-	Pedales[1]->perilla->perillas[0] =NULL;
+	Pedales[1]->perilla->perillas[0] =guiDialButton(8, "", 0, 0, 0.0f, 0.045f, PERILLA, &perilla5252, NULL);;
 	//Chorus
 	Pedales[2]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[2]->perilla = initPerilla(2);
@@ -641,7 +641,7 @@ void initPedals() {
 	//Phaser
 	Pedales[3]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[3]->perilla = initPerilla(1);
-	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 214, 27, 0.0f, 0.045f, PERILLA, &perilla5252, NULL);
+	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 214, 27, 0.0f, 0.045f, PERILLA, &perilla5252, Phaser_Rate);
 	//Autowah
 	Pedales[4]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[4]->perilla = initPerilla(4);
@@ -652,8 +652,8 @@ void initPedals() {
 	//Reverb
 	Pedales[5]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[5]->perilla = initPerilla(2);
-	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 180, 63, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Decay);
-	Pedales[5]->perilla->perillas[1] = guiDialButton(1, "", 222, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Mix);
+	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 191, 47, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Decay);
+	Pedales[5]->perilla->perillas[1] = guiDialButton(1, "", 253, 47, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Mix);
 	//
 
 	//Inicializo los Push (3pdt)

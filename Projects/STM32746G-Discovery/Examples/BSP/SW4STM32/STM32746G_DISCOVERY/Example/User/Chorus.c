@@ -146,3 +146,17 @@ float32_t Chorus_LFO(int modulacion_c)
 	tiempo_c++;
 	return demora_c;
 }
+
+void Chorus_Rate (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+  rate_c = 10 * (db->value);  // TODO: verificar
+  chorus_parametros();
+}
+
+void Chorus_Depth (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+  depth_c = (manual_c - 1) * (db->value);  // TODO: verificar
+  chorus_parametros();
+}

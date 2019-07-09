@@ -8,8 +8,6 @@
 #include "main.h"
 #include "string.h"
 #include "gui/leds.h"
-#include "gui/tremoloondas.h"
-#include "gui/vibratoondas.h"
 #include "gui/whaondas.h"
 #include "gui/perilla35x35x25.h"
 #include "gui/perilla42x41x25.h"
@@ -18,11 +16,11 @@
 #include "gui/prototipos.h"
 
 #define DELAY 0
-#define TREMOLO 1
-#define VIBRATO 2
-#define DISTORSION 3
+#define OCTAVADOR 1
+#define CHORUS 2
+#define PHASER 3
 #define WHA 4
-#define RINGMOD 5
+#define REVERB 5
 #define IZQUIERDA 0
 #define MENU 14
 #define DERECHA 1
@@ -46,9 +44,9 @@ extern LTDC_HandleTypeDef hLtdcHandler;
 static void LL_ConvertLineToARGB8888(void *src,void *dst,uint32_t xstride,uint32_t color_mode);
 
 //Varibales Perillas
-static SpriteSheet slider5xpos = { .pixels = slider5pos,
-		.spriteWidth = 10, .spriteHeight = 83, .numSprites = 5, .format =
-				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet slider5xpos = { .pixels = slider5pos,
+//		.spriteWidth = 10, .spriteHeight = 83, .numSprites = 5, .format =
+//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
 		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
 				CM_ARGB8888};//CM_RGB888
@@ -61,12 +59,12 @@ static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
 static SpriteSheet whaonda = { .pixels = whaondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
 				CM_ARGB8888};//CM_RGB888
-static SpriteSheet vibratoonda = { .pixels = vibratoondas,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet tremoloonda = { .pixels = tremoloondas,
-		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
-				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet vibratoonda = { .pixels = vibratoondas,
+//		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
+//				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet tremoloonda = { .pixels = tremoloondas,
+//		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
+//				CM_ARGB8888};//CM_RGB888
 //
 
 // push button functions
@@ -455,19 +453,19 @@ void LinkCallback(PedalElement *e)
 			pedal_individual=1;
 			seleccion_pedal=DELAY;
 		break;
-	    case TREMOLO:
-		    DrawScreen(TREMOLO);
+	    case OCTAVADOR:
+		    DrawScreen(OCTAVADOR);
 			pedal_individual=1;
-			seleccion_pedal=TREMOLO;
+			//seleccion_pedal=OCTAVADOR;
 	    break;
-	    case VIBRATO:
-		    DrawScreen(VIBRATO);
+	    case CHORUS:
+		    DrawScreen(CHORUS);
 			pedal_individual=1;
-			seleccion_pedal=VIBRATO;
+			seleccion_pedal=CHORUS;
 	    break;
-	    case DISTORSION:
-	    	DrawScreen(DISTORSION);
-	    	seleccion_pedal=DISTORSION;
+	    case PHASER:
+	    	DrawScreen(PHASER);
+	    	seleccion_pedal=PHASER;
 			pedal_individual=1;
 	    break;
 	    case WHA:
@@ -475,13 +473,13 @@ void LinkCallback(PedalElement *e)
 			pedal_individual=1;
 			seleccion_pedal=WHA;
 	    break;
-	    case RINGMOD:
-		    DrawScreen(RINGMOD);
+	    case REVERB:
+		    DrawScreen(REVERB);
 			pedal_individual=1;
-			seleccion_pedal=RINGMOD;
+			seleccion_pedal=REVERB;
 	    break;
 	}
-	PedalForceRedraw(e);
+	//PedalForceRedraw(e);
 
 }
 
@@ -498,22 +496,22 @@ void PushCallback(PedalElement *e)
 					switch(e->push->push_menu->nombre)
 					{
 						case DELAY:
-							drawBitmapRaw(89,99,5,5, (uint8_t*)delayprendidomenu, CM_ARGB8888, 1);
+							drawBitmapRaw(85,96,5,5, (uint8_t*)ledprendidodelaymenu, CM_ARGB8888, 1);
 							break;
-						case TREMOLO:
-							drawBitmapRaw(231,25,8,8, (uint8_t*)tremoloprendidomenu, CM_ARGB8888, 1);
+						case OCTAVADOR:
+							drawBitmapRaw(237,78,6,6, (uint8_t*)ledprendidooctavadormenu, CM_ARGB8888, 1);
 							break;
-						case VIBRATO:
-							drawBitmapRaw(341,99,5,5, (uint8_t*)vibratoprendidomenu, CM_ARGB8888, 1);
+						case CHORUS:
+							drawBitmapRaw(375,18,3,3, (uint8_t*)ledprendidochorusmenu, CM_ARGB8888, 1);
 							break;
-						case DISTORSION:
-							drawBitmapRaw(90,229,5,5, (uint8_t*)distorsionprendidomenu, CM_ARGB8888, 1);
+						case PHASER:
+							drawBitmapRaw(103,210,5,6, (uint8_t*)ledprendidophasermenu, CM_ARGB8888, 1);
 							break;
 						case WHA:
-							drawBitmapRaw(232,207,6,6, (uint8_t*)whaprendidomenu, CM_ARGB8888, 1);
+							drawBitmapRaw(236,209,8,7, (uint8_t*)ledprendidowahmenu, CM_ARGB8888, 1);
 							break;
-						case RINGMOD:
-							drawBitmapRaw(340,239,6,6, (uint8_t*)ringprendidomenu, CM_ARGB8888, 1);
+						case REVERB:
+							drawBitmapRaw(375,211,5,5, (uint8_t*)ledprendidoreverbmenu, CM_ARGB8888, 1);
 							break;
 					}
 				}
@@ -522,22 +520,22 @@ void PushCallback(PedalElement *e)
 					switch(e->push->push_menu->nombre)
 					{
  	 	 	 			case DELAY:
- 	 	 	 				drawBitmapRaw(89,99,5,5, (uint8_t*)delayapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				drawBitmapRaw(85,96,5,5, (uint8_t*)ledapagadodelaymenu, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case TREMOLO:
- 	 	 	 				drawBitmapRaw(231,25,8,8, (uint8_t*)tremoloapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 			case OCTAVADOR:
+ 	 	 	 				drawBitmapRaw(237,78,6,6, (uint8_t*)ledapagadooctavadormenu, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case VIBRATO:
- 	 	 	 				drawBitmapRaw(341,99,5,5, (uint8_t*)vibratoapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 			case CHORUS:
+ 	 	 	 				drawBitmapRaw(375,18,3,3, (uint8_t*)ledapagadochorusmenu, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case DISTORSION:
- 	 	 	 				drawBitmapRaw(90,229,5,5, (uint8_t*)distorsionapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 			case PHASER:
+ 	 	 	 				drawBitmapRaw(103,210,5,6, (uint8_t*)ledapagadophasermenu, CM_ARGB8888, 1);
  	 	 	 				break;
  	 	 	 			case WHA:
- 	 	 	 				drawBitmapRaw(232,207,6,6, (uint8_t*)whaapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 				drawBitmapRaw(236,209,8,7, (uint8_t*)ledapagadowahmenu, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case RINGMOD:
- 	 	 	 				drawBitmapRaw(340,239,6,6, (uint8_t*)ringapagadomenu, CM_ARGB8888, 1);
+ 	 	 	 			case REVERB:
+ 	 	 	 				drawBitmapRaw(375,211,5,5, (uint8_t*)ledapagadoreverbmenu, CM_ARGB8888, 1);
  	 	 	 				break;
 					}
 				}
@@ -552,22 +550,22 @@ void PushCallback(PedalElement *e)
 					{
 						case DELAY:
 
-							drawBitmapRaw(196,200,10,9, (uint8_t*)Delayledprendido, CM_ARGB8888, 1);
+							drawBitmapRaw(196,200,10,9, (uint8_t*)ledprendidodelaypedal, CM_ARGB8888, 1);
 							break;
-						case TREMOLO:
-							drawBitmapRaw(228,29,23,24, (uint8_t*)LedTremoloprendido, CM_ARGB8888, 1);
+						case OCTAVADOR:
+							drawBitmapRaw(233,159,15,16, (uint8_t*)ledprendidooctavadorpedal, CM_ARGB8888, 1);
 							break;
-						case VIBRATO:
-							drawBitmapRaw(196,200,11,10, (uint8_t*)Vibratoledprendido, CM_ARGB8888, 1);
+						case CHORUS:
+							drawBitmapRaw(236,23,7,6, (uint8_t*)ledprendidochoruspedal, CM_ARGB8888, 1);
 							break;
-						case DISTORSION:
-							drawBitmapRaw(198,198,9,9, (uint8_t*)Distorsionledprendido, CM_ARGB8888, 1);
+						case PHASER:
+							drawBitmapRaw(235,150,12,12, (uint8_t*)ledprendidophaserpedal, CM_ARGB8888, 1);
 							break;
 						case WHA:
-							drawBitmapRaw(230,149,19,18, (uint8_t*)Wahledprendido, CM_ARGB8888, 1);
+							drawBitmapRaw(230,148,19,18, (uint8_t*)ledprendidowahpedal, CM_ARGB8888, 1);
 							break;
-						case RINGMOD:
-							drawBitmapRaw(195,222,10,10, (uint8_t*)Ringledprendido, CM_ARGB8888, 1);
+						case REVERB:
+							drawBitmapRaw(236,151,13,13, (uint8_t*)ledprendidoreverbpedal, CM_ARGB8888, 1);
 							break;
 					}
 				}
@@ -576,22 +574,22 @@ void PushCallback(PedalElement *e)
 					switch(e->push->push_indiv->nombre)
 					{
  	 	 	 			case DELAY:
- 	 	 	 				drawBitmapRaw(196,200,10,9, (uint8_t*)Delayledapagado, CM_ARGB8888, 1);
+ 	 	 	 				drawBitmapRaw(196,200,10,9, (uint8_t*)ledapagadodelaypedal, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case TREMOLO:
- 	 	 	 				drawBitmapRaw(228,29,23,24, (uint8_t*)LedTremoloapagado, CM_ARGB8888, 1);
+ 	 	 	 			case OCTAVADOR:
+ 	 	 	 				drawBitmapRaw(233,159,15,16, (uint8_t*)ledapagadooctavadorpedal, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case VIBRATO:
- 	 	 	 				drawBitmapRaw(196,200,11,10, (uint8_t*)Vibratoledapagado, CM_ARGB8888, 1);
+ 	 	 	 			case CHORUS:
+ 	 	 	 				drawBitmapRaw(236,23,7,6, (uint8_t*)ledapagadochoruspedal, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case DISTORSION:
- 	 	 	 				drawBitmapRaw(198,198,9,9, (uint8_t*)Distorsionledapagado, CM_ARGB8888, 1);
+ 	 	 	 			case PHASER:
+ 	 	 	 				drawBitmapRaw(235,150,12,12, (uint8_t*)ledapagadophaserpedal, CM_ARGB8888, 1);
  	 	 	 				break;
  	 	 	 			case WHA:
- 	 	 	 				drawBitmapRaw(230,149,19,18, (uint8_t*)Wahledapagado, CM_ARGB8888, 1);
+ 	 	 	 				drawBitmapRaw(230,148,19,18, (uint8_t*)ledapagadowahpedal, CM_ARGB8888, 1);
  	 	 	 				break;
- 	 	 	 			case RINGMOD:
- 	 	 	 				drawBitmapRaw(195,222,10,10, (uint8_t*)Ringledapagado, CM_ARGB8888, 1);
+ 	 	 	 			case REVERB:
+ 	 	 	 				drawBitmapRaw(236,151,13,13, (uint8_t*)ledapagadoreverbpedal, CM_ARGB8888, 1);
  	 	 	 				break;
 					}
 				}
@@ -605,14 +603,14 @@ void LinkDerechaCallback(PedalElement *e)
 {
 	 seleccion_pedal++;
 	 DrawScreen(seleccion_pedal);
-	 PedalForceRedraw(Pedales[seleccion_pedal]);
+	 //PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkIzquierdaCallback(PedalElement *e)
 {
 	seleccion_pedal--;
     DrawScreen(seleccion_pedal);
-    PedalForceRedraw(Pedales[seleccion_pedal]);
+    //PedalForceRedraw(Pedales[seleccion_pedal]);
 }
 
 void LinkHomeCallback(PedalElement *e)
@@ -630,65 +628,61 @@ void initPedals() {
 	Pedales[0]->perilla = initPerilla(3);
 	Pedales[0]->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, PERILLA, &perilla5252, Delay_Feedback);
 	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, PERILLA, &perilla5252,Delay_Time);
-	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, PERILLA, &perilla5252,Delay_Level);
-	//Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, &perilla4241,Delay_Level);
-	//Tremolo
+	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, PERILLA, &perilla4241,Delay_Level);
+	//Octavador
 	Pedales[1]=(PedalElement*)calloc(1, sizeof(PedalElement));
-	Pedales[1]->perilla = initPerilla(3);
-	Pedales[1]->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.0f, 0.045f, PERILLA, &perilla4241, Tremolo_Depth);
-	Pedales[1]->perilla->perillas[1] = guiDialButton(1, "", 269, 39, 0.0f, 0.045f, PERILLA, &perilla4241,Tremolo_Rate);
-	Pedales[1]->perilla->perillas[2] = guiDialButton(2, "", 220, 66, 0.0f, 0.045f, PERILLA, &tremoloonda,Tremolo_Mod);
-	//Vibrato
+	Pedales[1]->perilla = initPerilla(1);
+	Pedales[1]->perilla->perillas[0] =NULL;
+	//Chorus
 	Pedales[2]=(PedalElement*)calloc(1, sizeof(PedalElement));
-	Pedales[2]->perilla = initPerilla(3);
-	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.0f, 0.045f, PERILLA, &perilla4241, Vibrato_Rate);
-	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.0f, 0.045f, PERILLA, &perilla4241,Vibrato_Depth);
-	Pedales[2]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 0.0f, 0.045f, PERILLA, &vibratoonda,Vibrato_Mod);
-	//Distorsion
+	Pedales[2]->perilla = initPerilla(2);
+	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 187, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Chorus_Rate);
+	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 250, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Chorus_Depth);
+	//Phaser
 	Pedales[3]=(PedalElement*)calloc(1, sizeof(PedalElement));
-	Pedales[3]->perilla = initPerilla(2);
-	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, PERILLA, &perilla5252, NULL);
-	Pedales[3]->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, PERILLA, &perilla5252,NULL);
+	Pedales[3]->perilla = initPerilla(1);
+	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 214, 27, 0.0f, 0.045f, PERILLA, &perilla5252, NULL);
 	//Autowah
 	Pedales[4]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[4]->perilla = initPerilla(4);
 	Pedales[4]->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, PERILLA, &perilla4241, Autowah_Depth);
 	Pedales[4]->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, PERILLA, &perilla4241,Autowah_Rate);
 	Pedales[4]->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, PERILLA, &perilla4241,Autowah_Volume);
-	Pedales[4]->perilla->perillas[3] = guiDialButton(2, "", 319, 41, 0.0f, 0.045f, PERILLA, &whaonda,Autowah_Mod);
-	//Ringmode
+	Pedales[4]->perilla->perillas[3] = guiDialButton(3, "", 319, 41, 0.0f, 0.045f, PERILLA, &whaonda,Autowah_Mod);
+	//Reverb
 	Pedales[5]=(PedalElement*)calloc(1, sizeof(PedalElement));
-	Pedales[5]->perilla = initPerilla(1);
-	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.0f, 0.045f, PERILLA, &perilla3535, Ringmod_Rate);
+	Pedales[5]->perilla = initPerilla(2);
+	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 180, 63, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Decay);
+	Pedales[5]->perilla->perillas[1] = guiDialButton(1, "", 222, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Mix);
 	//
 
 	//Inicializo los Push (3pdt)
 	//PEDALES Menu
 	Pedales[0]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[0]->push->push_menu=initPushLink(DELAY,80,16+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Pedales[0]->push->push_menu=initPushLink(DELAY,76,13+110/2,58,110/2,PushCallback, handlePushMenuButton);
 
 	Pedales[1]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[1]->push->push_menu=initPushLink(TREMOLO,195,16+110/2,80,110/2,PushCallback, handlePushMenuButton);
+	Pedales[1]->push->push_menu=initPushLink(OCTAVADOR,198,13+110/2,84,110/2,PushCallback, handlePushMenuButton);
 
 	Pedales[2]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[2]->push->push_menu=initPushLink(VIBRATO,332,16+110/2,57,110/2,PushCallback, handlePushMenuButton);
+	Pedales[2]->push->push_menu=initPushLink(CHORUS,346,13+110/2,61,110/2,PushCallback, handlePushMenuButton);
 
 	Pedales[3]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[3]->push->push_menu=initPushLink(DISTORSION,80,147+110/2,58,110/2,PushCallback, handlePushMenuButton);
+	Pedales[3]->push->push_menu=initPushLink(PHASER,73,149+110/2,64,110/2,PushCallback, handlePushMenuButton);
 
 	Pedales[4]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[4]->push->push_menu=initPushLink(WHA,185,158+88/2,100,88/2,PushCallback, handlePushMenuButton);
+	Pedales[4]->push->push_menu=initPushLink(WHA,190,160+88/2,100,88/2,PushCallback, handlePushMenuButton);
 
 	Pedales[5]->push=(PushElement*)calloc(1, sizeof(PushElement));
-	Pedales[5]->push->push_menu=initPushLink(RINGMOD,326,147+110/2,68,110/2,PushCallback, handlePushMenuButton);
+	Pedales[5]->push->push_menu=initPushLink(REVERB,343,149+110/2,67,110/2,PushCallback, handlePushMenuButton);
 
 	//PEDALES Individuales
 	Pedales[0]->push->push_indiv=initPushLink(DELAY,225,189,31,33,PushCallback, handlePushIndividualButton);
-	Pedales[1]->push->push_indiv=initPushLink(TREMOLO,222,203,36,36,PushCallback, handlePushIndividualButton);
-	Pedales[2]->push->push_indiv=initPushLink(VIBRATO,221,188,37,37,PushCallback, handlePushIndividualButton);
-	Pedales[3]->push->push_indiv=initPushLink(DISTORSION,223,184,35,35,PushCallback, handlePushIndividualButton);
+	Pedales[1]->push->push_indiv=initPushLink(OCTAVADOR,219,180,42,42,PushCallback, handlePushIndividualButton);
+	Pedales[2]->push->push_indiv=initPushLink(CHORUS,180,163,117,77,PushCallback, handlePushIndividualButton);
+	Pedales[3]->push->push_indiv=initPushLink(PHASER,222,171,37,37,PushCallback, handlePushIndividualButton);
 	Pedales[4]->push->push_indiv=initPushLink(WHA,218,213,41,41,PushCallback, handlePushIndividualButton);
-	Pedales[5]->push->push_indiv=initPushLink(RINGMOD,223,210,35,34,PushCallback, handlePushIndividualButton);
+	Pedales[5]->push->push_indiv=initPushLink(REVERB,180,163,117,77,PushCallback, handlePushIndividualButton);
 
 	//PEDALES estados
 	Pedales[0]->push->push_state=GUI_OFF;
@@ -701,22 +695,22 @@ void initPedals() {
 
 	//Inicializo los links de los pedales
 	Pedales[0]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[0]->link=initPushLink(DELAY,80,16,58,110/2,LinkCallback, handleLinkButton);
+	Pedales[0]->link=initPushLink(DELAY,76,13,58,110/2,LinkCallback, handleLinkButton);
 
 	Pedales[1]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[1]->link=initPushLink(TREMOLO,195,16,80,110/2,LinkCallback, handleLinkButton);
+	Pedales[1]->link=initPushLink(OCTAVADOR,198,13,84,110/2,LinkCallback, handleLinkButton);
 
 	Pedales[2]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[2]->link=initPushLink(VIBRATO,332,16,57,110/2,LinkCallback, handleLinkButton);
+	Pedales[2]->link=initPushLink(CHORUS,346,13,61,110/2,LinkCallback, handleLinkButton);
 
 	Pedales[3]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[3]->link=initPushLink(DISTORSION,80,147,58,110/2,LinkCallback, handleLinkButton);
+	Pedales[3]->link=initPushLink(PHASER,73,149,64,110/2,LinkCallback, handleLinkButton);
 
 	Pedales[4]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[4]->link=initPushLink(WHA,185,158,100,88/2,LinkCallback, handleLinkButton);
+	Pedales[4]->link=initPushLink(WHA,190,160,100,88/2,LinkCallback, handleLinkButton);
 
 	Pedales[5]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
-	Pedales[5]->link=initPushLink(RINGMOD,326,147,68,110/2,LinkCallback, handleLinkButton);
+	Pedales[5]->link=initPushLink(REVERB,343,149,67,110/2,LinkCallback, handleLinkButton);
 	//
 
 	//Inicializo los botones de las pantallas individuales de los pedales
@@ -753,11 +747,11 @@ void initPedals() {
 	
 	//Inicializo los pedales con sus funciones
 	Pedales[0]->efecto=delay;
-	Pedales[1]->efecto=tremolo;
-	Pedales[2]->efecto=flanger;
-	Pedales[3]->efecto=reverb;
+	Pedales[1]->efecto=octavador;
+	Pedales[2]->efecto=chorus;
+	Pedales[3]->efecto=phaser;
 	Pedales[4]->efecto=autowah;
-	Pedales[5]->efecto=chorus;
+	Pedales[5]->efecto=reverb;
 
 }
 

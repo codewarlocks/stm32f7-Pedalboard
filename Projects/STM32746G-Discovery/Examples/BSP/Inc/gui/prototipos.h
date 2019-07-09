@@ -71,6 +71,8 @@ int Get_State_Ringmod (void);
 void chorus_parametros();
 int chorus (int);
 float32_t Chorus_LFO(int);
+void Chorus_Rate (GUIElement *e);
+void Chorus_Depth (GUIElement *e);
 
 //Flanger.c
 void flanger_parametros();
@@ -84,6 +86,8 @@ int octavador(int);
 int AP_filter(int in, int* line, int delay, int cont);
 int FBCF_filter(int in, int line[], int delay, int cont, int inst);
 int reverb (int entrada);
+void Reverb_Mix (GUIElement *e);
+void Reverb_Decay (GUIElement *e);
 
 // Phaser.c
 void phaser_parametros();

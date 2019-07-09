@@ -1,5 +1,5 @@
 
-static const uint8_t Wahledapagado[1368] = {
+static const uint8_t ledapagadowahpedal[1368] = {
     // ∙∙∙∙∙░▒▓▓▓▒░∙∙∙∙∙∙∙
     // ∙∙∙▒▒▓▓▒░░░░∙∙∙░∙∙∙
     // ∙∙▒▒▓▒░∙∙░░░∙∙∙∙░∙∙

@@ -1,5 +1,5 @@
 
-static const uint8_t Wahledprendido[1368] = {
+static const uint8_t ledprendidowahpedal[1368] = {
     // ∙∙∙∙∙░▒▓▓▓▒░∙∙∙∙∙∙∙
     // ∙∙∙▒▒██▓▓▓▓░░∙∙░∙∙∙
     // ∙∙▒▓█▓▒░▒▒▒▒░░∙∙▒∙∙

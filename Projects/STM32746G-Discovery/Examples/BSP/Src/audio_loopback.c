@@ -49,11 +49,11 @@
 #include "gui/perilla52x52x25.h"
 
 #define DELAY 0
-#define TREMOLO 1
-#define VIBRATO 2
-#define DISTORSION 3
+#define OCTAVADOR 1
+#define CHORUS 2
+#define PHASER 3
 #define WHA 4
-#define RINGMOD 5
+#define REVERB 5
 #define IZQUIERDA 0
 #define MENU 14
 #define DERECHA 1
@@ -131,7 +131,6 @@ int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0
 		  {efecto_normal, "efecto normal", 0},
 		  {efecto_delay, "efecto delay", 1},
   };*/
-LinkElement *link_menu[2][8], *push_menu[2][8], *link_pedales[13][3], *push_pedales[13];
 /* Private function prototypes -----------------------------------------------*/
 /*variables REVERV----------------------*/
 int FBCF0_line[1617];
@@ -165,12 +164,12 @@ void AudioLoopback_demo (void)
   BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
   //BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
   //BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
-  vibrato_parametros();
-  tremolo_parametros();
+//  vibrato_parametros();
+//  tremolo_parametros();
   chorus_parametros();
-  flanger_parametros();
+//  flanger_parametros();
   init_autowah();
-  init_eq();
+//  init_eq();
   phaser_parametros();
   Demo_fondito();
   initPedals();
@@ -184,6 +183,8 @@ void AudioLoopback_demo (void)
   BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
   BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
   BSP_LCD_SelectLayer(1);
+  DrawScreen(OCTAVADOR);
+  pedal_individual=1;
   while (1)
   {
     cont++;
@@ -196,8 +197,8 @@ void AudioLoopback_demo (void)
     	  guiUpdateTouch(&rawTouchState, &touchState);
     	  if(pedal_individual==1)
     	  {
-    		  guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-    		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+    		  //guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+    		  //handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
     		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
     	  }
     	  else if(pedal_individual==0){

@@ -1,5 +1,5 @@
 
-static const uint8_t Delayledapagado[360] = {
+static const uint8_t ledapagadodelaypedal[360] = {
     // ∙░▒▒▓▓▓▒░∙
     // ░▒▓▓▓▓▓▒▒░
     // ░▒▓▓▓▓▓▓▓▒

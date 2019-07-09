@@ -1,5 +1,5 @@
 
-static const uint8_t Distorsionledprendido[324] = {
+static const uint8_t ledprendidodistorsionpedal[324] = {
     // ∙░▒▓▓▓▒░∙
     // ░▓▓▓▓▓▓▓░
     // ▓▓▓▓▓▓▓▓▓

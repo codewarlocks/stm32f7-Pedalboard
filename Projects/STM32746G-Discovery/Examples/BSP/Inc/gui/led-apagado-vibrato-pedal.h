@@ -1,6 +1,6 @@
 
 
-static const uint8_t Vibratoledapagado[440] = {
+static const uint8_t ledapagadovibratopedal[440] = {
     // ∙∙∙░▒▒▒░∙∙∙
     // ∙░▒▓▓▓▓▓▒∙∙
     // ░▒▓▓▓▓▓▓▓▒░

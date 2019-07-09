@@ -1,5 +1,5 @@
 
-static const uint8_t Ringledapagado[400] = {
+static const uint8_t ledapagadoringmodpedal[400] = {
     // ∙∙∙∙∙∙∙∙∙∙
     // ∙∙∙∙∙∙∙∙∙∙
     // ∙∙∙∙▒░∙∙∙∙

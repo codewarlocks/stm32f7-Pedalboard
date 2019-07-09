@@ -1,6 +1,6 @@
 
 
-static const uint8_t LedTremoloprendido[2208] = {
+static const uint8_t ledprendidotremolopedal[2208] = {
     // ∙∙∙∙∙∙∙∙∙∙∙▒▒▒∙∙∙∙∙∙∙∙∙
     // ∙∙∙∙∙∙∙░░▒░░░░░░∙∙∙∙∙∙∙
     // ∙∙∙∙∙░▒▒░░░░░░░░░░∙∙∙∙∙

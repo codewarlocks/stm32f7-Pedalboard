@@ -1,6 +1,6 @@
 
 
-static const uint8_t Ringledprendido[400] = {
+static const uint8_t ledprendidoringmodpedal[400] = {
     // ∙∙∙░░░∙∙∙∙
     // ∙░░░░░░░∙∙
     // ∙░░░█▓∙░░∙

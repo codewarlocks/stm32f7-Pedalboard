@@ -1,6 +1,6 @@
 
 
-static const uint8_t Vibratoledprendido[440] = {
+static const uint8_t ledprendidovibratopedal[440] = {
     // ∙∙∙▒▓▓▓▒░∙∙
     // ∙▒▓▓▓▓▓▓▓░∙
     // ▒▓▓▓▓▓▓▓▓▓░

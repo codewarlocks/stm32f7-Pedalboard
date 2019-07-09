@@ -1,6 +1,6 @@
 
 
-static const uint8_t Distorsionledapagado[324] = {
+static const uint8_t ledapagadodistorsionpedal[324] = {
     // ∙░▒▒▒▒▒░∙
     // ░▒▓▓▓▓▓▒░
     // ▒▓▓▓▓▓▓▓▒

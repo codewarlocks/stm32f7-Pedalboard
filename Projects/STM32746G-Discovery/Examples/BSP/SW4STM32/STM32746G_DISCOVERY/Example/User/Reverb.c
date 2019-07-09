@@ -103,3 +103,16 @@ int AP_filter(int in, int* line, int delay, int cont)
 	}
 }
 
+void Reverb_Mix (GUIElement *e)
+{
+    DialButtonState *db = (DialButtonState *) (e->userData);
+    wet_r = (db->value);
+    dry_r = 1 - wet_r;
+}
+
+void Reverb_Decay (GUIElement *e)
+{
+    DialButtonState *db = (DialButtonState *) (e->userData);
+     f_r = (db->value);
+}
+

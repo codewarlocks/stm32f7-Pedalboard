@@ -13,8 +13,8 @@ int x_0_aw = 0, x_1_aw = 0, x_2_aw = 0;
 int y_0_aw = 0, y_1_aw = 0, y_2_aw = 0;
 
 // parametros de usuario
-float rate_aw = 2, depth_aw = 500, volume_aw = 1;
-int modulacion_aw = ENVOLVENTE, state_aw = 0;
+float rate_aw = 2, depth_aw = 500, volume_aw = 0.6;
+int modulacion_aw = SINUSOIDAL, state_aw = 0;
 
 // parametros de desarrollador
 float fmedia_aw = 800, fb_aw = 100;
@@ -46,8 +46,8 @@ void init_autowah()
 
 void autowah_parametros()
 {
-	finicial_aw = fmedia_aw - depth_aw; // TODO: verificar la cuenta
-	ffinal_aw = fmedia_aw + depth_aw;   // TODO: verificar la cuenta
+	finicial_aw = fmedia_aw - depth_aw;
+	ffinal_aw = fmedia_aw + depth_aw;
 	periodo_aw = (int) SR/rate_aw;
 	deltaf_aw = (ffinal_aw - finicial_aw)/periodo_aw;
 }
@@ -62,7 +62,7 @@ int autowah(int entrada)
 	y_2_aw = y_1_aw;
 	y_1_aw = y_0_aw;
 	y_0_aw = (1+c_aw) * 0.5 * x_0_aw - (1+c_aw) * 0.5 * x_2_aw - d_aw * (1-c_aw) * y_1_aw + c_aw * y_2_aw;
-	salida_aw = 3*(volume_aw * y_0_aw) +x_0_aw;
+	salida_aw = 2.5 * (volume_aw * y_0_aw + (1-volume_aw) * x_0_aw);
 	return salida_aw;
 }
 
@@ -115,7 +115,7 @@ float32_t Autowah_LFO(int modulacion_aw)
 			break;
 
 		case SINUSOIDAL:
-			fcentral_aw = fmedia_aw + (ffinal_aw - finicial_aw) * arm_sin_f32((float32_t)(2*3.1416*cont_aw/periodo_aw)); // TODO: chequear el seno
+			fcentral_aw = fmedia_aw + (ffinal_aw - finicial_aw) * arm_sin_f32((float32_t)(2*3.1416*cont_aw/periodo_aw));
 			if(cont_aw == periodo_aw)
 				cont_aw = 0;
 			break;
@@ -123,7 +123,7 @@ float32_t Autowah_LFO(int modulacion_aw)
 		case ENVOLVENTE:
             rateenv_aw = x_0_aw/10000;
             rateenv_aw = rateenv_aw*rateenv_aw;
-            rateenv_aw = ((4 * rate_aw - 1000 * rateenv_aw) > rate_aw) ? (4 * rate_aw - 1000 * rateenv_aw) : rate_aw;
+            rateenv_aw = ((8 * rate_aw - 1000 * rateenv_aw) > rate_aw) ? (8 * rate_aw - 1000 * rateenv_aw) : rate_aw;
             periodoenv_aw = (float32_t) SR/rateenv_aw;
             deltafenv_aw = (ffinal_aw - finicial_aw)/periodoenv_aw;
             if(flag_aw == 0)
@@ -138,29 +138,17 @@ float32_t Autowah_LFO(int modulacion_aw)
 	return fcentral_aw;
 }
 
-//int get_envelope()
-//{
-//	envelope_aw = envelope_aw - buffer_aw[i_aw];
-//	if(i_aw == ENV_SIZE)
-//		i_aw = 0;
-//	buffer_aw[i_aw] = x_0_aw/10000.0;//8388607.0; //TODO: verificar para que no haya overflow
-//	buffer_aw[i_aw] = buffer_aw[i_aw] * buffer_aw[i_aw];
-//	envelope_aw = envelope_aw + buffer_aw [i_aw];
-//	i_aw++;
-//	return envelope_aw;
-//}
-
 void Autowah_Rate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-    rate_aw = 4 * (db->value);  // TODO: verificar
+    rate_aw = 6 * (db->value);
 	autowah_parametros();
 }
 
 void Autowah_Depth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-    depth_aw = 500 * (db->value);  // TODO: verificar
+    depth_aw = (fmedia_aw - 100) * (db->value);
 	autowah_parametros();
 }
 

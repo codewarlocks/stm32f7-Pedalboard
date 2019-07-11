@@ -13,11 +13,11 @@ int x1_ph[4],x0_ph[4];
 int y1_ph[4],y0_ph[4];
 
 // parametros de usuario
-float rate_ph = 3;
+float rate_ph = 4;
 int state_ph = 0;
 
 // parametros de desarrollador
-float fmedia_ph = 1000, depth_ph = 700, volume_ph = 0.5;
+float fmedia_ph = 1000, depth_ph = 700;
 int modulacion_ph = TRIANGULAR;
 
 // parametros del filtro
@@ -26,9 +26,9 @@ float c_ph = 0;
 // variables auxiliares
 float finicial_ph = 0, ffinal_ph = 0, fcentral_ph = 1000;
 int periodo_ph = 0;
-float deltaf_ph = 0;
+float deltaf_ph = 0, aux_ph = 0;
 
-int cont_ph = 0, flag_ph = 0;
+int flag_ph = 0;
 
 void phaser_parametros()
 {
@@ -41,12 +41,13 @@ void phaser_parametros()
 int phaser(int entrada)
 {
   fcentral_ph = Phaser_LFO(modulacion_ph);
-  c_ph = (1-tan(3.1416*fcentral_ph/SR))/(1+tan(3.1416*fcentral_ph/SR));
+  aux_ph = tan(3.1416*fcentral_ph/SR);
+  c_ph = (1-aux_ph)/(1+aux_ph);
   salida_ph = Phaser_AP1(entrada,0);
   salida_ph = Phaser_AP1(salida_ph,1);
   salida_ph = Phaser_AP1(salida_ph,2);
   salida_ph = Phaser_AP1(salida_ph,3);
-  salida_ph = volume_ph * salida_ph + (1-volume_ph) * entrada;
+  salida_ph = 0.5 * salida_ph + 0.5 * entrada;
   return salida_ph;
 }
 
@@ -68,19 +69,15 @@ float Phaser_LFO(int modulacion_ph)
     if(flag_ph == 1)
       fcentral_ph = fcentral_ph - 2 * deltaf_ph;
     if(fcentral_ph >= ffinal_ph || fcentral_ph <= finicial_ph)
-    {
       flag_ph = 1 - flag_ph;
-      cont_ph = 0;
-    }
   }
-  //cont_ph++;
 	return fcentral_ph;
 }
 
 void Phaser_Rate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  rate_ph = 4 * (db->value);
+	rate_ph = 6 * (db->value);
 	phaser_parametros();
 }
 

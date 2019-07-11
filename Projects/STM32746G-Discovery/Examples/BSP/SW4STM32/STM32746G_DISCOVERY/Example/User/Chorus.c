@@ -10,8 +10,8 @@
 int salida_c = 0;
 
 // parametros de usuario
-float32_t manual_c = 110, rate_c = 1.2, depth_c = 100, feedback_c = 0;
-int modulacion_c = TRIANGULAR;
+float32_t manual_c = 110, rate_c = 1.2, depth_c = 40, feedback_c = 0;
+int modulacion_c = SINUSOIDAL;
 
 // variables auxiliares
 float32_t min_c = 0, max_c = 0, tiempo_c, flag_c;
@@ -50,18 +50,6 @@ int chorus (int entrada)
 	line1_c[cont_c] = entrada;
 	line2_c[cont_c] = entrada;
 	line3_c[cont_c] = entrada;
-
-//	d = (int) Math.floor(delay);
-//	frac = delay - d;
-//	aux1 = frac * line1[nta(d+1)] + (1-frac) * line1[nta(d)];
-//	delay = LFO2.get();
-//	d = (int) Math.floor(delay);
-//	frac = delay - d;
-//	aux2 = frac * line2[nta(d+1)] + (1-frac) * line2[nta(d)];
-//	delay = LFO3.get();
-//	d = (int) Math.floor(delay);
-//	frac = delay - d;
-//	aux3 = frac * line3[nta(d+1)] + (1-frac) * line3[nta(d)];
 
 	demora_c = Chorus_LFO(modulacion_c);
 	d_c = (int) floor(demora_c);
@@ -150,13 +138,13 @@ float32_t Chorus_LFO(int modulacion_c)
 void Chorus_Rate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  rate_c = 10 * (db->value);  // TODO: verificar
-  chorus_parametros();
+	rate_c = 2 * (db->value);
+	chorus_parametros();
 }
 
 void Chorus_Depth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  depth_c = (manual_c - 1) * (db->value);  // TODO: verificar
-  chorus_parametros();
+	depth_c = (manual_c - 1) * (db->value);
+	chorus_parametros();
 }

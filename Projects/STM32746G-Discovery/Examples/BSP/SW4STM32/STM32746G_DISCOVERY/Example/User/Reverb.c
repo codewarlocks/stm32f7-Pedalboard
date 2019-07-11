@@ -26,7 +26,7 @@ extern int AP2_line[441];
 extern int AP3_line[341];
 
 //variables de usuario
-float32_t dry_r = 0.8, wet_r = 0.2, g_r = 0.5, f_r = 0.95;
+float32_t dry_r = 0.8, wet_r = 0.2, g_r = 0.5, f_r = 0.75;
 
 //variables de desarrollador
 float32_t d_r = 0.2;
@@ -106,13 +106,13 @@ int AP_filter(int in, int* line, int delay, int cont)
 void Reverb_Mix (GUIElement *e)
 {
     DialButtonState *db = (DialButtonState *) (e->userData);
-    wet_r = (db->value);
+    wet_r = 0.5 * (db->value);
     dry_r = 1 - wet_r;
 }
 
 void Reverb_Decay (GUIElement *e)
 {
     DialButtonState *db = (DialButtonState *) (e->userData);
-     f_r = (db->value);
+     f_r = 0.4 * (db->value) + 0.55;
 }
 

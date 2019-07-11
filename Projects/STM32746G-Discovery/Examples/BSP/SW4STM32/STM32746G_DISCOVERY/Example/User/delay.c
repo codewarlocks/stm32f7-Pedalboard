@@ -1,13 +1,13 @@
 #include "gui/prototipos.h"
 
 // parametros de desarrollador
-#define DELAY_SIZE 50000//60000
+#define DELAY_SIZE 50000
 
 int salida_d = 0;
 
 // parametros de usuario
-float32_t level_d = 0.3, feedback_d = 0.5;
-int time_d = 30000, state_d = 0;
+float32_t level_d = 0.5, feedback_d = 0;
+int time_d = 20000, state_d = 0;
 
 // variables auxiliares
 int line[DELAY_SIZE];
@@ -42,7 +42,7 @@ int delay (int entrada)
 		cont_d++;
 	}
 
-	return salida_d;
+	return 2*salida_d;
 }
 
 void Delay_Time (GUIElement *e)
@@ -60,7 +60,7 @@ void Delay_Feedback (GUIElement *e)
 void Delay_Level (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  level_d = (db->value);
+	level_d = (db->value);
 }
 
 void Push_State_Delay (GUIElement *e)

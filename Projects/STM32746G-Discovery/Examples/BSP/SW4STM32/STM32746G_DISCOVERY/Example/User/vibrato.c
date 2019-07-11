@@ -104,7 +104,7 @@ float32_t Vibrato_LFO(int modulacion_v)
 			break;
 
 		case SINUSOIDAL:
-			demora_v = mid_v + depth_v * arm_sin_f32((float32_t)(2*3.1416*tiempo_v/periodo_v)); // TODO: chequear el seno
+			demora_v = mid_v + depth_v * arm_sin_f32((float32_t)(2*3.1416*tiempo_v/periodo_v));
 			if(tiempo_v == periodo_v)
 				tiempo_v = 0;
 			break;
@@ -116,14 +116,14 @@ float32_t Vibrato_LFO(int modulacion_v)
 void Vibrato_Rate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  rate_v = 10 * (db->value);  // TODO: verificar
+  rate_v = 10 * (db->value);
 	vibrato_parametros();
 }
 
 void Vibrato_Depth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  depth_v = (mid_v - 1) * (db->value);  // TODO: verificar
+  depth_v = (mid_v - 1) * (db->value);
 	vibrato_parametros();
 }
 

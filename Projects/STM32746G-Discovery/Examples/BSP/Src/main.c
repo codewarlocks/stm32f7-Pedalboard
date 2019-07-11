@@ -105,26 +105,31 @@ int main(void)
   /* Initialize the LCD Layers */
   BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
 
-  Display_DemoDescription();
-
+ // Display_DemoDescription();
+  BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
+  BSP_LCD_Clear(LCD_COLOR_WHITE);
   /* Wait For User inputs */
   while (1)
   {
-    if (BSP_PB_GetState(BUTTON_KEY) != RESET)
-    {
-      HAL_Delay(10);
-      while (BSP_PB_GetState(BUTTON_KEY) != RESET);
+	HAL_Delay(10);
+	BSP_LCD_Clear(LCD_COLOR_WHITE);
+    BSP_examples[0].DemoFunc();
 
-      BSP_examples[DemoIndex++].DemoFunc();
+//    if (BSP_PB_GetState(BUTTON_KEY) != RESET)
+//    {
+//      HAL_Delay(10);
+//      while (BSP_PB_GetState(BUTTON_KEY) != RESET);
 
-      if (DemoIndex >= COUNT_OF_EXAMPLE(BSP_examples))
-      {
-        /* Increment number of loops which be used by EEPROM example */
-        NbLoop++;
-        DemoIndex = 0;
-      }
-      Display_DemoDescription();
-    }
+
+//      if (DemoIndex >= COUNT_OF_EXAMPLE(BSP_examples))
+//      {
+//        /* Increment number of loops which be used by EEPROM example */
+//        NbLoop++;
+//        DemoIndex = 0;
+//      }
+//      Display_DemoDescription();
+//    }
+
   }
 }
 

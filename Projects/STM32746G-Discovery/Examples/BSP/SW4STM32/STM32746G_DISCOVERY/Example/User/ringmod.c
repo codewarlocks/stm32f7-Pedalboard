@@ -26,7 +26,7 @@ int ringmod(int entrada)
 void Ringmod_Rate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  rate_rin = 100 + 1900 * (db->value);  // TODO: verificar
+  rate_rin = 100 + 1900 * (db->value);
 }
 
 void Push_State_Ringmod (GUIElement *e)

@@ -627,8 +627,8 @@ void initPedals() {
 	Pedales[0]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[0]->perilla = initPerilla(3);
 	Pedales[0]->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, PERILLA, &perilla5252, Delay_Feedback);
-	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.0f, 0.045f, PERILLA, &perilla5252,Delay_Time);
-	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.0f, 0.045f, PERILLA, &perilla4241,Delay_Level);
+	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.4f, 0.045f, PERILLA, &perilla5252,Delay_Time);
+	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.5f, 0.045f, PERILLA, &perilla4241,Delay_Level);
 	//Octavador
 	Pedales[1]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[1]->perilla = initPerilla(1);
@@ -636,24 +636,24 @@ void initPedals() {
 	//Chorus
 	Pedales[2]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[2]->perilla = initPerilla(2);
-	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 187, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Chorus_Rate);
-	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 250, 22, 0.0f, 0.045f, PERILLA, &perilla4241, Chorus_Depth);
+	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 187, 22, 0.6f, 0.045f, PERILLA, &perilla4241, Chorus_Rate);
+	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 250, 22, 0.367f, 0.045f, PERILLA, &perilla4241, Chorus_Depth);
 	//Phaser
 	Pedales[3]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[3]->perilla = initPerilla(1);
-	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 214, 27, 0.0f, 0.045f, PERILLA, &perilla5252, Phaser_Rate);
+	Pedales[3]->perilla->perillas[0] = guiDialButton(0, "", 214, 27, 0.667f, 0.045f, PERILLA, &perilla5252, Phaser_Rate);
 	//Autowah
 	Pedales[4]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[4]->perilla = initPerilla(4);
-	Pedales[4]->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.0f, 0.045f, PERILLA, &perilla4241, Autowah_Depth);
-	Pedales[4]->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.0f, 0.045f, PERILLA, &perilla4241,Autowah_Rate);
-	Pedales[4]->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.0f, 0.045f, PERILLA, &perilla4241,Autowah_Volume);
-	Pedales[4]->perilla->perillas[3] = guiDialButton(3, "", 319, 41, 0.0f, 0.045f, PERILLA, &whaonda,Autowah_Mod);
+	Pedales[4]->perilla->perillas[0] = guiDialButton(0, "", 119, 41, 0.43f, 0.045f, PERILLA, &perilla4241, Autowah_Depth);
+	Pedales[4]->perilla->perillas[1] = guiDialButton(1, "", 186, 41, 0.33f, 0.045f, PERILLA, &perilla4241,Autowah_Rate);
+	Pedales[4]->perilla->perillas[2] = guiDialButton(2, "", 251, 41, 0.6f, 0.045f, PERILLA, &perilla4241,Autowah_Volume);
+	Pedales[4]->perilla->perillas[3] = guiDialButton(3, "", 319, 41, 0.9f, 0.045f, PERILLA, &whaonda,Autowah_Mod);
 	//Reverb
 	Pedales[5]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[5]->perilla = initPerilla(2);
-	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 191, 47, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Decay);
-	Pedales[5]->perilla->perillas[1] = guiDialButton(1, "", 253, 47, 0.0f, 0.045f, PERILLA, &perilla4241, Reverb_Mix);
+	Pedales[5]->perilla->perillas[0] = guiDialButton(0, "", 191, 47, 0.5f, 0.045f, PERILLA, &perilla4241, Reverb_Decay);
+	Pedales[5]->perilla->perillas[1] = guiDialButton(1, "", 253, 47, 0.4f, 0.045f, PERILLA, &perilla4241, Reverb_Mix);
 	//
 
 	//Inicializo los Push (3pdt)

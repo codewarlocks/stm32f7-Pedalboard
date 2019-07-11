@@ -67,7 +67,7 @@
 /** @addtogroup STM32F7xx_HAL_Examples
   * @{
   */
-//gato
+
 /** @addtogroup BSP
   * @{
   */
@@ -179,30 +179,32 @@ void AudioLoopback_demo (void)
     cont++;
 	  /* Wait end of half block recording */
    while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
-    {
+   {
       if(cont==10)
       {
     	  BSP_TS_GetState(&rawTouchState);
     	  guiUpdateTouch(&rawTouchState, &touchState);
     	  if(pedal_individual==1)
     	  {
-    		  if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+    		  if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+    			  guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
     		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
     		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
     	  }
-    	  else if(pedal_individual==0){
+    	  else if(pedal_individual==0)
+    	  {
     		  PushRequestHandler_menu(Pedales, &touchState);
 			  linkRequestHandler_menu(Pedales, &touchState);
     	  }
     	  cont=0;
-     }
+      }
 
       if (CheckForUserInput() > 0)
       {
-        /* Stop Player before close Test */
-        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
-        /* Stop Player before close Test */
-        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+//        /* Stop Player before close Test */
+//        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+//        /* Stop Player before close Test */
+//        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
         return;
       }
     }
@@ -227,37 +229,37 @@ void AudioLoopback_demo (void)
     {
       if (CheckForUserInput() > 0)
       {
-        /* Stop Player before close Test */
-        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
-        /* Stop Player before close Test */
-        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+//        /* Stop Player before close Test */
+//        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+//        /* Stop Player before close Test */
+//        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
         return;
       }
     }
     audio_rec_buffer_state = BUFFER_OFFSET_NONE;
     for(i=128;i<256;i++)
-        {
-        	if(i%2==0)//Para solo usar el canal izquierdo
-        	{
-        		salida_izq=((int)Buffer_in[i]<<8)>>8;
-        		for(i_audio=0;i_audio<6;i_audio++)
-            	{
-            		if((Pedales[i_audio])->push->push_state==GUI_ON)
-            		{
-            			salida_izq=Pedales[i_audio]->efecto(salida_izq);
-            		}
-            	}
-        		Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
-        	}
-        }
-    if (CheckForUserInput() > 0)
-    {
-      /* Stop recorder */
-      BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
-      /* Stop Player before close Test */
-      BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
-      return;
-    }
+	{
+		if(i%2==0)//Para solo usar el canal izquierdo
+		{
+			salida_izq=((int)Buffer_in[i]<<8)>>8;
+			for(i_audio=0;i_audio<6;i_audio++)
+			{
+				if((Pedales[i_audio])->push->push_state==GUI_ON)
+				{
+					salida_izq=Pedales[i_audio]->efecto(salida_izq);
+				}
+			}
+			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
+		}
+	}
+//    if (CheckForUserInput() > 0)
+//    {
+//      /* Stop recorder */
+//      BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+//      /* Stop Player before close Test */
+//      BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+//      return;
+//    }
   }
 }
 

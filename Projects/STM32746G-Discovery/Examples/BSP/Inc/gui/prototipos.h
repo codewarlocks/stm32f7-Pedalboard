@@ -36,10 +36,11 @@ void Push_State_Autowah (GUIElement*);
 int Get_State_Autowah (void);
 
 // Distorsion.c
+void init_distorsion();
 int distorsion(int);
+int dist_shelve(int, int);
 void Distorsion_Gain (GUIElement*);
-void Push_State_Distorsion (GUIElement*);
-int Get_State_Distorsion (void);
+void Distorsion_Blend (GUIElement*);
 
 // Vibrato.c
 void vibrato_parametros();

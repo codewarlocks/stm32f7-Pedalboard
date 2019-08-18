@@ -627,7 +627,7 @@ void initPedals() {
 	Pedales[0]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[0]->perilla = initPerilla(3);
 	Pedales[0]->perilla->perillas[0] = guiDialButton(0, "", 174, 36, 0.0f, 0.045f, PERILLA, &perilla5252, Delay_Feedback);
-	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.4f, 0.045f, PERILLA, &perilla5252,Delay_Time);
+	Pedales[0]->perilla->perillas[1] = guiDialButton(1, "", 253, 36, 0.400f, 0.045f, PERILLA, &perilla5252,Delay_Time);
 	Pedales[0]->perilla->perillas[2] = guiDialButton(2, "", 220, 82, 0.5f, 0.045f, PERILLA, &perilla4241,Delay_Level);
 	//Octavador
 	Pedales[1]=(PedalElement*)calloc(1, sizeof(PedalElement));
@@ -636,8 +636,8 @@ void initPedals() {
 	//Chorus
 	Pedales[2]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[2]->perilla = initPerilla(2);
-	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 187, 22, 0.6f, 0.045f, PERILLA, &perilla4241, Chorus_Rate);
-	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 250, 22, 0.367f, 0.045f, PERILLA, &perilla4241, Chorus_Depth);
+	Pedales[2]->perilla->perillas[0] = guiDialButton(0, "", 187, 22, 0.6f, 0.045f, PERILLA, &perilla4241, Distorsion_Gain);
+	Pedales[2]->perilla->perillas[1] = guiDialButton(1, "", 250, 22, 0.367f, 0.045f, PERILLA, &perilla4241, Distorsion_Blend);
 	//Phaser
 	Pedales[3]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[3]->perilla = initPerilla(1);
@@ -748,7 +748,7 @@ void initPedals() {
 	//Inicializo los pedales con sus funciones
 	Pedales[0]->efecto=delay;
 	Pedales[1]->efecto=octavador;
-	Pedales[2]->efecto=chorus;
+	Pedales[2]->efecto=distorsion;
 	Pedales[3]->efecto=phaser;
 	Pedales[4]->efecto=autowah;
 	Pedales[5]->efecto=reverb;

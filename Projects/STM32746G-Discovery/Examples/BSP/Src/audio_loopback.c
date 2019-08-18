@@ -159,6 +159,7 @@ void AudioLoopback_demo (void)
 //  tremolo_parametros();
   chorus_parametros();
 //  flanger_parametros();
+  init_distorsion();
   init_autowah();
 //  init_eq();
   phaser_parametros();
@@ -213,7 +214,7 @@ void AudioLoopback_demo (void)
     {
     	if(i%2==0)//Para solo usar el canal izquierdo
     	{
-        	salida_izq=((int)Buffer_in[i]<<8)>>8;
+        	salida_izq=2*((int)Buffer_in[i]<<8)>>8;
         	for(i_audio=0;i_audio<6;i_audio++)
         	{
         		if((Pedales[i_audio])->push->push_state==GUI_ON)
@@ -241,7 +242,7 @@ void AudioLoopback_demo (void)
 	{
 		if(i%2==0)//Para solo usar el canal izquierdo
 		{
-			salida_izq=((int)Buffer_in[i]<<8)>>8;
+			salida_izq=2*((int)Buffer_in[i]<<8)>>8;
 			for(i_audio=0;i_audio<6;i_audio++)
 			{
 				if((Pedales[i_audio])->push->push_state==GUI_ON)

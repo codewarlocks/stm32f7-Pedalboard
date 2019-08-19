@@ -100,67 +100,63 @@ void renderPushButton(GUIElement *bt) {
 // dial button functions
 
 void handleDialButton(GUIElement *bt, GUITouchState *touch) {
-	//BSP_AUDIO_OUT_Pause();
 	int16_t delta=0;
 	float newVal=0;
-	if (touch->touchDetected) {
+	if (touch->touchDetected)
+	{
 		// touch detected...
 		uint16_t x = touch->touchX[0];
 		uint16_t y = touch->touchY[0];
 		DialButtonState *db = (DialButtonState *) bt->userData;
-		if (bt->state == GUI_HOVER) {
-			//int16_t dx = (x - db->startX);
-			//int16_t dy = (y - db->startY);
-			//int16_t delta = abs(dx) > abs(dy) ? dx : dy;
-			if(db->orientacion==PERILLA){
+		if (bt->state == GUI_HOVER)
+		{
+			if(db->orientacion==PERILLA)
+			{
 				delta = (x - db->startX);
 				newVal = db->startValue + db->sensitivity * delta;
 				db->value = CLAMP(newVal, 0.0f, 1.0f);
 			}
-			else if(db->orientacion==SLIDER){
+			else if(db->orientacion==SLIDER)
+			{
 				delta = (y - db->startY);
 				newVal = db->startValue + (db->sensitivity/2) * delta;
 				db->value = CLAMP(newVal, 0.0f, 1.0f);
-//				if(Pedales[10]->push->push_state)
-//				{
-//					db->value = CLAMP(newVal, 0.0f, 0.5f);
-//				}
-//				else
-//				{
-//					db->value = CLAMP(newVal, 0.5f, 1.0f);
-//				}
 			}
 			bt->state = GUI_DIRTY | GUI_HOVER;
-			if (bt->callback != NULL) {
+			if (bt->callback != NULL)
+			{
 				bt->callback(bt);
 			}
-		} else if (x >= bt->x && x < bt->x + bt->width && y >= bt->y
-				&& y < bt->y + bt->height) {
+		}
+		else if (x >= bt->x && x < bt->x + bt->width && y >= bt->y && y < bt->y + bt->height)
+		{
 			bt->state = GUI_HOVER;
 			db->startX = x;
 			db->startY = y;
 			db->startValue = db->value;
 		}
-	} else if (bt->state == GUI_HOVER) {
+	}
+	else if (bt->state == GUI_HOVER)
+	{
 		bt->state = GUI_OFF | GUI_DIRTY;
 	}
-	//BSP_AUDIO_OUT_Resume();
 }
 
 void renderDialButton(GUIElement *bt) {
 	uint8_t id=0;
-	if (bt->state & GUI_DIRTY) {
+	if (bt->state & GUI_DIRTY)
+	{
 		SpriteSheet *sprite = bt->sprite;
 		DialButtonState *db = (DialButtonState *) bt->userData;
-		if (db->orientacion==SLIDER)
+		if (db->orientacion == SLIDER)
 		{
-			if (Pedales[10]->push->push_state==GUI_ON)
+			if (Pedales[10]->push->push_state == GUI_ON || Pedales[10]->push->push_state == (GUI_OFF | GUI_HOVER))
 			{
 				id = (uint8_t) (db->value * (float) (11));
 			}
-			else if(Pedales[10]->push->push_state==GUI_OFF)
+			else if (Pedales[10]->push->push_state == GUI_OFF || Pedales[10]->push->push_state == (GUI_ON | GUI_HOVER))
 			{
-				id = (uint8_t) 13+(db->value * (float) (11));
+				id = (uint8_t) 13 + (db->value * (float) (11));
 			}
 		}
 		else
@@ -173,10 +169,9 @@ void renderDialButton(GUIElement *bt) {
 	}
 }
 
-// common functionality
-
 static void drawElementLabel(GUIElement *e) {
-	if (e->label != NULL) {
+	if (e->label != NULL)
+	{
 		SpriteSheet *sprite = e->sprite;
 		BSP_LCD_DisplayStringAt(e->x, e->y + sprite->spriteHeight + 4,
 				(uint8_t*) e->label, LEFT_MODE);//
@@ -392,7 +387,12 @@ void PedalForceRedraw(PedalElement *gui) {
 	for (uint8_t i = 0; i < gui->perilla->numItems; i++) {
 		gui->perilla->perillas[i]->state |= GUI_DIRTY;
 	}
-	if(gui->push->push_state==GUI_ON)gui->push->push_state=GUI_DIRTY|GUI_HOVER|GUI_OFF;
+	if(gui->push->push_state == GUI_ON)
+	{
+		gui->push->push_state |= GUI_HOVER;
+		gui->push->push_state ^= GUI_ONOFF_MASK;
+	}
+
 }
 
 void MenuForceRedraw(void)
@@ -401,27 +401,41 @@ void MenuForceRedraw(void)
 	{
 		for(int aux_i=0; aux_i<6; aux_i++)
 		{
-			if(Pedales[aux_i]->push->push_state==GUI_ON)Pedales[aux_i]->push->push_state=GUI_DIRTY|GUI_HOVER|GUI_OFF;
+			if(Pedales[aux_i]->push->push_state == GUI_ON)
+			{
+				Pedales[aux_i]->push->push_state |= GUI_HOVER;
+				Pedales[aux_i]->push->push_state ^= GUI_ONOFF_MASK;
+			}
+
 		}
 	}
 	else
 	{
 		for(int aux_i=6; aux_i<12; aux_i++)
 		{
-			if(Pedales[aux_i]->push->push_state==GUI_ON)Pedales[aux_i]->push->push_state=GUI_DIRTY|GUI_HOVER|GUI_OFF;
+			if(Pedales[aux_i]->push->push_state == GUI_ON)
+			{
+				Pedales[aux_i]->push->push_state |= GUI_HOVER;
+				Pedales[aux_i]->push->push_state ^= GUI_ONOFF_MASK;
+			}
+
 		}
 	}
 }
-//
+
 
 //Handles
 void handlePushMenuButton(PedalElement *bt, GUITouchState *touch) {
-	if (touch->touchDetected) {
+	if (touch->touchDetected)
+	{
 		// touch detected...
 		uint16_t x = touch->touchX[0];
 		uint16_t y = touch->touchY[0];
-		if (x >= bt->push->push_menu->x && x < bt->push->push_menu->x + bt->push->push_menu->width && y >= bt->push->push_menu->y && y < bt->push->push_menu->y + bt->push->push_menu->height) {
-			switch (bt->push->push_state) {
+		if (x >= bt->push->push_menu->x && x < bt->push->push_menu->x + bt->push->push_menu->width &&
+			y >= bt->push->push_menu->y && y < bt->push->push_menu->y + bt->push->push_menu->height)
+		{
+			switch (bt->push->push_state)
+			{
 			case GUI_OFF:
 				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
 				break;
@@ -432,14 +446,17 @@ void handlePushMenuButton(PedalElement *bt, GUITouchState *touch) {
 				break;
 			}
 		}
-	} else if (bt->push->push_state & GUI_HOVER) {
+	}
+	else if (bt->push->push_state & GUI_HOVER)
+	{
 		// clear hover flag
 		bt->push->push_state &= ~((uint16_t) GUI_HOVER);
 		// mark dirty (force redraw)
 		bt->push->push_state |= GUI_DIRTY;
 		// invert on/off bitmask
 		bt->push->push_state ^= GUI_ONOFF_MASK;
-		if (bt->push->push_menu->callback != NULL) {
+		if (bt->push->push_menu->callback != NULL)
+		{
 			bt->push->push_menu->callback(bt);
 		}
 	}
@@ -453,10 +470,10 @@ void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch) {
 		if (x >= bt->push->push_indiv->x && x < bt->push->push_indiv->x + bt->push->push_indiv->width && y >= bt->push->push_indiv->y && y < bt->push->push_indiv->y + bt->push->push_indiv->height) {
 			switch (bt->push->push_state) {
 			case GUI_OFF:
-				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				bt->push->push_state |= GUI_HOVER;
 				break;
 			case GUI_ON:
-				bt->push->push_state |= GUI_HOVER | GUI_DIRTY;
+				bt->push->push_state |= GUI_HOVER;
 				break;
 			default:
 				break;
@@ -496,7 +513,8 @@ void handleDerechaButtonPedal(PedalElement *bt, GUITouchState *touch)
 		// touch detected...
 			uint16_t x = touch->touchX[0];
 			uint16_t y = touch->touchY[0];
-			if (x >= bt->botones->flecha_derecha->x && x < bt->botones->flecha_derecha->x + bt->botones->flecha_derecha->width && y >= bt->botones->flecha_derecha->y && y < bt->botones->flecha_derecha->y + bt->botones->flecha_derecha->height)
+			if (x >= bt->botones->flecha_derecha->x && x < bt->botones->flecha_derecha->x + bt->botones->flecha_derecha->width &&
+				y >= bt->botones->flecha_derecha->y && y < bt->botones->flecha_derecha->y + bt->botones->flecha_derecha->height)
 			{
 				bt->botones->flecha_derecha->callback(bt);
 			}
@@ -510,7 +528,8 @@ void handleIzquierdaButtonPedal(PedalElement *bt, GUITouchState *touch)
 		// touch detected...
 			uint16_t x = touch->touchX[0];
 			uint16_t y = touch->touchY[0];
-			if (x >= bt->botones->flecha_izquierda->x && x < bt->botones->flecha_izquierda->x + bt->botones->flecha_izquierda->width && y >= bt->botones->flecha_izquierda->y && y < bt->botones->flecha_izquierda->y + bt->botones->flecha_izquierda->height)
+			if (x >= bt->botones->flecha_izquierda->x && x < bt->botones->flecha_izquierda->x + bt->botones->flecha_izquierda->width &&
+				y >= bt->botones->flecha_izquierda->y && y < bt->botones->flecha_izquierda->y + bt->botones->flecha_izquierda->height)
 			{
 				bt->botones->flecha_izquierda->callback(bt);
 			}
@@ -524,7 +543,8 @@ void handleHomeButtonPedal(PedalElement *bt, GUITouchState *touch)
 		// touch detected...
 			uint16_t x = touch->touchX[0];
 			uint16_t y = touch->touchY[0];
-			if (x >= bt->botones->home->x && x < bt->botones->home->x + bt->botones->home->width && y >= bt->botones->home->y && y < bt->botones->home->y + bt->botones->home->height)
+			if (x >= bt->botones->home->x && x < bt->botones->home->x + bt->botones->home->width &&
+				y >= bt->botones->home->y && y < bt->botones->home->y + bt->botones->home->height)
 			{
 				bt->botones->home->callback(bt);
 			}
@@ -634,188 +654,174 @@ void LinkCallback(PedalElement *e)
 void PushCallback(PedalElement *e)
 {
 
-	if (e->push->push_state & (GUI_DIRTY|GUI_HOVER))
+	if (e->push->push_state & GUI_DIRTY)
 	{
-			uint8_t states = e->push->push_state & GUI_ONOFF_MASK;
-			if (pedal_individual==0)
+		uint8_t states = e->push->push_state & GUI_ONOFF_MASK;
+		if (pedal_individual==0)
+		{
+			if(states == GUI_ON)
 			{
-				if(states == GUI_ON)
+				switch(e->push->push_menu->nombre)
 				{
-					switch(e->push->push_menu->nombre)
-					{
-						case DELAY:
-							drawBitmapRaw(85,96,5,5, (uint8_t*)ledprendidodelaymenu, CM_ARGB8888, 1);
-							break;
-						case OCTAVADOR:
-							drawBitmapRaw(237,78,6,6, (uint8_t*)ledprendidooctavadormenu, CM_ARGB8888, 1);
-							break;
-						case CHORUS:
-							drawBitmapRaw(375,18,3,3, (uint8_t*)ledprendidochorusmenu, CM_ARGB8888, 1);
-							break;
-						case PHASER:
-							drawBitmapRaw(103,210,5,6, (uint8_t*)ledprendidophasermenu, CM_ARGB8888, 1);
-							break;
-						case WHA:
-							drawBitmapRaw(236,209,8,7, (uint8_t*)ledprendidowahmenu, CM_ARGB8888, 1);
-							break;
-						case REVERB:
-							drawBitmapRaw(375,211,5,5, (uint8_t*)ledprendidoreverbmenu, CM_ARGB8888, 1);
-							break;
-						case DISTORSION:
-							drawBitmapRaw(80,95,5,5, (uint8_t*)ledprendidodistorsionmenu, CM_ARGB8888, 1);
-							break;
-						case FLANGER:
-							drawBitmapRaw(237,65,6,6, (uint8_t*)ledprendidoflangermenu, CM_ARGB8888, 1);
-							break;
-						case TREMOLO:
-							drawBitmapRaw(390,22,8,8, (uint8_t*)ledprendidotremolomenu, CM_ARGB8888, 1);
-							break;
-						case VIBRATO:
-							drawBitmapRaw(80,232,5,5, (uint8_t*)ledprendidovibratomenu, CM_ARGB8888, 1);
-							break;
-//						case EQ:
-//							drawBitmapRaw(236,209,8,7, (uint8_t*)ledprendidowahmenu, CM_ARGB8888, 1);
-//							break;
-						case RINGMOD:
-							drawBitmapRaw(373,241,6,6, (uint8_t*)ledprendidoringmodmenu, CM_ARGB8888, 1);
-							break;
-}
-				}
-				else
-				{
-					switch(e->push->push_menu->nombre)
-					{
- 	 	 	 			case DELAY:
- 	 	 	 				drawBitmapRaw(85,96,5,5, (uint8_t*)ledapagadodelaymenu, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case OCTAVADOR:
- 	 	 	 				drawBitmapRaw(237,78,6,6, (uint8_t*)ledapagadooctavadormenu, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case CHORUS:
- 	 	 	 				drawBitmapRaw(375,18,3,3, (uint8_t*)ledapagadochorusmenu, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case PHASER:
- 	 	 	 				drawBitmapRaw(103,210,5,6, (uint8_t*)ledapagadophasermenu, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case WHA:
- 	 	 	 				drawBitmapRaw(236,209,8,7, (uint8_t*)ledapagadowahmenu, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case REVERB:
- 	 	 	 				drawBitmapRaw(375,211,5,5, (uint8_t*)ledapagadoreverbmenu, CM_ARGB8888, 1);
- 	 	 	 				break;
-						case DISTORSION:
-							drawBitmapRaw(80,95,5,5, (uint8_t*)ledapagadodistorsionmenu, CM_ARGB8888, 1);
-							break;
-						case FLANGER:
-							drawBitmapRaw(237,65,6,6, (uint8_t*)ledapagadoflangermenu, CM_ARGB8888, 1);
-							break;
-						case TREMOLO:
-							drawBitmapRaw(390,22,8,8, (uint8_t*)ledapagadotremolomenu, CM_ARGB8888, 1);
-							break;
-						case VIBRATO:
-							drawBitmapRaw(80,232,5,5, (uint8_t*)ledapagadovibratomenu, CM_ARGB8888, 1);
-							break;
-//						case EQ:
-//							drawBitmapRaw(236,209,8,7, (uint8_t*)ledapagadowahmenu, CM_ARGB8888, 1);
-//							break;
-						case RINGMOD:
-							drawBitmapRaw(373,241,6,6, (uint8_t*)ledapagadoringmodmenu, CM_ARGB8888, 1);
-							break;
+				case DELAY:
+					drawBitmapRaw(85,96,5,5, (uint8_t*)ledprendidodelaymenu, CM_ARGB8888, 1);
+					break;
+				case OCTAVADOR:
+					drawBitmapRaw(237,78,6,6, (uint8_t*)ledprendidooctavadormenu, CM_ARGB8888, 1);
+					break;
+				case CHORUS:
+					drawBitmapRaw(375,18,3,3, (uint8_t*)ledprendidochorusmenu, CM_ARGB8888, 1);
+					break;
+				case PHASER:
+					drawBitmapRaw(103,210,5,6, (uint8_t*)ledprendidophasermenu, CM_ARGB8888, 1);
+					break;
+				case WHA:
+					drawBitmapRaw(236,209,8,7, (uint8_t*)ledprendidowahmenu, CM_ARGB8888, 1);
+					break;
+				case REVERB:
+					drawBitmapRaw(375,211,5,5, (uint8_t*)ledprendidoreverbmenu, CM_ARGB8888, 1);
+					break;
+				case DISTORSION:
+					drawBitmapRaw(80,95,5,5, (uint8_t*)ledprendidodistorsionmenu, CM_ARGB8888, 1);
+					break;
+				case FLANGER:
+					drawBitmapRaw(237,65,6,6, (uint8_t*)ledprendidoflangermenu, CM_ARGB8888, 1);
+					break;
+				case TREMOLO:
+					drawBitmapRaw(390,22,8,8, (uint8_t*)ledprendidotremolomenu, CM_ARGB8888, 1);
+					break;
+				case VIBRATO:
+					drawBitmapRaw(80,232,5,5, (uint8_t*)ledprendidovibratomenu, CM_ARGB8888, 1);
+					break;
 
-					}
+				case RINGMOD:
+					drawBitmapRaw(373,241,6,6, (uint8_t*)ledprendidoringmodmenu, CM_ARGB8888, 1);
+					break;
 				}
-				// clear dirty flag
-			e->push->push_state &= ~((uint16_t) GUI_DIRTY);
 			}
 			else
 			{
-				if(states == GUI_ON)
+				switch(e->push->push_menu->nombre)
 				{
-					switch(e->push->push_indiv->nombre)
-					{
-						case DELAY:
+				case DELAY:
+					drawBitmapRaw(85,96,5,5, (uint8_t*)ledapagadodelaymenu, CM_ARGB8888, 1);
+					break;
+				case OCTAVADOR:
+					drawBitmapRaw(237,78,6,6, (uint8_t*)ledapagadooctavadormenu, CM_ARGB8888, 1);
+					break;
+				case CHORUS:
+					drawBitmapRaw(375,18,3,3, (uint8_t*)ledapagadochorusmenu, CM_ARGB8888, 1);
+					break;
+				case PHASER:
+					drawBitmapRaw(103,210,5,6, (uint8_t*)ledapagadophasermenu, CM_ARGB8888, 1);
+					break;
+				case WHA:
+					drawBitmapRaw(236,209,8,7, (uint8_t*)ledapagadowahmenu, CM_ARGB8888, 1);
+					break;
+				case REVERB:
+					drawBitmapRaw(375,211,5,5, (uint8_t*)ledapagadoreverbmenu, CM_ARGB8888, 1);
+					break;
+				case DISTORSION:
+					drawBitmapRaw(80,95,5,5, (uint8_t*)ledapagadodistorsionmenu, CM_ARGB8888, 1);
+					break;
+				case FLANGER:
+					drawBitmapRaw(237,65,6,6, (uint8_t*)ledapagadoflangermenu, CM_ARGB8888, 1);
+					break;
+				case TREMOLO:
+					drawBitmapRaw(390,22,8,8, (uint8_t*)ledapagadotremolomenu, CM_ARGB8888, 1);
+					break;
+				case VIBRATO:
+					drawBitmapRaw(80,232,5,5, (uint8_t*)ledapagadovibratomenu, CM_ARGB8888, 1);
+					break;
+				case RINGMOD:
+					drawBitmapRaw(373,241,6,6, (uint8_t*)ledapagadoringmodmenu, CM_ARGB8888, 1);
+					break;
 
-							drawBitmapRaw(196,200,10,9, (uint8_t*)ledprendidodelaypedal, CM_ARGB8888, 1);
-							break;
-						case OCTAVADOR:
-							drawBitmapRaw(233,159,15,16, (uint8_t*)ledprendidooctavadorpedal, CM_ARGB8888, 1);
-							break;
-						case CHORUS:
-							drawBitmapRaw(236,23,7,6, (uint8_t*)ledprendidochoruspedal, CM_ARGB8888, 1);
-							break;
-						case PHASER:
-							drawBitmapRaw(235,150,12,12, (uint8_t*)ledprendidophaserpedal, CM_ARGB8888, 1);
-							break;
-						case WHA:
-							drawBitmapRaw(230,148,19,18, (uint8_t*)ledprendidowahpedal, CM_ARGB8888, 1);
-							break;
-						case REVERB:
-							drawBitmapRaw(236,151,13,13, (uint8_t*)ledprendidoreverbpedal, CM_ARGB8888, 1);
-							break;
-						case DISTORSION:
-							drawBitmapRaw(198,198,9,9, (uint8_t*)ledprendidodistorsionpedal, CM_ARGB8888, 1);
-							break;
-						case FLANGER:
-							drawBitmapRaw(234,130,13,13, (uint8_t*)ledprendidoflangerpedal, CM_ARGB8888, 1);
-							break;
-						case TREMOLO:
-							drawBitmapRaw(228,29,23,24, (uint8_t*)ledprendidotremolopedal, CM_ARGB8888, 1);
-							break;
-						case VIBRATO:
-							drawBitmapRaw(196,200,11,10, (uint8_t*)ledprendidovibratopedal, CM_ARGB8888, 1);
-							break;
-	//						case EQ:
-	//							drawBitmapRaw(236,209,8,7, (uint8_t*)ledprendidowahpedal, CM_ARGB8888, 1);
-	//							break;
-						case RINGMOD:
-							drawBitmapRaw(195,222,10,10, (uint8_t*)ledprendidoringmodpedal, CM_ARGB8888, 1);
-					}
 				}
-				else
-				{
-					switch(e->push->push_indiv->nombre)
-					{
- 	 	 	 			case DELAY:
- 	 	 	 				drawBitmapRaw(196,200,10,9, (uint8_t*)ledapagadodelaypedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case OCTAVADOR:
- 	 	 	 				drawBitmapRaw(233,159,15,16, (uint8_t*)ledapagadooctavadorpedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case CHORUS:
- 	 	 	 				drawBitmapRaw(236,23,7,6, (uint8_t*)ledapagadochoruspedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case PHASER:
- 	 	 	 				drawBitmapRaw(235,150,12,12, (uint8_t*)ledapagadophaserpedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case WHA:
- 	 	 	 				drawBitmapRaw(230,148,19,18, (uint8_t*)ledapagadowahpedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case REVERB:
- 	 	 	 				drawBitmapRaw(236,151,13,13, (uint8_t*)ledapagadoreverbpedal, CM_ARGB8888, 1);
- 	 	 	 				break;
- 	 	 	 			case DISTORSION:
-							drawBitmapRaw(198,198,9,9, (uint8_t*)ledapagadodistorsionpedal, CM_ARGB8888, 1);
-							break;
-						case FLANGER:
-							drawBitmapRaw(234,130,13,13, (uint8_t*)ledapagadoflangerpedal, CM_ARGB8888, 1);
-							break;
-						case TREMOLO:
-							drawBitmapRaw(228,29,23,24, (uint8_t*)ledapagadotremolopedal, CM_ARGB8888, 1);
-							break;
-						case VIBRATO:
-							drawBitmapRaw(196,200,11,10, (uint8_t*)ledapagadovibratopedal, CM_ARGB8888, 1);
-							break;
-	//						case EQ:
-	//							drawBitmapRaw(236,209,8,7, (uint8_t*)ledapagadowahpedal, CM_ARGB8888, 1);
-	//							break;
-						case RINGMOD:
-							drawBitmapRaw(195,222,10,10, (uint8_t*)ledapagadoringmodpedal, CM_ARGB8888, 1);
-							break;
-					}
-				}
-				// clear dirty flag
-			e->push->push_state &= ~((uint16_t) GUI_DIRTY);
 			}
+		}
+		else
+		{
+			if(states == GUI_ON)
+			{
+				switch(e->push->push_indiv->nombre)
+				{
+				case DELAY:
+
+					drawBitmapRaw(196,200,10,9, (uint8_t*)ledprendidodelaypedal, CM_ARGB8888, 1);
+					break;
+				case OCTAVADOR:
+					drawBitmapRaw(233,159,15,16, (uint8_t*)ledprendidooctavadorpedal, CM_ARGB8888, 1);
+					break;
+				case CHORUS:
+					drawBitmapRaw(236,23,7,6, (uint8_t*)ledprendidochoruspedal, CM_ARGB8888, 1);
+					break;
+				case PHASER:
+					drawBitmapRaw(235,150,12,12, (uint8_t*)ledprendidophaserpedal, CM_ARGB8888, 1);
+					break;
+				case WHA:
+					drawBitmapRaw(230,148,19,18, (uint8_t*)ledprendidowahpedal, CM_ARGB8888, 1);
+					break;
+				case REVERB:
+					drawBitmapRaw(236,151,13,13, (uint8_t*)ledprendidoreverbpedal, CM_ARGB8888, 1);
+					break;
+				case DISTORSION:
+					drawBitmapRaw(198,198,9,9, (uint8_t*)ledprendidodistorsionpedal, CM_ARGB8888, 1);
+					break;
+				case FLANGER:
+					drawBitmapRaw(234,130,13,13, (uint8_t*)ledprendidoflangerpedal, CM_ARGB8888, 1);
+					break;
+				case TREMOLO:
+					drawBitmapRaw(228,29,23,24, (uint8_t*)ledprendidotremolopedal, CM_ARGB8888, 1);
+					break;
+				case VIBRATO:
+					drawBitmapRaw(196,200,11,10, (uint8_t*)ledprendidovibratopedal, CM_ARGB8888, 1);
+					break;
+				case RINGMOD:
+					drawBitmapRaw(195,222,10,10, (uint8_t*)ledprendidoringmodpedal, CM_ARGB8888, 1);
+				}
+			}
+			else
+			{
+				switch(e->push->push_indiv->nombre)
+				{
+				case DELAY:
+					drawBitmapRaw(196,200,10,9, (uint8_t*)ledapagadodelaypedal, CM_ARGB8888, 1);
+					break;
+				case OCTAVADOR:
+					drawBitmapRaw(233,159,15,16, (uint8_t*)ledapagadooctavadorpedal, CM_ARGB8888, 1);
+					break;
+				case CHORUS:
+					drawBitmapRaw(236,23,7,6, (uint8_t*)ledapagadochoruspedal, CM_ARGB8888, 1);
+					break;
+				case PHASER:
+					drawBitmapRaw(235,150,12,12, (uint8_t*)ledapagadophaserpedal, CM_ARGB8888, 1);
+					break;
+				case WHA:
+					drawBitmapRaw(230,148,19,18, (uint8_t*)ledapagadowahpedal, CM_ARGB8888, 1);
+					break;
+				case REVERB:
+					drawBitmapRaw(236,151,13,13, (uint8_t*)ledapagadoreverbpedal, CM_ARGB8888, 1);
+					break;
+				case DISTORSION:
+					drawBitmapRaw(198,198,9,9, (uint8_t*)ledapagadodistorsionpedal, CM_ARGB8888, 1);
+					break;
+				case FLANGER:
+					drawBitmapRaw(234,130,13,13, (uint8_t*)ledapagadoflangerpedal, CM_ARGB8888, 1);
+					break;
+				case TREMOLO:
+					drawBitmapRaw(228,29,23,24, (uint8_t*)ledapagadotremolopedal, CM_ARGB8888, 1);
+					break;
+				case VIBRATO:
+					drawBitmapRaw(196,200,11,10, (uint8_t*)ledapagadovibratopedal, CM_ARGB8888, 1);
+					break;
+				case RINGMOD:
+					drawBitmapRaw(195,222,10,10, (uint8_t*)ledapagadoringmodpedal, CM_ARGB8888, 1);
+					break;
+				}
+			}
+		}
+		e->push->push_state &= ~((uint16_t) GUI_DIRTY);
 	}
 }
 
@@ -939,7 +945,7 @@ void initPedals() {
 	Pedales[6]->perilla = initPerilla(2);
 	Pedales[6]->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, PERILLA, &perilla5252, Distorsion_Blend);
 	Pedales[6]->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, PERILLA, &perilla5252, Distorsion_Gain);
-	//Falnger
+	//Flanger
 	Pedales[7]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[7]->perilla = initPerilla(4);
 	Pedales[7]->perilla->perillas[0] =guiDialButton(0, "", 116, 55, 0.0f, 0.045f, PERILLA, &perilla5252, NULL);
@@ -961,12 +967,12 @@ void initPedals() {
 	//EQ
 	Pedales[10]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[10]->perilla = initPerilla(6);
-	Pedales[10]->perilla->perillas[0] = guiDialButton(0, "", 111, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_0);
-	Pedales[10]->perilla->perillas[1] = guiDialButton(1, "", 156, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_1);
-	Pedales[10]->perilla->perillas[2] = guiDialButton(2, "", 201, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_2);
-	Pedales[10]->perilla->perillas[3] = guiDialButton(3, "", 246, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_3);
-	Pedales[10]->perilla->perillas[4] = guiDialButton(4, "", 291, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_4);
-	Pedales[10]->perilla->perillas[5] = guiDialButton(5, "", 336, 97, 0.43f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_5);
+	Pedales[10]->perilla->perillas[0] = guiDialButton(0, "", 111, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_0);
+	Pedales[10]->perilla->perillas[1] = guiDialButton(1, "", 156, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_1);
+	Pedales[10]->perilla->perillas[2] = guiDialButton(2, "", 201, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_2);
+	Pedales[10]->perilla->perillas[3] = guiDialButton(3, "", 246, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_3);
+	Pedales[10]->perilla->perillas[4] = guiDialButton(4, "", 291, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_4);
+	Pedales[10]->perilla->perillas[5] = guiDialButton(5, "", 336, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, EQ_Gain_5);
 	//Ringmod
 	Pedales[11]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[11]->perilla = initPerilla(1);

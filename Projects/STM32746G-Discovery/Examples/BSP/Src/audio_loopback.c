@@ -165,13 +165,13 @@ void AudioLoopback_demo (void)
   BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
   //BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
   //BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
-//  vibrato_parametros();
-//  tremolo_parametros();
+  vibrato_parametros();
+  tremolo_parametros();
   chorus_parametros();
-//  flanger_parametros();
+  flanger_parametros();
   init_distorsion();
   init_autowah();
-//  init_eq();
+  init_eq();
   phaser_parametros();
   Demo_fondito();
   initPedals();
@@ -201,6 +201,7 @@ void AudioLoopback_demo (void)
     			  guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
     		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
     		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+
     	  }
     	  else if(pedal_individual==0)
     	  {
@@ -227,7 +228,7 @@ void AudioLoopback_demo (void)
     	if(i%2==0)//Para solo usar el canal izquierdo
     	{
         	salida_izq=2*((int)Buffer_in[i]<<8)>>8;
-        	for(i_audio=0;i_audio<6;i_audio++)
+        	for(i_audio=0;i_audio<12;i_audio++)
         	{
         		if((Pedales[i_audio])->push->push_state==GUI_ON)
         		{
@@ -255,7 +256,7 @@ void AudioLoopback_demo (void)
 		if(i%2==0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=2*((int)Buffer_in[i]<<8)>>8;
-			for(i_audio=0;i_audio<6;i_audio++)
+			for(i_audio=0;i_audio<12;i_audio++)
 			{
 				if((Pedales[i_audio])->push->push_state==GUI_ON)
 				{

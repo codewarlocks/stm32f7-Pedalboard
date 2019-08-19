@@ -54,10 +54,19 @@
 #define PHASER 3
 #define WHA 4
 #define REVERB 5
+#define DISTORSION 6
+#define FLANGER 7
+#define TREMOLO 8
+#define VIBRATO 9
+#define EQ 10
+#define RINGMOD 11
 #define IZQUIERDA 0
-#define MENU 14
+#define MENU_1 14
+#define MENU_2 15
 #define DERECHA 1
 #define HOME 2
+#define IZQUIERDA_MENU 16
+#define DERECHA_MENU 17
 
 //Para dibujar perillas
 //EJEMPLO WSLDN4 -> EX03
@@ -116,7 +125,7 @@ unsigned int cont=0;
 int Buffer_in[AUDIO_BLOCK_SIZE],Buffer_out[AUDIO_BLOCK_SIZE], i=0, i_audio=0;
 //Variables Pasabajos
 float32_t control_fcorte=1, cuenta;
-int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0, seleccion_pedal=0, pedal_prendido=0;
+int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0, seleccion_pedal=0, pedal_prendido=0, seleccion_menu=MENU_1;
 /*func_efectos  efectos[] =
   {
 		  {efecto_normal, "efecto normal", 0},
@@ -143,6 +152,7 @@ int AP3_line[341];
 //Variables pantalla 2
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
+LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -196,6 +206,8 @@ void AudioLoopback_demo (void)
     	  {
     		  PushRequestHandler_menu(Pedales, &touchState);
 			  linkRequestHandler_menu(Pedales, &touchState);
+			  linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+			  linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
     	  }
     	  cont=0;
       }
@@ -306,7 +318,7 @@ void Demo_fondito(void){
 	LCD_Config();
 	BSP_SD_Init();
 	FATFS_LinkDriver(&SD_Driver, SD_Path);
-    DrawScreen(MENU);
+    DrawScreen(MENU_1);
   }
 
 void DrawScreen(int num)

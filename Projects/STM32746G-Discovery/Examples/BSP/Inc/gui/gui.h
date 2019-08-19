@@ -104,9 +104,12 @@ GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
 
 //LINK
 typedef struct LinkElement LinkElement;
+typedef struct LinkElementMenu LinkElementMenu;
 typedef struct PedalElement PedalElement;
 typedef void (*LinkHandler)(PedalElement *button,GUITouchState *touchState);
+typedef void (*LinkHandlerMenu)(LinkElementMenu *button,GUITouchState *touchState);
 typedef void (*GUICallbackLink)(PedalElement *button);
+typedef void (*GUICallbackLinkMenu)(LinkElementMenu *button);
 typedef int (*Funcion_Efecto)(int entrada);
 
 struct LinkElement {
@@ -117,6 +120,16 @@ struct LinkElement {
 	uint16_t height;
 	GUICallbackLink callback;
 	LinkHandler handler;
+};
+
+struct LinkElementMenu {
+	uint8_t nombre;
+	uint16_t x;
+	uint16_t y;
+	uint16_t width;
+	uint16_t height;
+	GUICallbackLinkMenu callback;
+	LinkHandlerMenu handler;
 };
 
 typedef struct {
@@ -147,23 +160,29 @@ struct PedalElement{
 void Demo_fondito(void);
 void DrawScreen(int num);
 void linkRequestHandler_menu(PedalElement **bt, GUITouchState *touch);
+void linkRequestHandler_Flechas_Menu(LinkElementMenu *bt, GUITouchState *touch);
 void linkRequestHandlers_pedal_individual(PedalElement *bt, GUITouchState *touch);
 LinkElement* initPushLink(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLink cb, LinkHandler han);
+LinkElementMenu* initPushLinkMenu(uint8_t nombre,uint16_t x, uint16_t y,uint16_t width,uint16_t height, GUICallbackLinkMenu cb, LinkHandlerMenu han);
 PerillaElement* initPerilla (uint8_t num);
 void initPedals (void);
 //Handles
 void handlePushMenuButton(PedalElement *bt, GUITouchState *touch);
 void handlePushIndividualButton(PedalElement *bt, GUITouchState *touch);
 void handleLinkButton(PedalElement *bt, GUITouchState *touch);
-void handleDerechaButton(PedalElement *bt, GUITouchState *touch);
-void handleIzquierdaButton(PedalElement *bt, GUITouchState *touch);
-void handleHomeButton(PedalElement *bt, GUITouchState *touch);
+void handleDerechaButtonPedal(PedalElement *bt, GUITouchState *touch);
+void handleIzquierdaButtonPedal(PedalElement *bt, GUITouchState *touch);
+void handleHomeButtonPedal(PedalElement *bt, GUITouchState *touch);
+void handleDerechaButtonMenu (LinkElementMenu *bt, GUITouchState *touch);
+void handleIzquierdaButtonMenu(LinkElementMenu *bt, GUITouchState *touch);
 //Callbacks
 void LinkCallback(PedalElement *e);
 void PushCallback(PedalElement *e);
-void LinkDerechaCallback(PedalElement *e);
-void LinkIzquierdaCallback(PedalElement *e);
-void LinkHomeCallback(PedalElement *e);
+void LinkDerechaCallbackPedal(PedalElement *e);
+void LinkIzquierdaCallbackPedal(PedalElement *e);
+void LinkHomeCallbackPedal(PedalElement *e);
+void LinkDerechaCallbackMenu(LinkElementMenu *e);
+void LinkIzquierdaCallbackMenu(LinkElementMenu *e);
 void PushRequestHandler_menu(PedalElement **bt, GUITouchState *touch);
 void MenuForceRedraw(void);
 void PedalForceRedraw(PedalElement *gui);

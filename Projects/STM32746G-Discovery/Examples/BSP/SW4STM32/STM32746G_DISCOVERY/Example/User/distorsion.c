@@ -45,15 +45,19 @@ int distorsionEfecto (int entrada)
 	aux_ds = (2/3.1415)*atan(aux_ds);
 
 	// reescalado
-	aux_ds = aux_ds * 8388607.0;
+	//aux_ds = aux_ds * 8388607.0;
+	aux_ds = aux_ds * 3106891.5;
 
 	// refuerzo de graves
 	//aux_ds = (float) distorsionShelve(aux_ds,1);
 
+	//control de volumen
+	//aux_ds = 1.5 * aux_ds / gain_ds;
+
 	// blend con la entrada
 	salida_ds = blend_ds * aux_ds + (1 - blend_ds) * entrada;
 
-	return salida_ds;
+	return  salida_ds;
 }
 
 int distorsionShelve(int in, int i_ds)
@@ -69,7 +73,7 @@ int distorsionShelve(int in, int i_ds)
 void distorsionGain (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	gain_ds = 1000 * (db->value);
+	gain_ds = pow(10 , 3 * (db->value));
 }
 
 void distorsionBlend (GUIElement *e)

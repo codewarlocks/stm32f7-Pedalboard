@@ -52,7 +52,7 @@ int phaserEfecto(int entrada)
   salida_ph = phaserAP1(salida_ph,1);
   salida_ph = phaserAP1(salida_ph,2);
   salida_ph = phaserAP1(salida_ph,3);
-  salida_ph = 0.5 * salida_ph + 0.5 * entrada;
+  salida_ph = 0.5 * salida_ph + 0.5 * entrada + 1 - 1;
   return salida_ph;
 }
 

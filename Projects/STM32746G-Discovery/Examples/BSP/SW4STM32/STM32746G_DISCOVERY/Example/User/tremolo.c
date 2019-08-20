@@ -10,7 +10,7 @@ int salida_t = 0;
 float mid_t = 0.5;
 
 // parametros de usuario
-float rate_t = 1, depth_t = 0.44;
+float rate_t = 2, depth_t = 0.3;
 int modulacion_t = SINUSOIDAL;
 
 // variables auxiliares

@@ -182,38 +182,38 @@ void AudioLoopback_demo (void)
   {
     cont++;
 	  /* Wait end of half block recording */
-   while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
-   {
-      if(cont==10)
-      {
-    	  BSP_TS_GetState(&rawTouchState);
-    	  guiUpdateTouch(&rawTouchState, &touchState);
-    	  if(pedal_individual==1)
-    	  {
-    		  if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-    			  guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-    		  handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-    		  linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+    while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
+    {
+    	if(cont==10)
+    	{
+    		BSP_TS_GetState(&rawTouchState);
+    		guiUpdateTouch(&rawTouchState, &touchState);
+    		if(pedal_individual==1)
+    		{
+    			if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+    				guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+    			handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+    			linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
 
-    	  }
-    	  else if(pedal_individual==0)
-    	  {
-    		  PushRequestHandler_menu(Pedales, &touchState);
-			  linkRequestHandler_menu(Pedales, &touchState);
-			  linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-			  linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-    	  }
-    	  cont=0;
-      }
+    		}
+    		else if(pedal_individual==0)
+    		{
+    			PushRequestHandler_menu(Pedales, &touchState);
+    			linkRequestHandler_menu(Pedales, &touchState);
+    			linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+    			linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+    		}
+    		cont=0;
+    	}
 
-      if (CheckForUserInput() > 0)
-      {
-//        /* Stop Player before close Test */
-//        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
-//        /* Stop Player before close Test */
-//        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
-        return;
-      }
+    	if (CheckForUserInput() > 0)
+    	{
+    		//        /* Stop Player before close Test */
+    		//        BSP_AUDIO_IN_Stop(CODEC_PDWN_SW);
+    		//        /* Stop Player before close Test */
+    		//        BSP_AUDIO_OUT_Stop(CODEC_PDWN_SW);
+    		return;
+    	}
     }
     audio_rec_buffer_state = BUFFER_OFFSET_NONE;//izquierdo -> mono guitarra red bull
     for(i=0;i<128;i++)

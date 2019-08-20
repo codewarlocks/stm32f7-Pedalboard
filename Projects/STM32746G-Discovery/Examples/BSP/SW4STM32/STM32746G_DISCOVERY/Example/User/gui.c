@@ -947,27 +947,27 @@ void initPedals() {
 	//Distorsion
 	Pedales[6]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[6]->perilla = initPerilla(2);
-	Pedales[6]->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.0f, 0.045f, PERILLA, &perilla5252, distorsionBlend);
-	Pedales[6]->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.0f, 0.045f, PERILLA, &perilla5252, distorsionGain);
+	Pedales[6]->perilla->perillas[0] = guiDialButton(0, "", 179, 26, 0.61f, 0.045f, PERILLA, &perilla5252, distorsionGain);
+	Pedales[6]->perilla->perillas[1] = guiDialButton(1, "", 249, 26, 0.5f, 0.045f, PERILLA, &perilla5252, distorsionBlend);
 	//Flanger
 	Pedales[7]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[7]->perilla = initPerilla(4);
 	Pedales[7]->perilla->perillas[0] =guiDialButton(0, "", 116, 55, 0.0f, 0.045f, PERILLA, &perilla5252, flangerManual);
-	Pedales[7]->perilla->perillas[1] =guiDialButton(1, "", 182, 55, 0.0f, 0.045f, PERILLA, &perilla5252, flangerDepth);
-	Pedales[7]->perilla->perillas[2] =guiDialButton(2, "", 246, 55, 0.0f, 0.045f, PERILLA, &perilla5252, flangerRate);
-	Pedales[7]->perilla->perillas[3] =guiDialButton(3, "", 311, 55, 0.0f, 0.045f, PERILLA, &perilla5252, flangerFeedback);
+	Pedales[7]->perilla->perillas[1] =guiDialButton(1, "", 182, 55, 0.57f, 0.045f, PERILLA, &perilla5252, flangerDepth);
+	Pedales[7]->perilla->perillas[2] =guiDialButton(2, "", 246, 55, 0.2f, 0.045f, PERILLA, &perilla5252, flangerRate);
+	Pedales[7]->perilla->perillas[3] =guiDialButton(3, "", 311, 55, 0.81f, 0.045f, PERILLA, &perilla5252, flangerFeedback);
 	//Tremolo
 	Pedales[8]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[8]->perilla = initPerilla(3);
-	Pedales[8]->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.6f, 0.045f, PERILLA, &perilla4241, tremoloDepth);
-	Pedales[8]->perilla->perillas[1] = guiDialButton(1, "", 220, 66, 0.6f, 0.045f, PERILLA, &perilla4241, tremoloMod);
-	Pedales[8]->perilla->perillas[2] = guiDialButton(2, "", 269, 40, 0.6f, 0.045f, PERILLA, &perilla4241, tremoloRate);
+	Pedales[8]->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.67f, 0.045f, PERILLA, &perilla4241, tremoloDepth);
+	Pedales[8]->perilla->perillas[1] = guiDialButton(1, "", 220, 66, 0.2f, 0.045f, PERILLA, &perilla4241, tremoloMod);
+	Pedales[8]->perilla->perillas[2] = guiDialButton(2, "", 269, 40, 0.5f, 0.045f, PERILLA, &perilla4241, tremoloRate);
 	//Vibrato
 	Pedales[9]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[9]->perilla = initPerilla(3);
-	Pedales[9]->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.667f, 0.045f, PERILLA, &perilla4241, vibratoRate);
-	Pedales[9]->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.667f, 0.045f, PERILLA, &perilla4241, vibratoDepth);
-	Pedales[9]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 0.667f, 0.045f, PERILLA, &perilla3535, vibratoMod);
+	Pedales[9]->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.6f, 0.045f, PERILLA, &perilla4241, vibratoRate);
+	Pedales[9]->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.41f, 0.045f, PERILLA, &perilla4241, vibratoDepth);
+	Pedales[9]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 1.0f, 0.045f, PERILLA, &perilla3535, vibratoMod);
 	//EQ
 	Pedales[10]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[10]->perilla = initPerilla(6);
@@ -980,7 +980,7 @@ void initPedals() {
 	//Ringmod
 	Pedales[11]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[11]->perilla = initPerilla(1);
-	Pedales[11]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.5f, 0.045f, PERILLA, &perilla3535, ringmodRate);
+	Pedales[11]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.179f, 0.045f, PERILLA, &perilla3535, ringmodRate);
 
 	//Inicializo los Push (3pdt) Pantalla 1
 	//PEDALES Menu

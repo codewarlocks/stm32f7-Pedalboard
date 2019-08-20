@@ -5,12 +5,12 @@
 #include "arm_common_tables.h"
 
 // parametros de desarrollador
-#define VIBRATO_SIZE 500
+#define VIBRATO_SIZE 150
 
 int salida_v = 0;
 
 // parametros de usuario
-float rate_v = 3, depth_v = 100;
+float rate_v = 3, depth_v = 30;
 int modulacion_v = SINUSOIDAL;
 
 // parametros de desarrollador
@@ -119,7 +119,7 @@ float32_t vibratoLFO(int modulacion_v)
 void vibratoRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_v = 10 * (db->value);
+	rate_v = 5 * (db->value);
 	vibratoParametros();
 }
 

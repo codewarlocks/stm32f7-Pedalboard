@@ -30,7 +30,12 @@ float deltaf_ph = 0, aux_ph = 0;
 
 int flag_ph = 0;
 
-void phaser_parametros()
+void phaserInit()
+{
+	phaserParametros();
+}
+
+void phaserParametros()
 {
 	finicial_ph = fmedia_ph - depth_ph;
 	ffinal_ph = fmedia_ph + depth_ph;
@@ -38,20 +43,20 @@ void phaser_parametros()
 	deltaf_ph = (ffinal_ph - finicial_ph)/periodo_ph;
 }
 
-int phaser(int entrada)
+int phaserEfecto(int entrada)
 {
-  fcentral_ph = Phaser_LFO(modulacion_ph);
+  fcentral_ph = phaserLFO(modulacion_ph);
   aux_ph = tan(3.1416*fcentral_ph/SR);
   c_ph = (1-aux_ph)/(1+aux_ph);
-  salida_ph = Phaser_AP1(entrada,0);
-  salida_ph = Phaser_AP1(salida_ph,1);
-  salida_ph = Phaser_AP1(salida_ph,2);
-  salida_ph = Phaser_AP1(salida_ph,3);
+  salida_ph = phaserAP1(entrada,0);
+  salida_ph = phaserAP1(salida_ph,1);
+  salida_ph = phaserAP1(salida_ph,2);
+  salida_ph = phaserAP1(salida_ph,3);
   salida_ph = 0.5 * salida_ph + 0.5 * entrada;
   return salida_ph;
 }
 
-int Phaser_AP1(int in, int i)
+int phaserAP1(int in, int i)
 {
   x1_ph[i] = x0_ph[i];
   x0_ph[i] = in;
@@ -60,7 +65,7 @@ int Phaser_AP1(int in, int i)
   return y0_ph[i];
 }
 
-float Phaser_LFO(int modulacion_ph)
+float phaserLFO(int modulacion_ph)
 {
   if(modulacion_ph == TRIANGULAR)
   {
@@ -74,19 +79,9 @@ float Phaser_LFO(int modulacion_ph)
 	return fcentral_ph;
 }
 
-void Phaser_Rate (GUIElement *e)
+void phaserRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	rate_ph = 6 * (db->value);
-	phaser_parametros();
-}
-
-void Push_State_Phaser (GUIElement *e)
-{
-	state_ph = e->state;
-}
-
-int Get_State_Phaser (void)
-{
-	return state_ph;
+	phaserParametros();
 }

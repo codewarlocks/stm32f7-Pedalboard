@@ -14,106 +14,108 @@
 
 //Pedales Individuales
 void initAppGUI(void);
+void InitEfectos (void);
+
 // Delay.c
-int delay (int);
-void Delay_Time (GUIElement*);
-void Delay_Feedback (GUIElement*);
-void Delay_Level (GUIElement*);
-void Push_State_Delay (GUIElement*);
-int Get_State_Delay (void);
+void delayInit ();
+void delayParametros ();
+int delayEfecto (int);
+void delayTime (GUIElement*);
+void delayFeedback (GUIElement*);
+void delayLevel (GUIElement*);
 
 // Autowah.c
-void init_autowah();
-void autowah_parametros();
-int autowah(int);
-float32_t Autowah_LFO(int);
-int get_envelope();
-void Autowah_Rate (GUIElement*);
-void Autowah_Depth (GUIElement*);
-void Autowah_Volume (GUIElement*);
-void Autowah_Mod (GUIElement*);
-void Push_State_Autowah (GUIElement*);
-int Get_State_Autowah (void);
+void autowahInit ();
+void autowahParametros ();
+int autowahEfecto (int);
+float32_t autowahLFO (int);
+void autowahRate (GUIElement*);
+void autowahDepth (GUIElement*);
+void autowahVolume (GUIElement*);
+void autowahMod (GUIElement*);
 
 // Distorsion.c
-void init_distorsion();
-int distorsion(int);
-int dist_shelve(int, int);
-void Distorsion_Gain (GUIElement*);
-void Distorsion_Blend (GUIElement*);
+void distorsionInit ();
+void distorsionParametros ();
+int distorsionEfecto (int);
+int distorsionShelve (int, int);
+void distorsionGain (GUIElement*);
+void distorsionBlend (GUIElement*);
 
 // Vibrato.c
-void vibrato_parametros();
-int vibrato (int);
-float32_t Vibrato_LFO(int);
-void Vibrato_Rate (GUIElement*);
-void Vibrato_Depth (GUIElement*);
-void Vibrato_Mod (GUIElement*);
-void Push_State_Vibrato (GUIElement*);
-int Get_State_Vibrato (void);
+void vibratoInit ();
+void vibratoParametros ();
+int vibratoEfecto (int);
+float32_t vibratoLFO (int);
+void vibratoRate (GUIElement*);
+void vibratoDepth (GUIElement*);
+void vibratoMod (GUIElement*);
+
 
 // Tremolo.c
-void tremolo_parametros();
-int tremolo(int);
-float32_t Tremolo_LFO();
-void Tremolo_Rate (GUIElement*);
-void Tremolo_Depth (GUIElement*);
-void Tremolo_Mod (GUIElement*);
-void Push_State_Tremolo (GUIElement*);
-int Get_State_Tremolo (void);
+void tremoloInit ();
+void tremoloParametros ();
+int tremoloEfecto (int);
+float32_t tremoloLFO();
+void tremoloRate (GUIElement*);
+void tremoloDepth (GUIElement*);
+void tremoloMod (GUIElement*);
 
 // Ringmod.c
-int ringmod(int);
-void Ringmod_Rate (GUIElement*);
-void Push_State_Ringmod (GUIElement*);
-int Get_State_Ringmod (void);
+void ringmodInit ();
+void ringmodParametros();
+int ringmodEfecto(int);
+void ringmodRate (GUIElement*);
 
 //Chorus.c
-void chorus_parametros();
-int chorus (int);
-float32_t Chorus_LFO(int);
-void Chorus_Rate (GUIElement *e);
-void Chorus_Depth (GUIElement *e);
+void chorusInit ();
+void chorusParametros();
+int chorusEfecto(int);
+float32_t chorusLFO(int);
+void chorusRate (GUIElement *e);
+void chorusDepth (GUIElement *e);
 
 //Flanger.c
-void flanger_parametros();
-int flanger (int);
-float32_t Flanger_LFO(int);
+void flangerInit();
+void flangerParametros();
+int flangerEfecto (int);
+float32_t flangerLFO(int);
+void flangerManual (GUIElement *e);
+void flangerDepth (GUIElement *e);
+void flangerRate (GUIElement *e);
+void flangerFeedback (GUIElement *e);
 
 //Octavador.c
-int octavador(int);
+void octavadorInit ();
+void octavadorParametros ();
+int octavadorEfecto (int);
 
 //Reverb
-int AP_filter(int in, int* line, int delay, int cont);
-int FBCF_filter(int in, int line[], int delay, int cont, int inst);
-int reverb (int entrada);
-void Reverb_Mix (GUIElement *e);
-void Reverb_Decay (GUIElement *e);
+void reverbInit ();
+void reverbParametros ();
+int reverbEfecto (int entrada);
+int reverbAP (int in, int* line, int delay, int cont);
+int reverbFBCF (int in, int line[], int delay, int cont, int inst);
+void reverbMix (GUIElement *e);
+void reverbDecay (GUIElement *e);
 
 // Phaser.c
-void phaser_parametros();
-int phaser(int);
-int Phaser_AP1(int, int);
-float Phaser_LFO(int);
-void Phaser_Rate(GUIElement*);
-void Push_State_Phaser(GUIElement*);
-int Get_State_Phaser();
+void phaserInit ();
+void phaserParametros ();
+int phaserEfecto (int);
+int phaserAP1 (int, int);
+float phaserLFO (int);
+void phaserRate (GUIElement*);
 
 // Ecualizador.c
-void init_eq();
-void eq_parametros();
-int ecualizador(int);
-int eq_peak(int,int);
-int eq_shelve(int,int);
-void EQ_Gain_0 (GUIElement*);
-void EQ_Gain_1 (GUIElement*);
-void EQ_Gain_2 (GUIElement*);
-void EQ_Gain_3 (GUIElement*);
-void EQ_Gain_4 (GUIElement*);
-void EQ_Gain_5 (GUIElement*);
-void EQ_Gain_6 (GUIElement*);
-void EQ_Gain_7 (GUIElement*);
-void EQ_Gain_8 (GUIElement*);
-void EQ_Gain_9 (GUIElement*);
-void Push_State_EQ (GUIElement*);
-int Get_State_EQ (void);
+void eqInit ();
+void eqParametros ();
+int eqEfecto (int);
+int eqPeak (int,int);
+int eqShelve (int,int);
+void eqGain0 (GUIElement*);
+void eqGain1 (GUIElement*);
+void eqGain2 (GUIElement*);
+void eqGain3 (GUIElement*);
+void eqGain4 (GUIElement*);
+void eqGain5 (GUIElement*);

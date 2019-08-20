@@ -7,14 +7,24 @@ int salida_d = 0;
 
 // parametros de usuario
 float32_t level_d = 0.5, feedback_d = 0;
-int time_d = 20000, state_d = 0;
+int time_d = 20000;
 
 // variables auxiliares
 int line[DELAY_SIZE];
 
 int cont_d = 0, flag_d = 0;
 
-int delay (int entrada)
+void delayInit ()
+{
+	delayParametros();
+}
+
+void delayParametros()
+{
+
+}
+
+int delayEfecto (int entrada)
 {
 	if (cont_d == DELAY_SIZE)
 	{
@@ -45,30 +55,20 @@ int delay (int entrada)
 	return 2*salida_d;
 }
 
-void Delay_Time (GUIElement *e)
+void delayTime (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	time_d = (int)((DELAY_SIZE-1)*(db->value));
 }
 
-void Delay_Feedback (GUIElement *e)
+void delayFeedback (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
  	feedback_d = (db->value);
 }
 
-void Delay_Level (GUIElement *e)
+void delayLevel (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	level_d = (db->value);
-}
-
-void Push_State_Delay (GUIElement *e)
-{
-	state_d = e->state;
-}
-
-int Get_State_Delay (void)
-{
-	return state_d;
 }

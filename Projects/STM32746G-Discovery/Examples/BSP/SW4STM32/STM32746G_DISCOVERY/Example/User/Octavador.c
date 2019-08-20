@@ -15,7 +15,17 @@ float32_t vol = 0;
 int wr = 0, A = 0, B = N/2;
 int flag_o = 1;
 
-int octavador(int entrada)
+void octavadorInit()
+{
+	octavadorParametros();
+}
+
+void octavadorParametros()
+{
+
+}
+
+int octavadorEfecto(int entrada)
 {
 	if(wr >= N)
 		wr = 0;

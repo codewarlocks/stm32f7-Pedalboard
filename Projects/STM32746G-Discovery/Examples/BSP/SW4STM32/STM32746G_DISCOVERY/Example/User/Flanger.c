@@ -29,7 +29,12 @@ int line3_f[FLANGER_SIZE];
 int line4_f[FLANGER_SIZE];
 int line5_f[FLANGER_SIZE];
 
-void flanger_parametros()
+void flangerInit ()
+{
+	flangerParametros();
+}
+
+void flangerParametros ()
 {
 	demora_f= manual_f;
 	min_f = manual_f - depth_f;
@@ -38,20 +43,19 @@ void flanger_parametros()
 	delta_f = (max_f - min_f)/periodo_f;
 }
 
-
-int flanger (int entrada)
+int flangerEfecto (int entrada)
 {
 	if (cont_f == FLANGER_SIZE)
-		{
-			cont_f = 0;
-		}
+	{
+		cont_f = 0;
+	}
 	line1_f[cont_f] = (int)(entrada + aux1_f * feedback_f);
 	line2_f[cont_f] = (int)(entrada + aux2_f * feedback_f);
 	line3_f[cont_f] = (int)(entrada + aux3_f * feedback_f);
 	line4_f[cont_f] = (int)(entrada + aux4_f * feedback_f);
 	line5_f[cont_f] = (int)(entrada + aux5_f * feedback_f);
 
-	demora_f = Flanger_LFO(modulacion_f);
+	demora_f = flangerLFO(modulacion_f);
 	d_f = (int) floor(demora_f);
 	frac_f = demora_f - d_f;
 	if (cont_f-d_f-1 >= 0)
@@ -101,54 +105,78 @@ int flanger (int entrada)
 	cont_f++;
 
 	salida_f = (int)((aux5_f + aux4_f + aux3_f + aux2_f + aux1_f + entrada)*0.35);
-	//salida_f = entrada;
 	return salida_f;
 }
 
-float32_t Flanger_LFO(int modulacion_f)
+float32_t flangerLFO(int modulacion_f)
 {
-  switch(modulacion_f)
+	switch(modulacion_f)
 	{
-		case CUADRADA:
-			if(tiempo_f == periodo_f/2)
-			{
-				if(demora_f == min_f)
-					demora_f = max_f;
-				else
-					demora_f = min_f;
-				tiempo_f = 0;
-			}
-			break;
-
-		case TRIANGULAR:
-			if(flag_f == 0)
-				demora_f = demora_f + 2*delta_f;
-			if(flag_f == 1)
-				demora_f = demora_f - 2*delta_f;
-			if(demora_f >= max_f || demora_f <= min_f)
-			{
-				flag_f = 1 - flag_f;
-				tiempo_f = 0;
-			}
-			break;
-
-		case RAMPA_ASC:
-			demora_f = demora_f + delta_f;
-			if(demora_f >= max_f)
-			{
+	case CUADRADA:
+		if(tiempo_f == periodo_f/2)
+		{
+			if(demora_f == min_f)
+				demora_f = max_f;
+			else
 				demora_f = min_f;
-				tiempo_f = 0;
-			}
-			break;
+			tiempo_f = 0;
+		}
+		break;
 
-		case SINUSOIDAL:
-			demora_f = manual_f + depth_f * arm_sin_f32((float32_t)(2*3.1416*tiempo_f/periodo_f));
-			if(tiempo_f == periodo_f)
-				tiempo_f = 0;
-			break;
+	case TRIANGULAR:
+		if(flag_f == 0)
+			demora_f = demora_f + 2*delta_f;
+		if(flag_f == 1)
+			demora_f = demora_f - 2*delta_f;
+		if(demora_f >= max_f || demora_f <= min_f)
+		{
+			flag_f = 1 - flag_f;
+			tiempo_f = 0;
+		}
+		break;
+
+	case RAMPA_ASC:
+		demora_f = demora_f + delta_f;
+		if(demora_f >= max_f)
+		{
+			demora_f = min_f;
+			tiempo_f = 0;
+		}
+		break;
+
+	case SINUSOIDAL:
+		demora_f = manual_f + depth_f * arm_sin_f32((float32_t)(2*3.1416*tiempo_f/periodo_f));
+		if(tiempo_f == periodo_f)
+			tiempo_f = 0;
+		break;
 	}
 	tiempo_f++;
 	return demora_f;
 }
 
+void flangerManual (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+	manual_f = 35 * (db->value) + 15;
+	flangerParametros();
+}
 
+void flangerDepth (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+	depth_f = (15 - 1) * (db->value);
+	flangerParametros();
+}
+
+void flangerRate (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+	rate_f = 1 * (db->value);
+	flangerParametros();
+}
+
+void flangerFeedback (GUIElement *e)
+{
+	DialButtonState *db = (DialButtonState *) (e->userData);
+	rate_f = - 0.185 * (db->value) - 0.8;
+}

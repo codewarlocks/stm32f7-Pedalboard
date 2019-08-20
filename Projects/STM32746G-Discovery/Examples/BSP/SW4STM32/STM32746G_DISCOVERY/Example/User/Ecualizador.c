@@ -24,7 +24,7 @@ float d_eq[N],c_eq[N];
 
 int i_eq = 0;
 
-void init_eq()
+void eqInit()
 {
 	//frecuencias de corte
 	fc_eq[0] = 100; fc_eq[1] = 200;  fc_eq[2] = 400;
@@ -35,10 +35,10 @@ void init_eq()
 	//ganancias
 	Vo_eq[0] = 1; Vo_eq[1] = 1; Vo_eq[2] = 1;
 	Vo_eq[3] = 1; Vo_eq[4] = 1; Vo_eq[5] = 1;
-	eq_parametros();
+	eqParametros();
 }
 
-void eq_parametros()
+void eqParametros()
 {
 	//parametros low shelve
 	if(Vo_eq[0] >= 1)
@@ -63,16 +63,16 @@ void eq_parametros()
 		c_eq[N-1] = (1-Vo_eq[N-1]*tan(3.1416*fc_eq[N-1]/SR))/(1+Vo_eq[N-1]*tan(3.1416*fc_eq[N-1]/SR));
 }
 
-int ecualizador(int entrada)
+int eqEfecto(int entrada)
 {
-	salida_eq = eq_shelve(entrada,0);
+	salida_eq = eqShelve(entrada,0);
 	for(int i_eq = 1; i_eq < N-1; i_eq++)
-		salida_eq = eq_peak(salida_eq,i_eq);
-	salida_eq = eq_shelve(salida_eq,N-1);
+		salida_eq = eqPeak(salida_eq,i_eq);
+	salida_eq = eqShelve(salida_eq,N-1);
 	return salida_eq;
 }
 
-int eq_peak(int in, int i_eq)
+int eqPeak(int in, int i_eq)
 {
 	x2_eq[i_eq] = x1_eq[i_eq];
 	x1_eq[i_eq] = x0_eq[i_eq];
@@ -84,7 +84,7 @@ int eq_peak(int in, int i_eq)
 	return in;
 }
 
-int eq_shelve(int in, int i_eq)
+int eqShelve(int in, int i_eq)
 {
 	x1_eq[i_eq] = x0_eq[i_eq];
 	x0_eq[i_eq] = in;
@@ -97,45 +97,45 @@ int eq_shelve(int in, int i_eq)
 	return in;
 }
 
-void EQ_Gain_0 (GUIElement *e)
+void eqGain0 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[0] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 
-void EQ_Gain_1 (GUIElement *e)
+void eqGain1 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[1] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 
-void EQ_Gain_2 (GUIElement *e)
+void eqGain2 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[2] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 
-void EQ_Gain_3 (GUIElement *e)
+void eqGain3 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[3] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 
-void EQ_Gain_4 (GUIElement *e)
+void eqGain4 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[4] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 
-void EQ_Gain_5 (GUIElement *e)
+void eqGain5 (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	Vo_eq[5] = pow(10,(12-24*db->value)/20);
-	eq_parametros();
+	eqParametros();
 }
 

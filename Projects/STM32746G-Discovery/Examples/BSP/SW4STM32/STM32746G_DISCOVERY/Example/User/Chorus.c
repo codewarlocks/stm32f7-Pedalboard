@@ -22,17 +22,18 @@ int cont_c = 0;
 float32_t delay_c = 0, frac_c = 0, aux1_c = 0, aux2_c = 0, aux3_c = 0;
 int d_c = 0;
 
-//public static LFO LFO1 = new LFO(100,1.25,40,3);
-//public static LFO LFO2 = new LFO(50,1.25,40,3);
-//public static LFO LFO3 = new LFO(150,1.25,40,3);
-
 int line1_c[CHORUS_SIZE] = {0};
 int line2_c[CHORUS_SIZE] = {0};
 int line3_c[CHORUS_SIZE] = {0};
 
 float32_t auxcoef_c=0, lp_c=0.999;
 
-void chorus_parametros()
+void chorusInit ()
+{
+	chorusParametros();
+}
+
+void chorusParametros()
 {
 	demora_c= manual_c;
 	min_c = manual_c - depth_c;
@@ -42,7 +43,7 @@ void chorus_parametros()
 }
 
 
-int chorus (int entrada)
+int chorusEfecto (int entrada)
 {
 	if (cont_c == CHORUS_SIZE)
 		cont_c = 0;
@@ -51,7 +52,7 @@ int chorus (int entrada)
 	line2_c[cont_c] = entrada;
 	line3_c[cont_c] = entrada;
 
-	demora_c = Chorus_LFO(modulacion_c);
+	demora_c = chorusLFO(modulacion_c);
 	d_c = (int) floor(demora_c);
 	frac_c = demora_c - d_c;
 	if (cont_c-d_c-1 >= 0)
@@ -87,7 +88,7 @@ int chorus (int entrada)
 	return salida_c;
 }
 
-float32_t Chorus_LFO(int modulacion_c)
+float32_t chorusLFO(int modulacion_c)
 {
   switch(modulacion_c)
 	{
@@ -135,16 +136,16 @@ float32_t Chorus_LFO(int modulacion_c)
 	return demora_c;
 }
 
-void Chorus_Rate (GUIElement *e)
+void chorusRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	rate_c = 2 * (db->value);
-	chorus_parametros();
+	chorusParametros();
 }
 
-void Chorus_Depth (GUIElement *e)
+void chorusDepth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	depth_c = (manual_c - 1) * (db->value);
-	chorus_parametros();
+	chorusParametros();
 }

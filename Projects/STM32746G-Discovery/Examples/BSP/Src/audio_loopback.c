@@ -52,7 +52,7 @@
 #define OCTAVADOR 1
 #define CHORUS 2
 #define PHASER 3
-#define WHA 4
+#define WAH 4
 #define REVERB 5
 #define DISTORSION 6
 #define FLANGER 7
@@ -132,7 +132,7 @@ int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0
 		  {efecto_delay, "efecto delay", 1},
   };*/
 /* Private function prototypes -----------------------------------------------*/
-/*variables REVERV----------------------*/
+/*variables REVERB----------------------*/
 int FBCF0_line[1617];
 int FBCF1_line[1617];
 int FBCF2_line[1617];
@@ -140,7 +140,7 @@ int FBCF3_line[1617];
 int FBCF4_line[1617];
 int FBCF5_line[1617];
 int FBCF6_line[1617];
-int FBCF7_line[1617];//1617
+int FBCF7_line[1617];
 
 int lpo_r[8];
 
@@ -165,14 +165,7 @@ void AudioLoopback_demo (void)
   BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
   //BSP_LCD_LayerDefaultInit(LTDC_ACTIVE_LAYER, LCD_FRAME_BUFFER);
   //BSP_LCD_SelectLayer(LTDC_ACTIVE_LAYER);
-  vibrato_parametros();
-  tremolo_parametros();
-  chorus_parametros();
-  flanger_parametros();
-  init_distorsion();
-  init_autowah();
-  init_eq();
-  phaser_parametros();
+  InitEfectos();
   Demo_fondito();
   initPedals();
   BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
@@ -313,6 +306,21 @@ static void LCD_Config(void)
     BSP_LCD_SetTransparency(1, 255);
   }
 
+void InitEfectos()
+{
+	delayInit();
+	octavadorInit();
+	chorusInit();
+	phaserInit();
+	autowahInit();
+	reverbInit();
+	distorsionInit();
+	flangerInit();
+	tremoloInit();
+	vibratoInit();
+	eqInit();
+	ringmodInit();
+}
 
 void Demo_fondito(void){
 	uwInternelBuffer = (uint8_t *)0xC0260000;

@@ -11,7 +11,7 @@ int salida_v = 0;
 
 // parametros de usuario
 float rate_v = 3, depth_v = 100;
-int modulacion_v = SINUSOIDAL, state_v = 0;
+int modulacion_v = SINUSOIDAL;
 
 // parametros de desarrollador
 int mid_v = VIBRATO_SIZE/2 - 1;
@@ -30,7 +30,12 @@ int line_v[VIBRATO_SIZE];
 
 float32_t auxcoef_v=0, lp_v=0.999;
 
-void vibrato_parametros()
+void vibratoInit ()
+{
+	vibratoParametros();
+}
+
+void vibratoParametros ()
 {
 	demora_v= mid_v;
 	min_v = mid_v - depth_v;
@@ -39,7 +44,7 @@ void vibrato_parametros()
 	delta_v = (max_v - min_v)/periodo_v;
 }
 
-int vibrato (int entrada)
+int vibratoEfecto (int entrada)
 {
 	if (cont_v == VIBRATO_SIZE)
 	{
@@ -49,7 +54,7 @@ int vibrato (int entrada)
 	line_v[cont_v] = entrada;
 	if (flag_v == 1)
 	{
-    demora_v = Vibrato_LFO(modulacion_v);
+		demora_v = vibratoLFO(modulacion_v);
 		d_v = (int) floor(demora_v);
 		frac_v = demora_v - d_v;
 		if (cont_v-d_v-1 >= 0)
@@ -59,93 +64,81 @@ int vibrato (int entrada)
 		if (cont_v-d_v < 0)
 			salida_v = frac_v * line_v[VIBRATO_SIZE-d_v+cont_v-1] + (1-frac_v) * line_v[VIBRATO_SIZE-d_v+cont_v];
 	}
-	//sprintf(texto, "%f      ", delta_v);
-	//BSP_LCD_DisplayStringAt(200,100,(uint8_t*)texto, LEFT_MODE);
 	cont_v++;
 	return salida_v;
 }
 
-float32_t Vibrato_LFO(int modulacion_v)
+float32_t vibratoLFO(int modulacion_v)
 {
-  switch(modulacion_v)
+	switch(modulacion_v)
 	{
-		case CUADRADA:
-			if(tiempo_v >= periodo_v/2)
-			{
-				if(auxcoef_v == min_v)
-					auxcoef_v = max_v;
-				else
-					auxcoef_v = min_v;
-				tiempo_v = 0;
-			}
-			demora_v=lp_v*demora_v+(1-lp_v) * auxcoef_v;
-			break;
-
-		case TRIANGULAR:
-			if(rampflag_v == 0)
-				demora_v = demora_v + 2*delta_v;
-			if(rampflag_v == 1)
-				demora_v = demora_v - 2*delta_v;
-			if(demora_v >= max_v || demora_v <= min_v)
-			{
-				rampflag_v = 1 - rampflag_v;
-				tiempo_v = 0;
-			}
-			break;
-
-		case RAMPA_ASC:
-			auxcoef_v = auxcoef_v + delta_v;
-			if(auxcoef_v >= max_v)
-			{
+	case CUADRADA:
+		if(tiempo_v >= periodo_v/2)
+		{
+			if(auxcoef_v == min_v)
+				auxcoef_v = max_v;
+			else
 				auxcoef_v = min_v;
-				tiempo_v = 0;
-			}
-			demora_v=lp_v*demora_v+(1-lp_v) * auxcoef_v;
-			break;
+			tiempo_v = 0;
+		}
+		demora_v=lp_v*demora_v+(1-lp_v) * auxcoef_v;
+		break;
 
-		case SINUSOIDAL:
-			demora_v = mid_v + depth_v * arm_sin_f32((float32_t)(2*3.1416*tiempo_v/periodo_v));
-			if(tiempo_v == periodo_v)
-				tiempo_v = 0;
-			break;
+	case TRIANGULAR:
+		if(rampflag_v == 0)
+			demora_v = demora_v + 2*delta_v;
+		if(rampflag_v == 1)
+			demora_v = demora_v - 2*delta_v;
+		if(demora_v >= max_v || demora_v <= min_v)
+		{
+			rampflag_v = 1 - rampflag_v;
+			tiempo_v = 0;
+		}
+		break;
+
+	case RAMPA_ASC:
+		auxcoef_v = auxcoef_v + delta_v;
+		if(auxcoef_v >= max_v)
+		{
+			auxcoef_v = min_v;
+			tiempo_v = 0;
+		}
+		demora_v=lp_v*demora_v+(1-lp_v) * auxcoef_v;
+		break;
+
+	case SINUSOIDAL:
+		demora_v = mid_v + depth_v * arm_sin_f32((float32_t)(2*3.1416*tiempo_v/periodo_v));
+		if(tiempo_v == periodo_v)
+			tiempo_v = 0;
+		break;
 	}
 	tiempo_v++;
 	return demora_v;
 }
 
-void Vibrato_Rate (GUIElement *e)
+void vibratoRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  rate_v = 10 * (db->value);
-	vibrato_parametros();
+	rate_v = 10 * (db->value);
+	vibratoParametros();
 }
 
-void Vibrato_Depth (GUIElement *e)
+void vibratoDepth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-  depth_v = (mid_v - 1) * (db->value);
-	vibrato_parametros();
+	depth_v = (mid_v - 1) * (db->value);
+	vibratoParametros();
 }
 
-void Vibrato_Mod (GUIElement *e)
+void vibratoMod (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	if (db->value <= 0.33)
-  	modulacion_v = CUADRADA;
+		modulacion_v = CUADRADA;
 	else if(db->value > 0.33 && db->value <= 0.66)
 		modulacion_v = RAMPA_ASC;
 	else if(db->value > 0.66 && db->value < 1)
 		modulacion_v = TRIANGULAR;
 	else if(db->value == 1)
 		modulacion_v = SINUSOIDAL;
-}
-
-void Push_State_Vibrato (GUIElement *e)
-{
-	state_v = e->state;
-}
-
-int Get_State_Vibrato (void)
-{
-	return state_v;
 }

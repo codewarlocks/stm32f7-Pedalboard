@@ -10,7 +10,7 @@
 #define SINUSOIDAL 4
 #define ENVOLVENTE 5
 
-#define SR 48000 // TODO: cambiar por el define de audio que correponde
+#define SR 48000
 
 //Pedales Individuales
 void initAppGUI(void);

@@ -46,7 +46,7 @@ int distorsionEfecto (int entrada)
 
 	// reescalado
 	//aux_ds = aux_ds * 8388607.0;
-	aux_ds = aux_ds * 3106891.5;
+	aux_ds = aux_ds * 3106891.5; //para que no suba tanto el volumen
 
 	// refuerzo de graves
 	//aux_ds = (float) distorsionShelve(aux_ds,1);

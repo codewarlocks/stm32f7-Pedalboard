@@ -108,22 +108,14 @@ int main(void)
 	SystemClock_Config();
 
 	BSP_LED_Init(LED1);
-	HAL_Delay(500);
 	BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
-	HAL_Delay(500);
 	BSP_LCD_Init();
-	HAL_Delay(500);
 	LCD_Config();
-	HAL_Delay(500);
 	BSP_SD_Init();
-	HAL_Delay(500);
 
 	initPedals();
-	HAL_Delay(100);
 	InitEfectos();
-	HAL_Delay(100);
 	Demo_fondito();
-	HAL_Delay(100);
 
 	audio_rec_buffer_state = BUFFER_OFFSET_NONE;
 	Buffer_in=(int*)malloc(sizeof(int)*AUDIO_BLOCK_SIZE);
@@ -322,7 +314,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 		if(i%2!=0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
-			for(i_audio=0;i_audio<12;i_audio++)
+			for(i_audio=11;i_audio>=0;i_audio--)
 			{
 				if((Pedales[i_audio])->push->push_state==GUI_ON)
 				{
@@ -348,7 +340,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 		if(i%2!=0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
-			for(i_audio=0;i_audio<12;i_audio++)
+			for(i_audio=11;i_audio>=0;i_audio--)
 			{
 				if((Pedales[i_audio])->push->push_state==GUI_ON)
 				{

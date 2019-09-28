@@ -2,6 +2,7 @@
 #define ARM_MATH_CM7
 #include "arm_math.h"
 #include "arm_common_tables.h"
+#include "stm32746g_discovery_audio.h"
 
 #define CUADRADA 0
 #define TRIANGULAR 1
@@ -10,7 +11,7 @@
 #define SINUSOIDAL 4
 #define ENVOLVENTE 5
 
-#define SR 48000
+#define SR DEFAULT_AUDIO_IN_FREQ
 
 //Pedales Individuales
 void initAppGUI(void);

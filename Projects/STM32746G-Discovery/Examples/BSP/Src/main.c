@@ -239,10 +239,10 @@ void SystemClock_Config(void)
 void CPU_CACHE_Enable(void)
 {
 	/* Enable I-Cache */
-	SCB_EnableICache();
+	SCB_EnableICache(); //Sin esta cache no llega hacer las cuentas de muchos efectos
 
 	/* Enable D-Cache */
-	//SCB_EnableDCache();
+	//SCB_EnableDCache(); //si usa esta cache me limita la ram muchisimo (no mas de 5kb)
 }
 
 void LCD_Config(void)

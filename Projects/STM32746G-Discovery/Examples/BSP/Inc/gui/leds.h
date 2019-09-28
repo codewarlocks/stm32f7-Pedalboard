@@ -35,12 +35,14 @@
 #include "gui/ledapagadotremolomenu.h"
 #include "gui/ledapagadovibratomenu.h"
 #include "gui/ledapagadoringmodmenu.h"
+#include "gui/ledapagadoeqmenu.h"
 
 #include "gui/ledprendidodistorsionmenu.h"
 #include "gui/ledprendidoflangermenu.h"
 #include "gui/ledprendidotremolomenu.h"
 #include "gui/ledprendidovibratomenu.h"
 #include "gui/ledprendidoringmodmenu.h"
+#include "gui/ledprendidoeqmenu.h"
 //LEDS PEDALES Pantalla 2
 #include "gui/ledapagadodistorsionpedal.h"
 #include "gui/ledapagadoflangerpedal.h"

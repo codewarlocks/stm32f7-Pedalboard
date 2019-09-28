@@ -417,7 +417,7 @@ void MenuForceRedraw(void)
 	{
 		for(int aux_i=6; aux_i<12; aux_i++)
 		{
-			if(Pedales[aux_i]->push->push_state == GUI_ON)
+			if(Pedales[aux_i]->push->push_state == GUI_ON || Pedales[aux_i]->push->push_state == GUI_OFF)
 			{
 				Pedales[aux_i]->push->push_state |= GUI_HOVER;
 				Pedales[aux_i]->push->push_state ^= GUI_ONOFF_MASK;
@@ -697,6 +697,14 @@ void PushCallback(PedalElement *e)
 				case VIBRATO:
 					drawBitmapRaw(80,232,5,5, (uint8_t*)ledprendidovibratomenu, CM_ARGB8888, 1);
 					break;
+				case EQ:
+					drawBitmapRaw(190,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(209,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(228,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(247,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(267,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(286,190,3,7, (uint8_t*)ledprendidoeqmenu, CM_ARGB8888, 1);
+					break;
 				case RINGMOD:
 					drawBitmapRaw(373,241,6,6, (uint8_t*)ledprendidoringmodmenu, CM_ARGB8888, 1);
 					break;
@@ -735,6 +743,14 @@ void PushCallback(PedalElement *e)
 					break;
 				case VIBRATO:
 					drawBitmapRaw(80,232,5,5, (uint8_t*)ledapagadovibratomenu, CM_ARGB8888, 1);
+					break;
+				case EQ:
+					drawBitmapRaw(190,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(209,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(228,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(247,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(267,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
+					drawBitmapRaw(286,190,3,7, (uint8_t*)ledapagadoeqmenu, CM_ARGB8888, 1);
 					break;
 				case RINGMOD:
 					drawBitmapRaw(373,241,6,6, (uint8_t*)ledapagadoringmodmenu, CM_ARGB8888, 1);

@@ -61,6 +61,7 @@ typedef enum
 }BUFFER_StateTypeDef;
 
 #define AUDIO_BLOCK_SIZE   ((uint32_t)256)
+#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)AUDIO_BLOCK_SIZE/2)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
 #define AUDIO_BUFFER_OUT   (AUDIO_REC_START_ADDR + (AUDIO_BLOCK_SIZE * 2)) /* In SDRAM */
 
@@ -309,7 +310,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 	memcpy((uint16_t *)(AUDIO_BUFFER_OUT + (AUDIO_BLOCK_SIZE)),
 				           (uint16_t *)(AUDIO_BUFFER_IN + (AUDIO_BLOCK_SIZE)),
 				           AUDIO_BLOCK_SIZE);
-	for(i=128;i<256;i++)
+	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo
 		{
@@ -335,7 +336,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
 	audio_rec_buffer_state = BUFFER_OFFSET_HALF;
-	for(i=0;i<128;i++)
+	for(i=0;i<AUDIO_BLOCK_HALFSIZE;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo
 		{

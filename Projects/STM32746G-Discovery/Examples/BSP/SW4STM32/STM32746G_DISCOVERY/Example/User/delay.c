@@ -1,18 +1,18 @@
 #include "gui/prototipos.h"
 
 // parametros de desarrollador
-#define DELAY_SIZE 50000
+#define DELAY_SIZE 3000
 
-int salida_d = 0;
+static int salida_d = 0;
 
 // parametros de usuario
-float32_t level_d = 0.5, feedback_d = 0;
-int time_d = 20000;
+static float32_t level_d = 0.5, feedback_d = 0;
+static int time_d = 20000;
 
 // variables auxiliares
 int line[DELAY_SIZE];
 
-int cont_d = 0, flag_d = 0;
+static int cont_d = 0, flag_d = 0;
 
 void delayInit ()
 {

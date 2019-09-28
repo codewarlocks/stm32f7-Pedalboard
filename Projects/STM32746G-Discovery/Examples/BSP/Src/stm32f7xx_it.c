@@ -36,9 +36,9 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-extern DMA_HandleTypeDef   hdma;
-/*DMA status declared in "sdram_dma.c" file */
-extern uint32_t uwDMA_Transfer_Complete;
+//extern DMA_HandleTypeDef   hdma;
+///*DMA status declared in "sdram_dma.c" file */
+//extern uint32_t uwDMA_Transfer_Complete;
 /* SAI handler declared in "stm32746g_discovery_audio.c" file */
 extern SAI_HandleTypeDef haudio_out_sai;
 /* SAI handler declared in "stm32746g_discovery_audio.c" file */

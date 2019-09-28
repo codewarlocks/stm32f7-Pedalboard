@@ -7,26 +7,15 @@
 // parametros de desarrollador
 #define CHORUS_SIZE 500
 
-int salida_c = 0;
+static int salida = 0;
 
 // parametros de usuario
-float32_t manual_c = 110, rate_c = 1.2, depth_c = 40, feedback_c = 0;
-int modulacion_c = SINUSOIDAL;
+static float32_t manual = 110, rate = 1.2, depth = 40;
+static int modulacion = SINUSOIDAL;
 
 // variables auxiliares
-float32_t min_c = 0, max_c = 0, tiempo_c, flag_c;
-float32_t demora_c = CHORUS_SIZE/2 - 1, delta_c = 0;
-int periodo_c = 0;
-
-int cont_c = 0;
-float32_t delay_c = 0, frac_c = 0, aux1_c = 0, aux2_c = 0, aux3_c = 0;
-int d_c = 0;
-
-int line1_c[CHORUS_SIZE] = {0};
-int line2_c[CHORUS_SIZE] = {0};
-int line3_c[CHORUS_SIZE] = {0};
-
-float32_t auxcoef_c=0, lp_c=0.999;
+static float32_t min = 0, max = 0, tiempo, flag, demora = CHORUS_SIZE/2 - 1, delta = 0, frac = 0, aux1 = 0, aux2 = 0, aux3 = 0, auxcoef=0, lp=0.999;
+static int periodo = 0, cont = 0, d = 0, line1[CHORUS_SIZE] = {0}, line2[CHORUS_SIZE] = {0}, line3[CHORUS_SIZE] = {0};
 
 void chorusInit ()
 {
@@ -35,117 +24,117 @@ void chorusInit ()
 
 void chorusParametros()
 {
-	demora_c= manual_c;
-	min_c = manual_c - depth_c;
-	max_c = manual_c + depth_c;
-	periodo_c = (int) SR/rate_c;
-	delta_c = (max_c - min_c)/periodo_c;
+	demora= manual;
+	min = manual - depth;
+	max = manual + depth;
+	periodo = (int) SR/rate;
+	delta = (max - min)/periodo;
 }
 
 
 int chorusEfecto (int entrada)
 {
-	if (cont_c == CHORUS_SIZE)
-		cont_c = 0;
+	if (cont == CHORUS_SIZE)
+		cont = 0;
 
-	line1_c[cont_c] = entrada;
-	line2_c[cont_c] = entrada;
-	line3_c[cont_c] = entrada;
+	line1[cont] = entrada;
+	line2[cont] = entrada;
+	line3[cont] = entrada;
 
-	demora_c = chorusLFO(modulacion_c);
-	d_c = (int) floor(demora_c);
-	frac_c = demora_c - d_c;
-	if (cont_c-d_c-1 >= 0)
-		aux1_c = frac_c * line1_c[cont_c-d_c-1] + (1-frac_c) * line1_c[cont_c-d_c];
-	if (cont_c-d_c == 0)
-		aux1_c = frac_c * line1_c[CHORUS_SIZE-1] + (1-frac_c) * line1_c[cont_c-d_c];
-	if (cont_c-d_c < 0)
-		aux1_c = frac_c * line1_c[CHORUS_SIZE-d_c+cont_c-1] + (1-frac_c) * line1_c[CHORUS_SIZE-d_c+cont_c];
+	demora = chorusLFO(modulacion);
+	d = (int) floor(demora);
+	frac = demora - d;
+	if (cont-d-1 >= 0)
+		aux1 = frac * line1[cont-d-1] + (1-frac) * line1[cont-d];
+	if (cont-d == 0)
+		aux1 = frac * line1[CHORUS_SIZE-1] + (1-frac) * line1[cont-d];
+	if (cont-d < 0)
+		aux1 = frac * line1[CHORUS_SIZE-d+cont-1] + (1-frac) * line1[CHORUS_SIZE-d+cont];
 
-	d_c = (int) floor(demora_c + 50);
-	frac_c = demora_c + 50 - d_c;
-	if (cont_c-d_c-1 >= 0)
-		aux2_c = frac_c * line2_c[cont_c-d_c-1] + (1-frac_c) * line2_c[cont_c-d_c];
-	if (cont_c-d_c == 0)
-		aux2_c = frac_c * line2_c[CHORUS_SIZE-1] + (1-frac_c) * line2_c[cont_c-d_c];
-	if (cont_c-d_c < 0)
-		aux2_c = frac_c * line2_c[CHORUS_SIZE-d_c+cont_c-1] + (1-frac_c) * line2_c[CHORUS_SIZE-d_c+cont_c];
+	d = (int) floor(demora + 50);
+	frac = demora + 50 - d;
+	if (cont-d-1 >= 0)
+		aux2 = frac * line2[cont-d-1] + (1-frac) * line2[cont-d];
+	if (cont-d == 0)
+		aux2 = frac * line2[CHORUS_SIZE-1] + (1-frac) * line2[cont-d];
+	if (cont-d < 0)
+		aux2 = frac * line2[CHORUS_SIZE-d+cont-1] + (1-frac) * line2[CHORUS_SIZE-d+cont];
 
-	d_c = (int) floor(demora_c + 100);
-	frac_c = demora_c + 100 - d_c;
-	if (cont_c-d_c-1 >= 0)
-		aux3_c = frac_c * line3_c[cont_c-d_c-1] + (1-frac_c) * line3_c[cont_c-d_c];
-	if (cont_c-d_c == 0)
-		aux3_c = frac_c * line3_c[CHORUS_SIZE-1] + (1-frac_c) * line3_c[cont_c-d_c];
-	if (cont_c-d_c < 0)
-		aux3_c = frac_c * line3_c[CHORUS_SIZE-d_c+cont_c-1] + (1-frac_c) * line3_c[CHORUS_SIZE-d_c+cont_c];
+	d = (int) floor(demora + 100);
+	frac = demora + 100 - d;
+	if (cont-d-1 >= 0)
+		aux3 = frac * line3[cont-d-1] + (1-frac) * line3[cont-d];
+	if (cont-d == 0)
+		aux3 = frac * line3[CHORUS_SIZE-1] + (1-frac) * line3[cont-d];
+	if (cont-d < 0)
+		aux3 = frac * line3[CHORUS_SIZE-d+cont-1] + (1-frac) * line3[CHORUS_SIZE-d+cont];
 
 
-	cont_c++;
+	cont++;
 
-	salida_c = aux3_c + aux2_c + aux1_c + entrada;
-//	salida_c = salida_c;
-	return salida_c;
+	salida = aux3 + aux2 + aux1 + entrada;
+//	salida = salida;
+	return salida;
 }
 
-float32_t chorusLFO(int modulacion_c)
+float32_t chorusLFO(int modulacion)
 {
-  switch(modulacion_c)
+  switch(modulacion)
 	{
 		case CUADRADA:
-			if(tiempo_c >= periodo_c/2)
+			if(tiempo >= periodo/2)
 			{
-				if(auxcoef_c == min_c)
-					auxcoef_c = max_c;
+				if(auxcoef == min)
+					auxcoef = max;
 				else
-					auxcoef_c = min_c;
-				tiempo_c = 0;
+					auxcoef = min;
+				tiempo = 0;
 			}
-			demora_c=lp_c*demora_c+(1-lp_c) * auxcoef_c;
+			demora=lp*demora+(1-lp) * auxcoef;
 			break;
 
 		case TRIANGULAR:
-			if(flag_c == 0)
-				demora_c = demora_c + 2*delta_c;
-			if(flag_c == 1)
-				demora_c = demora_c - 2*delta_c;
-			if(demora_c >= max_c || demora_c <= min_c)
+			if(flag == 0)
+				demora = demora + 2*delta;
+			if(flag == 1)
+				demora = demora - 2*delta;
+			if(demora >= max || demora <= min)
 			{
-				flag_c = 1 - flag_c;
-				tiempo_c = 0;
+				flag = 1 - flag;
+				tiempo = 0;
 			}
 			break;
 
 		case RAMPA_ASC:
-			auxcoef_c = auxcoef_c + delta_c;
-			if(demora_c >= max_c)
+			auxcoef = auxcoef + delta;
+			if(demora >= max)
 			{
-				auxcoef_c = min_c;
-				tiempo_c = 0;
+				auxcoef = min;
+				tiempo = 0;
 			}
-			demora_c=lp_c*demora_c+(1-lp_c) * auxcoef_c;
+			demora=lp*demora+(1-lp) * auxcoef;
 			break;
 
 		case SINUSOIDAL:
-			demora_c = manual_c + depth_c * arm_sin_f32((float32_t)(2*3.1416*tiempo_c/periodo_c));
-			if(tiempo_c == periodo_c)
-				tiempo_c = 0;
+			demora = manual + depth * arm_sin_f32((float32_t)(2*3.1416*tiempo/periodo));
+			if(tiempo == periodo)
+				tiempo = 0;
 			break;
 	}
-	tiempo_c++;
-	return demora_c;
+	tiempo++;
+	return demora;
 }
 
 void chorusRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_c = 2 * (db->value);
+	rate = 2 * (db->value);
 	chorusParametros();
 }
 
 void chorusDepth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	depth_c = (manual_c - 1) * (db->value);
+	depth = (manual - 1) * (db->value);
 	chorusParametros();
 }

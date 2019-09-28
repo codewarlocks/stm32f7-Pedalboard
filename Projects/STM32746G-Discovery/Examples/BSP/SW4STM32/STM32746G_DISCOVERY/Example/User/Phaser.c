@@ -6,29 +6,24 @@
 #include "arm_common_tables.h"
 #define N 10
 
-int salida_ph = 0;
+static int salida = 0;
 
-// instancias de las variables de entrada y salida_ph
-int x1_ph[4],x0_ph[4];
-int y1_ph[4],y0_ph[4];
+// instancias de las variables de entrada y salida
+static int x_1[4], x_0[4], y_1[4],y_0[4];
 
 // parametros de usuario
-float rate_ph = 4;
-int state_ph = 0;
+static float32_t rate = 4;
 
 // parametros de desarrollador
-float fmedia_ph = 1000, depth_ph = 700;
-int modulacion_ph = TRIANGULAR;
+static float32_t fmedia = 1000, depth = 700;
+static int modulacion = TRIANGULAR;
 
 // parametros del filtro
-float c_ph = 0;
+static float32_t c = 0;
 
 // variables auxiliares
-float finicial_ph = 0, ffinal_ph = 0, fcentral_ph = 1000;
-int periodo_ph = 0;
-float deltaf_ph = 0, aux_ph = 0;
-
-int flag_ph = 0;
+static float32_t finicial = 0, ffinal = 0, fcentral = 1000, deltaf = 0, aux = 0;
+static int periodo = 0, flag = 0;
 
 void phaserInit()
 {
@@ -37,51 +32,51 @@ void phaserInit()
 
 void phaserParametros()
 {
-	finicial_ph = fmedia_ph - depth_ph;
-	ffinal_ph = fmedia_ph + depth_ph;
-	periodo_ph = (int) SR/rate_ph;
-	deltaf_ph = (ffinal_ph - finicial_ph)/periodo_ph;
+	finicial = fmedia - depth;
+	ffinal = fmedia + depth;
+	periodo = (int) SR/rate;
+	deltaf = (ffinal - finicial)/periodo;
 }
 
 int phaserEfecto(int entrada)
 {
-  fcentral_ph = phaserLFO(modulacion_ph);
-  aux_ph = tan(3.1416*fcentral_ph/SR);
-  c_ph = (1-aux_ph)/(1+aux_ph);
-  salida_ph = phaserAP1(entrada,0);
-  salida_ph = phaserAP1(salida_ph,1);
-  salida_ph = phaserAP1(salida_ph,2);
-  salida_ph = phaserAP1(salida_ph,3);
-  salida_ph = (int)(0.5 * (float32_t)salida_ph + 0.5 * (float32_t)entrada);
-  return salida_ph;
+  fcentral = phaserLFO(modulacion);
+  aux = tan(3.1416*fcentral/SR);
+  c = (1-aux)/(1+aux);
+  salida = phaserAP1(entrada,0);
+  salida = phaserAP1(salida,1);
+  salida = phaserAP1(salida,2);
+  salida = phaserAP1(salida,3);
+  salida = (int)((0.5 *(float)salida) + (0.5 * (float)entrada));
+  return salida;
 }
 
 int phaserAP1(int in, int i)
 {
-  x1_ph[i] = x0_ph[i];
-  x0_ph[i] = in;
-  y1_ph[i] = y0_ph[i];
-  y0_ph[i] = c_ph * x0_ph[i] - x1_ph[i] + c_ph * y1_ph[i];
-  return y0_ph[i];
+  x_1[i] = x_0[i];
+  x_0[i] = in;
+  y_1[i] = y_0[i];
+  y_0[i] = c * x_0[i] - x_1[i] + c * y_1[i];
+  return y_0[i];
 }
 
-float phaserLFO(int modulacion_ph)
+float phaserLFO(int modulacion)
 {
-  if(modulacion_ph == TRIANGULAR)
+  if(modulacion == TRIANGULAR)
   {
-    if(flag_ph == 0)
-      fcentral_ph = fcentral_ph + 2 * deltaf_ph;
-    if(flag_ph == 1)
-      fcentral_ph = fcentral_ph - 2 * deltaf_ph;
-    if(fcentral_ph >= ffinal_ph || fcentral_ph <= finicial_ph)
-      flag_ph = 1 - flag_ph;
+    if(flag == 0)
+      fcentral = fcentral + 2 * deltaf;
+    if(flag == 1)
+      fcentral = fcentral - 2 * deltaf;
+    if(fcentral >= ffinal || fcentral <= finicial)
+      flag = 1 - flag;
   }
-	return fcentral_ph;
+	return fcentral;
 }
 
 void phaserRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_ph = 6 * (db->value);
+	rate = 6 * (db->value);
 	phaserParametros();
 }

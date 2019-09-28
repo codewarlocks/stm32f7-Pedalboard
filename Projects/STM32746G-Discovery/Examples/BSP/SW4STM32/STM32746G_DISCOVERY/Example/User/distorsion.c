@@ -2,28 +2,25 @@
 #include "math.h"
 #include "gui/prototipos.h"
 
-int salida_ds = 0;
+static int salida = 0;
 
 // variables auxiliares
-float aux_ds=0;
+static float32_t aux=0;
 
 // parametros de usuario
-float gain_ds = 70, blend_ds = 0.5;
+static float32_t gain = 70.0, blend = 0.5;
 
 // variables de filtrado
-int x1_ds[2],x0_ds[2];
-int y1_ds[2],y0_ds[2];
-float Vo_ds[2] = {0.25 , 4};
-float fc_ds[2] = {700 , 700};
-float d_ds[2],c_ds[2];
+static int x_1[2],x_0[2], y_1[2], y_0[2];
+static float32_t Vo[2] = {0.25 , 4}, fc[2] = {700 , 700}, c[2];
 
 void distorsionInit ()
 {
     //parametros low shelve
-    if(Vo_ds[0] >= 1)
-	  c_ds[0] = (1-tan(3.1416*fc_ds[0]/SR))/(1+tan(3.1416*fc_ds[0]/SR));
+    if(Vo[0] >= 1)
+	  c[0] = (1-tan(3.1416*fc[0]/SR))/(1+tan(3.1416*fc[0]/SR));
     else
-	  c_ds[0] = (Vo_ds[0]-tan(3.1416*fc_ds[0]/SR))/(Vo_ds[0]+tan(3.1416*fc_ds[0]/SR));
+	  c[0] = (Vo[0]-tan(3.1416*fc[0]/SR))/(Vo[0]+tan(3.1416*fc[0]/SR));
     distorsionParametros();
 }
 
@@ -35,49 +32,49 @@ void distorsionParametros()
 int distorsionEfecto (int entrada)
 {
 	// de-emphasis de graves
-	aux_ds = (float) distorsionShelve(entrada,0);
+	aux = (float) distorsionShelve(entrada,0);
 
 	// escalar de -gain a +gain
-	aux_ds = (gain_ds * aux_ds)/8388607.0;
+	aux = (gain * aux)/8388607.0;
 
 	// waveshaper
-	//salida_ds = ((aux_ds / sqrt(1 + aux_ds * aux_ds))/(gain_ds/1.5))*8388607.0;
-	aux_ds = (2/3.1415)*atan(aux_ds);
+	//salida = ((aux / sqrt(1 + aux * aux))/(gain/1.5))*8388607.0;
+	aux = (2/3.1415)*atan(aux);
 
 	// reescalado
-	//aux_ds = aux_ds * 8388607.0;
-	aux_ds = aux_ds * 3106891.5; //para que no suba tanto el volumen
+	//aux = aux * 8388607.0;
+	aux = aux * 3106891.5; //para que no suba tanto el volumen
 
 	// refuerzo de graves
-	//aux_ds = (float) distorsionShelve(aux_ds,1);
+	//aux = (float) distorsionShelve(aux,1);
 
 	//control de volumen
-	//aux_ds = 1.5 * aux_ds / gain_ds;
+	//aux = 1.5 * aux / gain;
 
 	// blend con la entrada
-	salida_ds = blend_ds * aux_ds + (1 - blend_ds) * entrada;
+	salida = blend * aux + (1 - blend) * entrada;
 
-	return  salida_ds;
+	return  salida;
 }
 
 int distorsionShelve(int in, int i_ds)
 {
-	x1_ds[i_ds] = x0_ds[i_ds];
-	x0_ds[i_ds] = in;
-	y1_ds[i_ds] = y0_ds[i_ds];
-	y0_ds[i_ds] = c_ds[i_ds] * x0_ds[i_ds] - x1_ds[i_ds] + c_ds[i_ds] * y1_ds[i_ds];
-	in = 0.5 * (Vo_ds[i_ds] - 1) * (in - y0_ds[i_ds]) + in;
+	x_1[i_ds] = x_0[i_ds];
+	x_0[i_ds] = in;
+	y_1[i_ds] = y_0[i_ds];
+	y_0[i_ds] = c[i_ds] * x_0[i_ds] - x_1[i_ds] + c[i_ds] * y_1[i_ds];
+	in = 0.5 * (Vo[i_ds] - 1) * (in - y_0[i_ds]) + in;
 	return in;
 }
 
 void distorsionGain (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	gain_ds = pow(10 , 3 * (db->value));
+	gain = pow(10 , 3 * (db->value));
 }
 
 void distorsionBlend (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	blend_ds = (db->value);
+	blend = (db->value);
 }

@@ -1,18 +1,16 @@
 #include "gui/prototipos.h"
 
 // parametros de desarrollador
-#define DELAY_SIZE 3000
+#define DELAY_SIZE 50000
 
-static int salida_d = 0;
+static int salida = 0;
 
 // parametros de usuario
-static float32_t level_d = 0.5, feedback_d = 0;
-static int time_d = 20000;
+static float32_t level = 0.5, feedback = 0;
+static int time = 20000;
 
 // variables auxiliares
-int line[DELAY_SIZE];
-
-static int cont_d = 0, flag_d = 0;
+static int line[DELAY_SIZE], cont = 0, flag = 0;
 
 void delayInit ()
 {
@@ -26,49 +24,49 @@ void delayParametros()
 
 int delayEfecto (int entrada)
 {
-	if (cont_d == DELAY_SIZE)
+	if (cont == DELAY_SIZE)
 	{
-		flag_d = 1;
-		cont_d = 0;
+		flag = 1;
+		cont = 0;
 	}
-	if (flag_d == 0)
+	if (flag == 0)
 	{
-		line[cont_d] = entrada * (1-feedback_d);
-		salida_d = entrada * (1-level_d);
-		cont_d++;
+		line[cont] = entrada * (1-feedback);
+		salida = entrada * (1-level);
+		cont++;
 	}
-	if (flag_d == 1)
+	if (flag == 1)
 	{
-		if (cont_d >= time_d)
+		if (cont >= time)
 		{
-			line[cont_d] = entrada * (1-feedback_d) + line[cont_d-time_d] * feedback_d;
-			salida_d = entrada * (1-level_d) + line[cont_d-time_d] * level_d;
+			line[cont] = entrada * (1-feedback) + line[cont-time] * feedback;
+			salida = entrada * (1-level) + line[cont-time] * level;
 		}
 		else
 		{
-			line[cont_d] = entrada * (1-feedback_d) + line[DELAY_SIZE+cont_d-time_d] * feedback_d;
-			salida_d = entrada * (1-level_d) + line[DELAY_SIZE+cont_d-time_d] * level_d;
+			line[cont] = entrada * (1-feedback) + line[DELAY_SIZE+cont-time] * feedback;
+			salida = entrada * (1-level) + line[DELAY_SIZE+cont-time] * level;
 		}
-		cont_d++;
+		cont++;
 	}
 
-	return 2*salida_d;
+	return 2*salida;
 }
 
 void delayTime (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	time_d = (int)((DELAY_SIZE-1)*(db->value));
+	time = (int)((DELAY_SIZE-1)*(db->value));
 }
 
 void delayFeedback (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
- 	feedback_d = (db->value);
+ 	feedback = (db->value);
 }
 
 void delayLevel (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	level_d = (db->value);
+	level = (db->value);
 }

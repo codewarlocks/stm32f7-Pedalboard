@@ -4,22 +4,18 @@
 #include "arm_math.h"
 #include "arm_common_tables.h"
 
-int salida_t = 0;
+static int salida = 0;
 
 // parametros de desarrollador
-float mid_t = 0.5;
+static float32_t mid = 0.500;
 
 // parametros de usuario
-float rate_t = 2, depth_t = 0.3;
-int modulacion_t = SINUSOIDAL;
+static float32_t rate = 2, depth = 0.3;
+static int modulacion = SINUSOIDAL;
 
 // variables auxiliares
-float32_t max_t = 0, min_t = 0, delta_t = 0, coef_t = 0;
-int periodo_t = 0;
-
-int tiempo_t = 0, flag_t = 0;
-
-float32_t auxcoef_t=0, lp_t=0.99;
+static float32_t max = 0, min = 0, delta = 0, coef = 0, auxcoef=0, lp=0.99;
+static int periodo = 0, tiempo = 0, flag = 0;
 
 void tremoloInit ()
 {
@@ -28,79 +24,79 @@ void tremoloInit ()
 
 void tremoloParametros ()
 {
-	coef_t=mid_t;
-	min_t = mid_t - depth_t;
-	max_t = mid_t + depth_t;
-	periodo_t = (int) SR/rate_t;
-	delta_t = (max_t - min_t)/periodo_t;
+	coef=mid;
+	min = mid - depth;
+	max = mid + depth;
+	periodo = (int) SR/rate;
+	delta = (max - min)/periodo;
 }
 
 int tremoloEfecto (int entrada)
 {
-	coef_t = tremoloLFO();
-	salida_t = entrada * coef_t;
-	return salida_t;
+	coef = tremoloLFO();
+	salida = entrada * coef;
+	return salida;
 }
 
 float32_t tremoloLFO()
 {
-	switch(modulacion_t)
+	switch(modulacion)
 	{
 	case CUADRADA:
-		if(tiempo_t >= periodo_t/2)
+		if(tiempo >= periodo/2)
 		{
-			if(auxcoef_t == min_t)
-				auxcoef_t = max_t;
+			if(auxcoef == min)
+				auxcoef = max;
 			else
-				auxcoef_t = min_t;
-			tiempo_t = 0;
+				auxcoef = min;
+			tiempo = 0;
 		}
-		coef_t=lp_t*coef_t+(1-lp_t) * auxcoef_t;
+		coef=lp*coef+(1-lp) * auxcoef;
 		break;
 
 	case TRIANGULAR:
-		if(flag_t == 0)
-			coef_t = coef_t + 2 * delta_t;
-		if(flag_t == 1)
-			coef_t = coef_t - 2 * delta_t;
-		if(coef_t >= max_t || coef_t <= min_t)
+		if(flag == 0)
+			coef = coef + 2 * delta;
+		if(flag == 1)
+			coef = coef - 2 * delta;
+		if(coef >= max || coef <= min)
 		{
-			flag_t = 1 - flag_t;
-			tiempo_t = 0;
+			flag = 1 - flag;
+			tiempo = 0;
 		}
 		break;
 
 	case RAMPA_ASC:
-		auxcoef_t = auxcoef_t + delta_t;
-		if(auxcoef_t >= max_t)
+		auxcoef = auxcoef + delta;
+		if(auxcoef >= max)
 		{
-			auxcoef_t = min_t;
-			tiempo_t = 0;
+			auxcoef = min;
+			tiempo = 0;
 		}
-		coef_t=lp_t*coef_t+(1-lp_t) * auxcoef_t;
+		coef=lp*coef+(1-lp) * auxcoef;
 		break;
 
 	case SINUSOIDAL:
-		coef_t = mid_t + depth_t * arm_sin_f32((float32_t)(2*3.1416*tiempo_t/periodo_t));
-		if(tiempo_t == periodo_t)
-			tiempo_t = 0;
+		coef = mid + depth * arm_sin_f32((float32_t)(2*3.1416*tiempo/periodo));
+		if(tiempo == periodo)
+			tiempo = 0;
 		break;
 	}
-	tiempo_t++;
-	return coef_t;
+	tiempo++;
+	return coef;
 }
 
 void tremoloRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_t = 4 * (db->value);
+	rate = 4 * (db->value);
 	tremoloParametros();
 }
 
 void tremoloDepth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	depth_t = 0.45 * (db->value);
+	depth = 0.45 * (db->value);
 	tremoloParametros();
 }
 
@@ -108,11 +104,11 @@ void tremoloMod (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
 	if (db->value <= 0.33)
-		modulacion_t = SINUSOIDAL;
+		modulacion = SINUSOIDAL;
 	else if(db->value > 0.33 && db->value <= 0.66)
-		modulacion_t = CUADRADA;
+		modulacion = CUADRADA;
 	else if(db->value > 0.66 && db->value < 1)
-		modulacion_t = TRIANGULAR;
+		modulacion = TRIANGULAR;
 	else if(db->value == 1)
-		modulacion_t = RAMPA_ASC;
+		modulacion = RAMPA_ASC;
 }

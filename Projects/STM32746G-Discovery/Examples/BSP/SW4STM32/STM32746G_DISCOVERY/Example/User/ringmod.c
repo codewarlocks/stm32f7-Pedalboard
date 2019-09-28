@@ -4,13 +4,13 @@
 #include "arm_math.h"
 #include "arm_common_tables.h"
 
-int salida_rin = 0;
+static int salida = 0;
 
 // parametros de usuario
-float rate_rin = 440;
+static float32_t rate = 440.0;
 
 //variables auxiliares
-int cont_rin = 0;
+static int cont = 0;
 
 void ringmodInit ()
 {
@@ -24,15 +24,15 @@ void ringmodParametros ()
 
 int ringmodEfecto(int entrada)
 {
-	if(cont_rin == SR)
-		cont_rin = 0;
-	salida_rin = entrada * arm_sin_f32((float32_t) 2*3.1416*rate_rin*cont_rin/SR);
-	cont_rin++;
-	return salida_rin;
+	if(cont == SR)
+		cont = 0;
+	salida = entrada * arm_sin_f32((float32_t) 2*3.1416*rate*cont/SR);
+	cont++;
+	return salida;
 }
 
 void ringmodRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_rin = 100 + 1900 * (db->value);
+	rate = 100 + 1900 * (db->value);
 }

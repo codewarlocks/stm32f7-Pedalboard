@@ -12,11 +12,12 @@
 #include "gui/perilla35x35x25.h"
 #include "gui/perilla42x41x25.h"
 #include "gui/perilla52x52x25.h"
-#include "gui/Spritesheet_slider.h"
+#include "gui/eq_slider.h"
+//#include "gui/Spritesheet_slider.h"
 //#include "gui/slider5pos.h"
 #include "gui/prototipos.h"
-//#include "gui/tremoloondas.h"
-//#include "gui/vibratoondas.h"
+#include "gui/tremoloondas.h"
+#include "gui/vibratoondas.h"
 
 #define DELAY 0
 #define OCTAVADOR 1
@@ -60,9 +61,12 @@ static void LL_ConvertLineToARGB8888(void *src,void *dst,uint32_t xstride,uint32
 //static SpriteSheet slider5xpos = { .pixels = slider5pos,
 //		.spriteWidth = 10, .spriteHeight = 83, .numSprites = 5, .format =
 //				CM_ARGB8888};//CM_RGB888
-static SpriteSheet Spritesheet13_slider = { .pixels = Spritesheet_slider,
-		.spriteWidth = 34, .spriteHeight = 83, .numSprites = 26, .format =
+static SpriteSheet eq_slider = { .pixels = eq_slider_30,
+		.spriteWidth = 30, .spriteHeight = 83, .numSprites = 26, .format =
 				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet Spritesheet13_slider = { .pixels = Spritesheet_slider,
+//		.spriteWidth = 34, .spriteHeight = 83, .numSprites = 26, .format =
+//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
 		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
 				CM_ARGB8888};//CM_RGB888
@@ -75,13 +79,13 @@ static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
 static SpriteSheet whaonda = { .pixels = whaondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
 				CM_ARGB8888};//CM_RGB888
-//static SpriteSheet vibratoonda = { .pixels = vibratoondas,
-//		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
-//				CM_ARGB8888};//CM_RGB888
-//static SpriteSheet tremoloonda = { .pixels = tremoloondas,
-//		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
-//				CM_ARGB8888};//CM_RGB888
-//
+static SpriteSheet vibratoonda = { .pixels = vibratoondas,
+		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 4, .format =
+				CM_ARGB8888};//CM_RGB888
+static SpriteSheet tremoloonda = { .pixels = tremoloondas,
+		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
+				CM_ARGB8888};//CM_RGB888
+
 
 // push button functions
 
@@ -152,11 +156,11 @@ void renderDialButton(GUIElement *bt) {
 		{
 			if (Pedales[10]->push->push_state == GUI_ON || Pedales[10]->push->push_state == (GUI_OFF | GUI_HOVER))
 			{
-				id = (uint8_t) (db->value * (float) (11));
+				id = (uint8_t) (db->value * (float32_t) (12));
 			}
 			else if (Pedales[10]->push->push_state == GUI_OFF || Pedales[10]->push->push_state == (GUI_ON | GUI_HOVER))
 			{
-				id = (uint8_t) 13 + (db->value * (float) (11));
+				id = (uint8_t) 13 + (db->value * (float32_t) (12));
 			}
 		}
 		else
@@ -960,23 +964,23 @@ void initPedals() {
 	Pedales[8]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[8]->perilla = initPerilla(3);
 	Pedales[8]->perilla->perillas[0] = guiDialButton(0, "", 167, 40, 0.67f, 0.045f, PERILLA, &perilla4241, tremoloDepth);
-	Pedales[8]->perilla->perillas[1] = guiDialButton(1, "", 220, 66, 0.2f, 0.045f, PERILLA, &perilla4241, tremoloMod);
+	Pedales[8]->perilla->perillas[1] = guiDialButton(1, "", 220, 66, 0.2f, 0.045f, PERILLA, &tremoloonda, tremoloMod);
 	Pedales[8]->perilla->perillas[2] = guiDialButton(2, "", 269, 40, 0.5f, 0.045f, PERILLA, &perilla4241, tremoloRate);
 	//Vibrato
 	Pedales[9]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[9]->perilla = initPerilla(3);
 	Pedales[9]->perilla->perillas[0] = guiDialButton(0, "", 180, 43, 0.6f, 0.045f, PERILLA, &perilla4241, vibratoRate);
 	Pedales[9]->perilla->perillas[1] = guiDialButton(1, "", 257, 43, 0.41f, 0.045f, PERILLA, &perilla4241, vibratoDepth);
-	Pedales[9]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 1.0f, 0.045f, PERILLA, &perilla3535, vibratoMod);
+	Pedales[9]->perilla->perillas[2] = guiDialButton(2, "", 223, 86, 1.0f, 0.045f, PERILLA, &vibratoonda, vibratoMod);
 	//EQ
 	Pedales[10]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[10]->perilla = initPerilla(6);
-	Pedales[10]->perilla->perillas[0] = guiDialButton(0, "", 111, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain0);
-	Pedales[10]->perilla->perillas[1] = guiDialButton(1, "", 156, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain1);
-	Pedales[10]->perilla->perillas[2] = guiDialButton(2, "", 201, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain2);
-	Pedales[10]->perilla->perillas[3] = guiDialButton(3, "", 246, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain3);
-	Pedales[10]->perilla->perillas[4] = guiDialButton(4, "", 291, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain4);
-	Pedales[10]->perilla->perillas[5] = guiDialButton(5, "", 336, 97, 0.5f, 0.045f, SLIDER, &Spritesheet13_slider, eqGain5);
+	Pedales[10]->perilla->perillas[0] = guiDialButton(0, "", 111, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain0);
+	Pedales[10]->perilla->perillas[1] = guiDialButton(1, "", 156, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain1);
+	Pedales[10]->perilla->perillas[2] = guiDialButton(2, "", 201, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain2);
+	Pedales[10]->perilla->perillas[3] = guiDialButton(3, "", 246, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain3);
+	Pedales[10]->perilla->perillas[4] = guiDialButton(4, "", 291, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain4);
+	Pedales[10]->perilla->perillas[5] = guiDialButton(5, "", 336, 97, 0.5f, 0.045f, SLIDER, &eq_slider, eqGain5);
 	//Ringmod
 	Pedales[11]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[11]->perilla = initPerilla(1);

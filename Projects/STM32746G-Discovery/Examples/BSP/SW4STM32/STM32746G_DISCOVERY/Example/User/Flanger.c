@@ -7,27 +7,15 @@
 // parametros de desarrollador
 #define FLANGER_SIZE 300
 
-int salida_f = 0;
+static int salida = 0;
 
 // parametros de usuario
-float32_t manual_f = 15, rate_f = 0.2, depth_f = 8, feedback_f = -0.95;
-int modulacion_f = SINUSOIDAL;
+static float32_t manual = 15, rate = 0.2, depth = 8, feedback = -0.95;
+static int modulacion = SINUSOIDAL;
 
 // variables auxiliares
-float32_t min_f = 0, max_f = 0, tiempo_f;
-float32_t demora_f = FLANGER_SIZE/2 - 1, delta_f = 0;
-int periodo_f = 0, flag_f=0;
-
-int cont_f = 0;
-float32_t delay_f = 0, frac_f = 0;
-float32_t aux1_f = 0, aux2_f = 0, aux3_f = 0, aux4_f = 0, aux5_f = 0;
-int d_f = 0;
-
-int line1_f[FLANGER_SIZE];
-int line2_f[FLANGER_SIZE];
-int line3_f[FLANGER_SIZE];
-int line4_f[FLANGER_SIZE];
-int line5_f[FLANGER_SIZE];
+static float32_t min = 0, max = 0, tiempo, demora = FLANGER_SIZE/2 - 1, delta = 0, frac = 0, aux1 = 0, aux2 = 0, aux3 = 0, aux4 = 0, aux5 = 0;
+static int periodo = 0, flag=0, cont = 0, d = 0, line1[FLANGER_SIZE], line2[FLANGER_SIZE], line3[FLANGER_SIZE], line4[FLANGER_SIZE], line5[FLANGER_SIZE];
 
 void flangerInit ()
 {
@@ -36,147 +24,147 @@ void flangerInit ()
 
 void flangerParametros ()
 {
-	demora_f= manual_f;
-	min_f = manual_f - depth_f;
-	max_f = manual_f + depth_f;
-	periodo_f = (int) SR/rate_f;
-	delta_f = (max_f - min_f)/periodo_f;
+	demora= manual;
+	min = manual - depth;
+	max = manual + depth;
+	periodo = (int) SR/rate;
+	delta = (max - min)/periodo;
 }
 
 int flangerEfecto (int entrada)
 {
-	if (cont_f == FLANGER_SIZE)
+	if (cont == FLANGER_SIZE)
 	{
-		cont_f = 0;
+		cont = 0;
 	}
-	line1_f[cont_f] = (int)(entrada + aux1_f * feedback_f);
-	line2_f[cont_f] = (int)(entrada + aux2_f * feedback_f);
-	line3_f[cont_f] = (int)(entrada + aux3_f * feedback_f);
-	line4_f[cont_f] = (int)(entrada + aux4_f * feedback_f);
-	line5_f[cont_f] = (int)(entrada + aux5_f * feedback_f);
+	line1[cont] = (int)(entrada + aux1 * feedback);
+	line2[cont] = (int)(entrada + aux2 * feedback);
+	line3[cont] = (int)(entrada + aux3 * feedback);
+	line4[cont] = (int)(entrada + aux4 * feedback);
+	line5[cont] = (int)(entrada + aux5 * feedback);
 
-	demora_f = flangerLFO(modulacion_f);
-	d_f = (int) floor(demora_f);
-	frac_f = demora_f - d_f;
-	if (cont_f-d_f-1 >= 0)
-		aux1_f = frac_f * line1_f[cont_f-d_f-1] + (1-frac_f) * line1_f[cont_f-d_f];
-	if (cont_f-d_f == 0)
-		aux1_f = frac_f * line1_f[FLANGER_SIZE-1] + (1-frac_f) * line1_f[cont_f-d_f];
-	if (cont_f-d_f < 0)
-		aux1_f = frac_f * line1_f[FLANGER_SIZE-d_f+cont_f-1] + (1-frac_f) * line1_f[FLANGER_SIZE-d_f+cont_f];
+	demora = flangerLFO(modulacion);
+	d = (int) floor(demora);
+	frac = demora - d;
+	if (cont-d-1 >= 0)
+		aux1 = frac * line1[cont-d-1] + (1-frac) * line1[cont-d];
+	if (cont-d == 0)
+		aux1 = frac * line1[FLANGER_SIZE-1] + (1-frac) * line1[cont-d];
+	if (cont-d < 0)
+		aux1 = frac * line1[FLANGER_SIZE-d+cont-1] + (1-frac) * line1[FLANGER_SIZE-d+cont];
 
-	d_f = (int) floor(demora_f + 10);
-	frac_f = demora_f + 10 - d_f;
-	if (cont_f-d_f-1 >= 0)
-		aux2_f = frac_f * line2_f[cont_f-d_f-1] + (1-frac_f) * line2_f[cont_f-d_f];
-	if (cont_f-d_f == 0)
-		aux2_f = frac_f * line2_f[FLANGER_SIZE-1] + (1-frac_f) * line2_f[cont_f-d_f];
-	if (cont_f-d_f < 0)
-		aux2_f = frac_f * line2_f[FLANGER_SIZE-d_f+cont_f-1] + (1-frac_f) * line2_f[FLANGER_SIZE-d_f+cont_f];
+	d = (int) floor(demora + 10);
+	frac = demora + 10 - d;
+	if (cont-d-1 >= 0)
+		aux2 = frac * line2[cont-d-1] + (1-frac) * line2[cont-d];
+	if (cont-d == 0)
+		aux2 = frac * line2[FLANGER_SIZE-1] + (1-frac) * line2[cont-d];
+	if (cont-d < 0)
+		aux2 = frac * line2[FLANGER_SIZE-d+cont-1] + (1-frac) * line2[FLANGER_SIZE-d+cont];
 
 
-	d_f = (int) floor(demora_f + 20);
-	frac_f = demora_f + 20 - d_f;
-	if (cont_f-d_f-1 >= 0)
-		aux3_f = frac_f * line3_f[cont_f-d_f-1] + (1-frac_f) * line3_f[cont_f-d_f];
-	if (cont_f-d_f == 0)
-		aux3_f = frac_f * line3_f[FLANGER_SIZE-1] + (1-frac_f) * line3_f[cont_f-d_f];
-	if (cont_f-d_f < 0)
-		aux3_f = frac_f * line3_f[FLANGER_SIZE-d_f+cont_f-1] + (1-frac_f) * line3_f[FLANGER_SIZE-d_f+cont_f];
+	d = (int) floor(demora + 20);
+	frac = demora + 20 - d;
+	if (cont-d-1 >= 0)
+		aux3 = frac * line3[cont-d-1] + (1-frac) * line3[cont-d];
+	if (cont-d == 0)
+		aux3 = frac * line3[FLANGER_SIZE-1] + (1-frac) * line3[cont-d];
+	if (cont-d < 0)
+		aux3 = frac * line3[FLANGER_SIZE-d+cont-1] + (1-frac) * line3[FLANGER_SIZE-d+cont];
 
-	d_f = (int) floor(demora_f + 30);
-	frac_f = demora_f + 30 - d_f;
-	if (cont_f-d_f-1 >= 0)
-		aux4_f = frac_f * line4_f[cont_f-d_f-1] + (1-frac_f) * line4_f[cont_f-d_f];
-	if (cont_f-d_f == 0)
-		aux4_f = frac_f * line4_f[FLANGER_SIZE-1] + (1-frac_f) * line4_f[cont_f-d_f];
-	if (cont_f-d_f < 0)
-		aux4_f = frac_f * line4_f[FLANGER_SIZE-d_f+cont_f-1] + (1-frac_f) * line4_f[FLANGER_SIZE-d_f+cont_f];
+	d = (int) floor(demora + 30);
+	frac = demora + 30 - d;
+	if (cont-d-1 >= 0)
+		aux4 = frac * line4[cont-d-1] + (1-frac) * line4[cont-d];
+	if (cont-d == 0)
+		aux4 = frac * line4[FLANGER_SIZE-1] + (1-frac) * line4[cont-d];
+	if (cont-d < 0)
+		aux4 = frac * line4[FLANGER_SIZE-d+cont-1] + (1-frac) * line4[FLANGER_SIZE-d+cont];
 
-	d_f = (int) floor(demora_f + 40);
-	frac_f = demora_f + 40 - d_f;
-	if (cont_f-d_f-1 >= 0)
-		aux5_f = frac_f * line5_f[cont_f-d_f-1] + (1-frac_f) * line5_f[cont_f-d_f];
-	if (cont_f-d_f == 0)
-		aux5_f = frac_f * line5_f[FLANGER_SIZE-1] + (1-frac_f) * line5_f[cont_f-d_f];
-	if (cont_f-d_f < 0)
-		aux5_f = frac_f * line5_f[FLANGER_SIZE-d_f+cont_f-1] + (1-frac_f) * line5_f[FLANGER_SIZE-d_f+cont_f];
+	d = (int) floor(demora + 40);
+	frac = demora + 40 - d;
+	if (cont-d-1 >= 0)
+		aux5 = frac * line5[cont-d-1] + (1-frac) * line5[cont-d];
+	if (cont-d == 0)
+		aux5 = frac * line5[FLANGER_SIZE-1] + (1-frac) * line5[cont-d];
+	if (cont-d < 0)
+		aux5 = frac * line5[FLANGER_SIZE-d+cont-1] + (1-frac) * line5[FLANGER_SIZE-d+cont];
 
-	cont_f++;
+	cont++;
 
-	salida_f = (int)((aux5_f + aux4_f + aux3_f + aux2_f + aux1_f + entrada)*0.35);
-	return salida_f;
+	salida = (int)((aux5 + aux4 + aux3 + aux2 + aux1 + entrada)*0.35);
+	return salida;
 }
 
-float32_t flangerLFO(int modulacion_f)
+float32_t flangerLFO(int modulacion)
 {
-	switch(modulacion_f)
+	switch(modulacion)
 	{
 	case CUADRADA:
-		if(tiempo_f == periodo_f/2)
+		if(tiempo == periodo/2)
 		{
-			if(demora_f == min_f)
-				demora_f = max_f;
+			if(demora == min)
+				demora = max;
 			else
-				demora_f = min_f;
-			tiempo_f = 0;
+				demora = min;
+			tiempo = 0;
 		}
 		break;
 
 	case TRIANGULAR:
-		if(flag_f == 0)
-			demora_f = demora_f + 2*delta_f;
-		if(flag_f == 1)
-			demora_f = demora_f - 2*delta_f;
-		if(demora_f >= max_f || demora_f <= min_f)
+		if(flag == 0)
+			demora = demora + 2*delta;
+		if(flag == 1)
+			demora = demora - 2*delta;
+		if(demora >= max || demora <= min)
 		{
-			flag_f = 1 - flag_f;
-			tiempo_f = 0;
+			flag = 1 - flag;
+			tiempo = 0;
 		}
 		break;
 
 	case RAMPA_ASC:
-		demora_f = demora_f + delta_f;
-		if(demora_f >= max_f)
+		demora = demora + delta;
+		if(demora >= max)
 		{
-			demora_f = min_f;
-			tiempo_f = 0;
+			demora = min;
+			tiempo = 0;
 		}
 		break;
 
 	case SINUSOIDAL:
-		demora_f = manual_f + depth_f * arm_sin_f32((float32_t)(2*3.1416*tiempo_f/periodo_f));
-		if(tiempo_f == periodo_f)
-			tiempo_f = 0;
+		demora = manual + depth * arm_sin_f32((float32_t)(2*3.1416*tiempo/periodo));
+		if(tiempo == periodo)
+			tiempo = 0;
 		break;
 	}
-	tiempo_f++;
-	return demora_f;
+	tiempo++;
+	return demora;
 }
 
 void flangerManual (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	manual_f = 35 * (db->value) + 15;
+	manual = 35 * (db->value) + 15;
 	flangerParametros();
 }
 
 void flangerDepth (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	depth_f = (15 - 1) * (db->value);
+	depth = (15 - 1) * (db->value);
 	flangerParametros();
 }
 
 void flangerRate (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_f = 1 * (db->value);
+	rate = 1 * (db->value);
 	flangerParametros();
 }
 
 void flangerFeedback (GUIElement *e)
 {
 	DialButtonState *db = (DialButtonState *) (e->userData);
-	rate_f = - 0.185 * (db->value) - 0.8;
+	rate = - 0.185 * (db->value) - 0.8;
 }

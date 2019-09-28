@@ -62,6 +62,7 @@ typedef enum
 
 #define AUDIO_BLOCK_SIZE   ((uint32_t)256)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
+#define AUDIO_BUFFER_OUT   (AUDIO_REC_START_ADDR + (AUDIO_BLOCK_SIZE * 2)) /* In SDRAM */
 
 /* Private define ------------------------------------------------------------*/
 //Para dibujar perillas
@@ -74,28 +75,10 @@ __IO uint32_t isPressed = 0;
 /* Private variables ---------------------------------------------------------*/
 uint32_t  audio_rec_buffer_state;
 unsigned int cont=0;
-int Buffer_in[AUDIO_BLOCK_SIZE],Buffer_out[AUDIO_BLOCK_SIZE], i=0, i_audio=0;
+int *Buffer_in, *Buffer_out, i=0, i_audio=0;
 //Variables Pasabajos
 float32_t control_fcorte=1, cuenta;
 int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0, seleccion_pedal=0, pedal_prendido=0, seleccion_menu=MENU_1;
-
-/* Private function prototypes -----------------------------------------------*/
-
-int FBCF0_line[1617];
-int FBCF1_line[1617];
-int FBCF2_line[1617];
-int FBCF3_line[1617];
-int FBCF4_line[1617];
-int FBCF5_line[1617];
-int FBCF6_line[1617];
-int FBCF7_line[1617];
-
-int lpo_r[8];
-
-int AP0_line[225];
-int AP1_line[556];
-int AP2_line[441];
-int AP3_line[341];
 
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
@@ -130,6 +113,8 @@ int main(void)
 	HAL_Delay(500);
 	BSP_LCD_Init();
 	HAL_Delay(500);
+	LCD_Config();
+	HAL_Delay(500);
 	BSP_SD_Init();
 	HAL_Delay(500);
 
@@ -141,11 +126,12 @@ int main(void)
 	HAL_Delay(100);
 
 	audio_rec_buffer_state = BUFFER_OFFSET_NONE;
-
+	Buffer_in=(int*)malloc(sizeof(int)*AUDIO_BLOCK_SIZE);
+	Buffer_out=(int*)malloc(sizeof(int)*AUDIO_BLOCK_SIZE);
 	/* Start Playback */
 	BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
-	BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 	BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
+	BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 	BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 	BSP_LCD_SelectLayer(1);
 	while (1)
@@ -173,10 +159,12 @@ int main(void)
 				}
 				NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
 		}
+
+
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;//izquierdo -> mono guitarra red bull
 
 		/* Wait end of one block recording */
-		//while(audio_rec_buffer_state != BUFFER_OFFSET_FULL);
+//		while(audio_rec_buffer_state != BUFFER_OFFSET_FULL);
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
 	}
 }
@@ -254,7 +242,7 @@ void CPU_CACHE_Enable(void)
 	SCB_EnableICache();
 
 	/* Enable D-Cache */
-	SCB_EnableDCache();
+	//SCB_EnableDCache();
 }
 
 void LCD_Config(void)
@@ -302,7 +290,6 @@ void InitEfectos()
 
 void Demo_fondito(void){
 	/* LCD Initialization */
-	LCD_Config();
 	FATFS_LinkDriver(&SD_Driver, SD_Path);
 	DrawScreen(MENU_1);
 }
@@ -327,6 +314,9 @@ void DrawScreen(int num)
 void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
 	audio_rec_buffer_state = BUFFER_OFFSET_FULL;
+	memcpy((uint16_t *)(AUDIO_BUFFER_OUT + (AUDIO_BLOCK_SIZE)),
+				           (uint16_t *)(AUDIO_BUFFER_IN + (AUDIO_BLOCK_SIZE)),
+				           AUDIO_BLOCK_SIZE);
 	for(i=128;i<256;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo

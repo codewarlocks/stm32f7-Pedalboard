@@ -9,7 +9,7 @@
 
 static int salida = 0;
 
-static int FBCF0_line[1617];
+static int FBCF0_line[1617];//1617
 static int FBCF1_line[1617];
 static int FBCF2_line[1617];
 static int FBCF3_line[1617];
@@ -20,10 +20,10 @@ static int FBCF7_line[1617];
 
 static int lpo[8];
 
-static int AP0_line[225];
-static int AP1_line[556];
-static int AP2_line[441];
-static int AP3_line[341];
+int AP0_line[225];
+int AP1_line[556];
+int AP2_line[441];
+int AP3_line[341];
 
 //variables de usuario
 static float32_t dry = 0.8, wet = 0.2, g = 0.5, f = 0.75;

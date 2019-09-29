@@ -41,6 +41,7 @@ uint32_t    ErrorCounter = 0;
 #endif
 
 /* Private function prototypes -----------------------------------------------*/
+void Error_Handler(void);
 void SystemClock_Config(void);
 void CPU_CACHE_Enable(void);
 
@@ -102,10 +103,23 @@ int main(void)
 
 	ADC_ChannelConfTypeDef sConfig;
 
+	/* Enable the CPU Cache */
+	CPU_CACHE_Enable();
+
+	/* STM32F7xx HAL library initialization:
+       - Configure the Flash prefetch, instruction and Data caches
+       - Configure the Systick to generate an interrupt each 1 msec
+       - Set NVIC Group Priority to 4
+       - Global MSP (MCU Support Package) initialization
+	 */
+	HAL_Init();
+	/* Configure the system clock to 200 Mhz */
+	SystemClock_Config();
+
 	/*##-1- Configure the ADC peripheral #######################################*/
 	AdcHandle.Instance          = ADCx;
 
-	AdcHandle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV4;
+	AdcHandle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV8;//ADC_CLOCKPRESCALER_PCLK_DIV4;
 	AdcHandle.Init.Resolution            = ADC_RESOLUTION_12B;
 	AdcHandle.Init.ScanConvMode          = DISABLE;                       /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
 	AdcHandle.Init.ContinuousConvMode    = ENABLE;                       /* Continuous mode enabled to have continuous conversion  */
@@ -120,30 +134,19 @@ int main(void)
 
 	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
 	{
+		Error_Handler();
 	}
 
 	/*##-2- Configure ADC regular channel ######################################*/
-	sConfig.Channel      = ADC_CHANNEL_0;
+	sConfig.Channel      = ADCx_CHANNEL;
 	sConfig.Rank         = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;//ADC_SAMPLETIME_3CYCLES; //ADC_SAMPLETIME_480CYCLES
 	sConfig.Offset       = 0;
 
 	if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
 	{
+		Error_Handler();
 	}
-
-	/* Enable the CPU Cache */
-	CPU_CACHE_Enable();
-
-	/* STM32F7xx HAL library initialization:
-       - Configure the Flash prefetch, instruction and Data caches
-       - Configure the Systick to generate an interrupt each 1 msec
-       - Set NVIC Group Priority to 4
-       - Global MSP (MCU Support Package) initialization
-	 */
-	HAL_Init();
-	/* Configure the system clock to 200 Mhz */
-	SystemClock_Config();
 
 	BSP_LED_Init(LED1);
 	BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
@@ -167,13 +170,16 @@ int main(void)
 	/*##-3- Start the conversion process #######################################*/
 	if(HAL_ADC_Start_DMA(&AdcHandle, (uint32_t*)&uhADCxConvertedValue, 1) != HAL_OK)
 	{
+		Error_Handler();
 	}
 	while (1)
 	{
+		cont++;
 		/* Wait end of half block recording */
 		while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
 		{
 			NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+			NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
 			BSP_TS_GetState(&rawTouchState);
 			guiUpdateTouch(&rawTouchState, &touchState);
 			if(pedal_individual==1)
@@ -191,6 +197,8 @@ int main(void)
 				linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
 				linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
 			}
+			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream2_IRQn);
+			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
 			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
 		}
 
@@ -398,5 +406,21 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
 {
 	/* Turn LED1 on: Transfer process is correct */
-	BSP_LED_On(LED1);
+	//BSP_LED_On(LED1);
+	NVIC_DisableIRQ((IRQn_Type)DMA2_Stream2_IRQn); //DMA2_Stream4_IRQn
+}
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @param  None
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  while (1)
+  {
+    /* LED1 blinks */
+    BSP_LED_Toggle(LED1);
+    HAL_Delay(20);
+  }
 }

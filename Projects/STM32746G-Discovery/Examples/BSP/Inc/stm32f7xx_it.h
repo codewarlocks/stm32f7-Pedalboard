@@ -51,6 +51,7 @@ void AUDIO_IN_SAIx_DMAx_IRQHandler(void);
 void BSP_SDRAM_DMA_IRQHandler(void);
 void DMA2D_IRQHandler(void);
 void BSP_LCD_DMA2D_IRQHandler(void);
+void ADCx_DMA_IRQHandler(void);
 #ifdef __cplusplus
 }
 #endif

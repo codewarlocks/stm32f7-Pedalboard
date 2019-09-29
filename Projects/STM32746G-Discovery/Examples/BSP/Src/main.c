@@ -44,6 +44,11 @@ uint32_t    ErrorCounter = 0;
 void SystemClock_Config(void);
 void CPU_CACHE_Enable(void);
 
+ADC_HandleTypeDef    AdcHandle;
+
+/* Variable used to get converted value */
+__IO uint16_t uhADCxConvertedValue = 0;
+
 char SD_Path[4]; /* SD card logical drive path */
 char* pDirectoryFiles[25];//MAX_BMP_FILES
 uint8_t  ubNumberOfFiles = 0;
@@ -95,6 +100,38 @@ LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
 int main(void)
 {
 
+	ADC_ChannelConfTypeDef sConfig;
+
+	/*##-1- Configure the ADC peripheral #######################################*/
+	AdcHandle.Instance          = ADCx;
+
+	AdcHandle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV4;
+	AdcHandle.Init.Resolution            = ADC_RESOLUTION_12B;
+	AdcHandle.Init.ScanConvMode          = DISABLE;                       /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
+	AdcHandle.Init.ContinuousConvMode    = ENABLE;                       /* Continuous mode enabled to have continuous conversion  */
+	AdcHandle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
+	AdcHandle.Init.NbrOfDiscConversion   = 0;
+	AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;        /* Conversion start trigged at each external event */
+	AdcHandle.Init.ExternalTrigConv      = ADC_EXTERNALTRIGCONV_T1_CC1;
+	AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
+	AdcHandle.Init.NbrOfConversion       = 1;
+	AdcHandle.Init.DMAContinuousRequests = ENABLE;
+	AdcHandle.Init.EOCSelection          = DISABLE;
+
+	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
+	{
+	}
+
+	/*##-2- Configure ADC regular channel ######################################*/
+	sConfig.Channel      = ADC_CHANNEL_0;
+	sConfig.Rank         = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+	sConfig.Offset       = 0;
+
+	if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
+	{
+	}
+
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
 
@@ -127,37 +164,41 @@ int main(void)
 	BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 	BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 	BSP_LCD_SelectLayer(1);
+	/*##-3- Start the conversion process #######################################*/
+	if(HAL_ADC_Start_DMA(&AdcHandle, (uint32_t*)&uhADCxConvertedValue, 1) != HAL_OK)
+	{
+	}
 	while (1)
 	{
 		/* Wait end of half block recording */
 		while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
 		{
-				NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
-				BSP_TS_GetState(&rawTouchState);
-				guiUpdateTouch(&rawTouchState, &touchState);
-				if(pedal_individual==1)
-				{
-					if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-						guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-					handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-					linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+			NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+			BSP_TS_GetState(&rawTouchState);
+			guiUpdateTouch(&rawTouchState, &touchState);
+			if(pedal_individual==1)
+			{
+				if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+					guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+				handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+				linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
 
-				}
-				else if(pedal_individual==0)
-				{
-					PushRequestHandler_menu(Pedales, &touchState);
-					linkRequestHandler_menu(Pedales, &touchState);
-					linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-					linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-				}
-				NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+			}
+			else if(pedal_individual==0)
+			{
+				PushRequestHandler_menu(Pedales, &touchState);
+				linkRequestHandler_menu(Pedales, &touchState);
+				linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+				linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+			}
+			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
 		}
 
 
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;//izquierdo -> mono guitarra red bull
 
 		/* Wait end of one block recording */
-//		while(audio_rec_buffer_state != BUFFER_OFFSET_FULL);
+		//		while(audio_rec_buffer_state != BUFFER_OFFSET_FULL);
 		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
 	}
 }
@@ -308,8 +349,8 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
 	audio_rec_buffer_state = BUFFER_OFFSET_FULL;
 	memcpy((uint16_t *)(AUDIO_BUFFER_OUT + (AUDIO_BLOCK_SIZE)),
-				           (uint16_t *)(AUDIO_BUFFER_IN + (AUDIO_BLOCK_SIZE)),
-				           AUDIO_BLOCK_SIZE);
+			(uint16_t *)(AUDIO_BUFFER_IN + (AUDIO_BLOCK_SIZE)),
+			AUDIO_BLOCK_SIZE);
 	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo
@@ -352,4 +393,10 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 		}
 	}
 	return;
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
+{
+	/* Turn LED1 on: Transfer process is correct */
+	BSP_LED_On(LED1);
 }

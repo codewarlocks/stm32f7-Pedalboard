@@ -36,6 +36,8 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+extern ADC_HandleTypeDef    AdcHandle;
+extern TIM_HandleTypeDef  htimx;
 //extern DMA_HandleTypeDef   hdma;
 ///*DMA status declared in "sdram_dma.c" file */
 //extern uint32_t uwDMA_Transfer_Complete;
@@ -244,6 +246,26 @@ void AUDIO_OUT_SAIx_DMAx_IRQHandler(void)
 void DCMI_IRQHandler(void)
 {
   BSP_CAMERA_IRQHandler();
+}
+
+/**
+* @brief  This function handles DMA interrupt request.
+* @param  None
+* @retval None
+*/
+void ADCx_IRQHandler(void)
+{
+  HAL_ADC_IRQHandler(&AdcHandle);
+}
+
+/**
+  * @brief  This function handles TIM interrupt request.
+  * @param  None
+  * @retval None
+  */
+void TIMx_IRQHandler(void)
+{
+  HAL_TIM_IRQHandler(&htimx);
 }
 
 /**

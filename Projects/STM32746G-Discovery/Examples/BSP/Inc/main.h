@@ -23,6 +23,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stdio.h"
+#include "stm32f7xx_hal.h"
+#include "stm32f7xx_hal_adc.h"
 #include "stm32746g_discovery.h"
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_lcd.h"
@@ -112,6 +114,35 @@ extern uint32_t    ErrorCounter;
 /* Exported macro ------------------------------------------------------------*/
 
 #define COUNT_OF_EXAMPLE(x)    (sizeof(x)/sizeof(BSP_DemoTypedef))
+
+/* Definition for ADCx clock resources */
+#define ADCx                            ADC2
+#define ADCx_CLK_ENABLE()               __HAL_RCC_ADC2_CLK_ENABLE()
+#define ADCx_CHANNEL_GPIO_CLOCK_ENABLE()  __HAL_RCC_GPIOA_CLK_ENABLE()
+
+#define ADCx_FORCE_RESET()              __HAL_RCC_ADC_FORCE_RESET()
+#define ADCx_RELEASE_RESET()            __HAL_RCC_ADC_RELEASE_RESET()
+
+/* Definition for ADCx Channel Pin */
+#define ADCx_CHANNEL_PIN                GPIO_PIN_0
+#define ADCx_CHANNEL_GPIO_PORT          GPIOA
+
+/* Definition for ADCx's Channel */
+#define ADCx_CHANNEL                    ADC_CHANNEL_0
+
+/* Definition for ADCx's NVIC */
+#define ADCx_IRQn                         ADC_IRQn
+#define ADCx_IRQHandler                   ADC_IRQHandler
+
+#define TIMx                           TIM3
+#define TIMx_CLK_ENABLE()              __HAL_RCC_TIM3_CLK_ENABLE()
+
+
+/* Definition for TIMx's NVIC */
+#define TIMx_IRQn                      TIM3_IRQn
+#define TIMx_IRQHandler                TIM3_IRQHandler
+/* Exported macro ------------------------------------------------------------*/
+
 //void Demo_Delay (int x, int y, int init);
 /* Exported functions ------------------------------------------------------- */
 //Efectos

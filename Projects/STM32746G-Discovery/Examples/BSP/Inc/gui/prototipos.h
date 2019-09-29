@@ -29,6 +29,7 @@ void delayLevel (GUIElement*);
 void autowahInit ();
 void autowahParametros ();
 int autowahEfecto (int);
+int autowahBP2(float32_t, int);
 float32_t autowahLFO (int);
 void autowahRate (GUIElement*);
 void autowahDepth (GUIElement*);

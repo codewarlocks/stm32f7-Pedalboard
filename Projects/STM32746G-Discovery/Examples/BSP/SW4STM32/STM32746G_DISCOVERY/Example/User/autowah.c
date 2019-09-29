@@ -8,14 +8,14 @@
 static int salida=0;
 
 // instancias de las variables de entrada y salida
-static int x_0 = 0, x_1 = 0, x_2 = 0, y_0 = 0, y_1 = 0, y_2 = 0;
+static int x_2, x_1, x_0, y_2[5], y_1[5],y_0[5];
 
 // parametros de usuario
-static float32_t rate = 2, depth = 500, volume = 0.6;
+static float32_t rate = 2, depth = 450, volume = 0.6;
 static int modulacion = SINUSOIDAL;
 
 // parametros de desarrollador
-static float32_t fmedia = 800, fb = 100;
+static float32_t fmedia = 500, fb = 100;
 
 // parametros del filtro
 static float32_t c = 0, d = 0;
@@ -43,15 +43,23 @@ void autowahParametros()
 int autowahEfecto(int entrada)
 {
 	fcentral = autowahLFO(modulacion);
-	d = -arm_cos_f32((float32_t)(2*3.1416*fcentral/SR));
 	x_2 = x_1;
 	x_1 = x_0;
 	x_0 = entrada;
-	y_2 = y_1;
-	y_1 = y_0;
-	y_0 = (1 + c) * 0.5 * x_0 - (1 + c) * 0.5 * x_2 - d * (1 - c) * y_1 + c * y_2;
-	salida = 2.5 * (volume * y_0 + (1 - volume) * x_0);
+	y_0[0] = autowahBP2(fcentral,0);
+	y_0[1] = autowahBP2(400+fcentral,1);
+	y_0[2] = autowahBP2(800+fcentral,2);
+	salida = 3.0 * (volume * (y_0[0] + y_0[1] + y_0[2]) + (1 - volume) * x_0);
 	return salida;
+}
+
+int autowahBP2(float32_t fc, int i)
+{
+	d = -arm_cos_f32(2*3.1416*fc/SR);
+	y_2[i] = y_1[i];
+	y_1[i] = y_0[i];
+	y_0[i] = (1 + c) * 0.5 * x_0 - (1 + c) * 0.5 * x_2 - d * (1 - c) * y_1[i] + c * y_2[i];
+	return y_0[i];
 }
 
 float32_t autowahLFO(int modulacion)
@@ -111,15 +119,17 @@ float32_t autowahLFO(int modulacion)
 	case ENVOLVENTE:
 		rateenv = x_0/10000;
 		rateenv = rateenv*rateenv;
-		rateenv = ((8 * rate - 1000 * rateenv) > rate) ? (8 * rate - 1000 * rateenv) : rate;
+		rateenv = ((8 * rate - 10000 * rateenv) > rate) ? (8 * rate - 10000 * rateenv) : rate;
 		periodoenv = (float32_t) SR/rateenv;
 		deltafenv = (ffinal - finicial)/periodoenv;
 		if(flag == 0)
 			fcentral = fcentral + 2 * deltafenv;
 		if(flag == 1)
 			fcentral = fcentral - 2 * deltafenv;
-		if(fcentral >= ffinal || fcentral <= finicial)
-			flag = 1 - flag;
+		if(fcentral >= ffinal)
+			flag = 1;
+		if(fcentral <= finicial)
+			flag = 0;
 		break;
 	}
 	cont++;

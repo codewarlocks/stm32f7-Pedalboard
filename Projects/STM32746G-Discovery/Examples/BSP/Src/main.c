@@ -37,7 +37,7 @@
 /* Global extern variables ---------------------------------------------------*/
 uint8_t NbLoop = 1;
 #ifndef USE_FULL_ASSERT
-uint32_t    ErrorCounter = 0;
+uint32_t ErrorCounter = 0;
 #endif
 
 /* Private function prototypes -----------------------------------------------*/
@@ -312,7 +312,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 				           AUDIO_BLOCK_SIZE);
 	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
 	{
-		if(i%2!=0)//Para solo usar el canal izquierdo
+		if(i%2==0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
 			for(i_audio=11;i_audio>=0;i_audio--)
@@ -322,7 +322,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 					salida_izq=Pedales[i_audio]->efecto(salida_izq);
 				}
 			}
-			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
+			Buffer_out[i+1]=((unsigned int)(salida_izq<<8))>>8;
 		}
 	}
 	return;
@@ -338,7 +338,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 	audio_rec_buffer_state = BUFFER_OFFSET_HALF;
 	for(i=0;i<AUDIO_BLOCK_HALFSIZE;i++)
 	{
-		if(i%2!=0)//Para solo usar el canal izquierdo
+		if(i%2==0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
 			for(i_audio=11;i_audio>=0;i_audio--)
@@ -348,7 +348,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 					salida_izq=Pedales[i_audio]->efecto(salida_izq);
 				}
 			}
-			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
+			Buffer_out[i+1]=((unsigned int)(salida_izq<<8))>>8;
 		}
 	}
 	return;

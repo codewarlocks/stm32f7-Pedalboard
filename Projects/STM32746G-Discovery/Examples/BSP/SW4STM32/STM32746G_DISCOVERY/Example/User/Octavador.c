@@ -1,17 +1,18 @@
-
 #include "gui/prototipos.h"
 #include "math.h"
+#include "stdlib.h"
 #define ARM_MATH_CM7
 #include "arm_math.h"
 #include "arm_common_tables.h"
 
-#define N 2645
-
-static int line[N] = {0}, salida = 0, wr = 0, A = 0, B = N/2, flag = 1;
+static int *line, salida = 0, wr = 0, A = 0, B = 0, N = 0, flag = 1;
 static float32_t vol = 0.0;
 
 void octavadorInit()
 {
+	N = (int)(0.055*SR);  //55ms
+	line = (int*)calloc(N,sizeof(int));
+	B = N/2;
 	octavadorParametros();
 }
 

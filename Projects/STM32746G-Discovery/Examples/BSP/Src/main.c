@@ -356,7 +356,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
 	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
 	{
-		if(i%2==0)//Para solo usar el canal izquierdo
+		if(i%2!=0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
 			for(i_audio=11;i_audio>=0;i_audio--)
@@ -366,7 +366,7 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 					salida_izq=Pedales[i_audio]->efecto(salida_izq);
 				}
 			}
-			Buffer_out[i+1]=((unsigned int)(salida_izq<<8))>>8;
+			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
 		}
 	}
 	return;
@@ -381,7 +381,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
 	for(i=0;i<AUDIO_BLOCK_HALFSIZE;i++)
 	{
-		if(i%2==0)//Para solo usar el canal izquierdo
+		if(i%2!=0)//Para solo usar el canal izquierdo
 		{
 			salida_izq=((int)Buffer_in[i]<<8)>>8;
 			for(i_audio=11;i_audio>=0;i_audio--)
@@ -391,7 +391,7 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 					salida_izq=Pedales[i_audio]->efecto(salida_izq);
 				}
 			}
-			Buffer_out[i+1]=((unsigned int)(salida_izq<<8))>>8;
+			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
 		}
 	}
 	return;
@@ -400,7 +400,15 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *AdcHandle)
 {
   /* Get the converted value of regular channel */
+  DialButtonState *db = (DialButtonState *) (Pedales[PHASER]->perilla->perillas[0]->userData);
   uhADCxConvertedValue = HAL_ADC_GetValue(AdcHandle);
+  db->value = (float)(uhADCxConvertedValue/4095.0);
+  phaserRate(Pedales[PHASER]->perilla->perillas[0]);
+  if(pedal_individual==1 && seleccion_pedal==PHASER)
+  {
+	  Pedales[PHASER]->perilla->perillas[0]->state=GUI_DIRTY;
+	  Pedales[PHASER]->perilla->perillas[0]->render(Pedales[PHASER]->perilla->perillas[0]);
+  }
   if (HAL_ADC_Stop_IT(AdcHandle)!= HAL_OK)
   {
 	/* Start Conversation Error */

@@ -35,10 +35,6 @@
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
-/** @defgroup HAL_MSP_Private_Functions
-  * @{
-  */
-
 /**
   * @brief ADC MSP Initialization
   *        This function configures the hardware resources used in this example:
@@ -50,15 +46,12 @@
 void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
 {
   GPIO_InitTypeDef          GPIO_InitStruct;
-  static DMA_HandleTypeDef  hdma_adc;
 
   /*##-1- Enable peripherals and GPIO Clocks #################################*/
+  /* Enable GPIO clock ****************************************/
+  ADCx_CHANNEL_GPIO_CLOCK_ENABLE();
   /* ADC3 Periph clock enable */
   ADCx_CLK_ENABLE();
-  /* Enable GPIO clock ****************************************/
-  ADCx_CHANNEL_GPIO_CLK_ENABLE();
-  /* Enable DMA2 clock */
-  DMAx_CLK_ENABLE();
 
   /*##-2- Configure peripheral GPIO ##########################################*/
   /* ADC Channel GPIO pin configuration */
@@ -67,32 +60,10 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef *hadc)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(ADCx_CHANNEL_GPIO_PORT, &GPIO_InitStruct);
 
-  /*##-3- Configure the DMA streams ##########################################*/
-  /* Set the parameters to be configured */
-  hdma_adc.Instance = ADCx_DMA_STREAM;
-
-  hdma_adc.Init.Channel  = ADCx_DMA_CHANNEL;
-  hdma_adc.Init.Direction = DMA_PERIPH_TO_MEMORY;
-  hdma_adc.Init.PeriphInc = DMA_PINC_DISABLE;
-  hdma_adc.Init.MemInc = DMA_MINC_ENABLE;
-  hdma_adc.Init.PeriphDataAlignment = DMA_PDATAALIGN_WORD;
-  hdma_adc.Init.MemDataAlignment = DMA_MDATAALIGN_WORD;
-  hdma_adc.Init.Mode = DMA_CIRCULAR;
-  hdma_adc.Init.Priority = DMA_PRIORITY_HIGH;
-  hdma_adc.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
-  hdma_adc.Init.FIFOThreshold = DMA_FIFO_THRESHOLD_HALFFULL;
-  hdma_adc.Init.MemBurst = DMA_MBURST_SINGLE;
-  hdma_adc.Init.PeriphBurst = DMA_PBURST_SINGLE;
-
-  HAL_DMA_Init(&hdma_adc);
-
-  /* Associate the initialized DMA handle to the ADC handle */
-  __HAL_LINKDMA(hadc, DMA_Handle, hdma_adc);
-
-  /*##-4- Configure the NVIC for DMA #########################################*/
-  /* NVIC configuration for DMA transfer complete interrupt */
-  HAL_NVIC_SetPriority(ADCx_DMA_IRQn, 15, 15);// Gonzalo
-  HAL_NVIC_EnableIRQ(ADCx_DMA_IRQn);
+  /*##-3- Configure the NVIC #################################################*/
+  /* NVIC configuration for DMA transfer complete interrupt (USART1_TX) */
+  HAL_NVIC_SetPriority(ADCx_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(ADCx_IRQn);
 }
 
 /**
@@ -116,15 +87,39 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef *hadc)
 }
 
 /**
-  * @}
+  * @brief TIM MSP Initialization
+  *        This function configures the hardware resources used in this example:
+  *           - Peripheral's clock enable
+  *           - Peripheral's GPIO Configuration
+  * @param htim: TIM handle pointer
+  * @retval None
   */
+//void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
+//{
+//  /* TIM8 Periph clock enable */
+//  TIMx_CLK_ENABLE();
+//}
+//
+///**
+//  * @brief TIM MSP De-Initialization
+//  *        This function frees the hardware resources used in this example:
+//  *          - Disable the Peripheral's clock
+//  *          - Revert GPIO to their default state
+//  * @param htim: TIM handle pointer
+//  * @retval None
+//  */
 
-/**
-  * @}
-  */
+void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim)
+{
+  /*##-1- Enable peripheral clock #################################*/
+  /* TIMx Peripheral clock enable */
+  TIMx_CLK_ENABLE();
+  /*##-2- Configure the NVIC for TIMx ########################################*/
+  /* Set the TIMx priority */
+  HAL_NVIC_SetPriority(TIMx_IRQn, 3, 0);
 
-/**
-  * @}
-  */
+  /* Enable the TIMx global Interrupt */
+  HAL_NVIC_EnableIRQ(TIMx_IRQn);
+}
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

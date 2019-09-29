@@ -118,8 +118,7 @@ extern uint32_t    ErrorCounter;
 /* Definition for ADCx clock resources */
 #define ADCx                            ADC2
 #define ADCx_CLK_ENABLE()               __HAL_RCC_ADC2_CLK_ENABLE()
-#define DMAx_CLK_ENABLE()               __HAL_RCC_DMA2_CLK_ENABLE()
-#define ADCx_CHANNEL_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOA_CLK_ENABLE()
+#define ADCx_CHANNEL_GPIO_CLOCK_ENABLE()  __HAL_RCC_GPIOA_CLK_ENABLE()
 
 #define ADCx_FORCE_RESET()              __HAL_RCC_ADC_FORCE_RESET()
 #define ADCx_RELEASE_RESET()            __HAL_RCC_ADC_RELEASE_RESET()
@@ -131,13 +130,17 @@ extern uint32_t    ErrorCounter;
 /* Definition for ADCx's Channel */
 #define ADCx_CHANNEL                    ADC_CHANNEL_0
 
-/* Definition for ADCx's DMA */
-#define ADCx_DMA_CHANNEL                DMA_CHANNEL_1
-#define ADCx_DMA_STREAM                 DMA2_Stream2
-
 /* Definition for ADCx's NVIC */
-#define ADCx_DMA_IRQn                   DMA2_Stream2_IRQn
-#define ADCx_DMA_IRQHandler             DMA2_Stream2_IRQHandler
+#define ADCx_IRQn                         ADC_IRQn
+#define ADCx_IRQHandler                   ADC_IRQHandler
+
+#define TIMx                           TIM3
+#define TIMx_CLK_ENABLE()              __HAL_RCC_TIM3_CLK_ENABLE()
+
+
+/* Definition for TIMx's NVIC */
+#define TIMx_IRQn                      TIM3_IRQn
+#define TIMx_IRQHandler                TIM3_IRQHandler
 /* Exported macro ------------------------------------------------------------*/
 
 //void Demo_Delay (int x, int y, int init);

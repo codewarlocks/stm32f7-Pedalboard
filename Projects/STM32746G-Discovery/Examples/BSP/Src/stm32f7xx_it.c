@@ -37,6 +37,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 extern ADC_HandleTypeDef    AdcHandle;
+extern TIM_HandleTypeDef  htimx;
 //extern DMA_HandleTypeDef   hdma;
 ///*DMA status declared in "sdram_dma.c" file */
 //extern uint32_t uwDMA_Transfer_Complete;
@@ -252,9 +253,19 @@ void DCMI_IRQHandler(void)
 * @param  None
 * @retval None
 */
-void ADCx_DMA_IRQHandler(void)
+void ADCx_IRQHandler(void)
 {
-  HAL_DMA_IRQHandler(AdcHandle.DMA_Handle);
+  HAL_ADC_IRQHandler(&AdcHandle);
+}
+
+/**
+  * @brief  This function handles TIM interrupt request.
+  * @param  None
+  * @retval None
+  */
+void TIMx_IRQHandler(void)
+{
+  HAL_TIM_IRQHandler(&htimx);
 }
 
 /**

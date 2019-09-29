@@ -47,7 +47,7 @@ int phaserEfecto(int entrada)
   salida = phaserAP1(salida,1);
   salida = phaserAP1(salida,2);
   salida = phaserAP1(salida,3);
-  salida = (int)((0.5 *(float)salida) + (0.5 * (float)entrada));
+  salida = (int)((0.5 *salida) + (0.5 *entrada));
   return salida;
 }
 

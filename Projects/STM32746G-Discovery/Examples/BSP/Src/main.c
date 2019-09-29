@@ -41,9 +41,17 @@ uint32_t    ErrorCounter = 0;
 #endif
 
 /* Private function prototypes -----------------------------------------------*/
+void ADC_Config (void);
 void Error_Handler(void);
 void SystemClock_Config(void);
 void CPU_CACHE_Enable(void);
+
+/* TIM handler declaration */
+
+ADC_ChannelConfTypeDef sConfig;
+TIM_MasterConfigTypeDef sMasterConfig;
+
+TIM_HandleTypeDef  htimx;
 
 ADC_HandleTypeDef    AdcHandle;
 
@@ -58,6 +66,7 @@ uint32_t uwBmplen = 0, uwBmplen2=0;
 uint8_t *uwInternelBuffer = (uint8_t *)0xC0260000;
 /* Private function prototypes -----------------------------------------------*/
 void LCD_Config(void);
+void Tim3_Patalla_Config (void);
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
 {
@@ -100,9 +109,6 @@ LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
  */
 int main(void)
 {
-
-	ADC_ChannelConfTypeDef sConfig;
-
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
 
@@ -116,37 +122,8 @@ int main(void)
 	/* Configure the system clock to 200 Mhz */
 	SystemClock_Config();
 
-	/*##-1- Configure the ADC peripheral #######################################*/
-	AdcHandle.Instance          = ADCx;
-
-	AdcHandle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV8;//ADC_CLOCKPRESCALER_PCLK_DIV4;
-	AdcHandle.Init.Resolution            = ADC_RESOLUTION_12B;
-	AdcHandle.Init.ScanConvMode          = DISABLE;                       /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
-	AdcHandle.Init.ContinuousConvMode    = ENABLE;                       /* Continuous mode enabled to have continuous conversion  */
-	AdcHandle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
-	AdcHandle.Init.NbrOfDiscConversion   = 0;
-	AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;        /* Conversion start trigged at each external event */
-	AdcHandle.Init.ExternalTrigConv      = ADC_EXTERNALTRIGCONV_T1_CC1;
-	AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
-	AdcHandle.Init.NbrOfConversion       = 1;
-	AdcHandle.Init.DMAContinuousRequests = ENABLE;
-	AdcHandle.Init.EOCSelection          = DISABLE;
-
-	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
-	{
-		Error_Handler();
-	}
-
-	/*##-2- Configure ADC regular channel ######################################*/
-	sConfig.Channel      = ADCx_CHANNEL;
-	sConfig.Rank         = 1;
-	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;//ADC_SAMPLETIME_3CYCLES; //ADC_SAMPLETIME_480CYCLES
-	sConfig.Offset       = 0;
-
-	if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
-	{
-		Error_Handler();
-	}
+	Tim3_Patalla_Config();
+	ADC_Config();
 
 	BSP_LED_Init(LED1);
 	BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
@@ -167,48 +144,70 @@ int main(void)
 	BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
 	BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 	BSP_LCD_SelectLayer(1);
-	/*##-3- Start the conversion process #######################################*/
-	if(HAL_ADC_Start_DMA(&AdcHandle, (uint32_t*)&uhADCxConvertedValue, 1) != HAL_OK)
+
+	  if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
+	  {
+	    /* Starting Error */
+	    Error_Handler();
+	  }
+	while (1)
+	{
+
+	}
+}
+
+void ADC_Config (void)
+{
+	/*##-1- Configure the ADC peripheral #######################################*/
+	AdcHandle.Instance          = ADCx;
+
+	AdcHandle.Init.ClockPrescaler        = ADC_CLOCKPRESCALER_PCLK_DIV8;//ADC_CLOCKPRESCALER_PCLK_DIV4;
+	AdcHandle.Init.Resolution            = ADC_RESOLUTION_12B;
+	AdcHandle.Init.ScanConvMode          = DISABLE;                       /* Sequencer disabled (ADC conversion on only 1 channel: channel set on rank 1) */
+	AdcHandle.Init.ContinuousConvMode    = DISABLE;                       /* Continuous mode enabled to have continuous conversion  */
+	AdcHandle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
+	AdcHandle.Init.NbrOfDiscConversion   = 0;
+	AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;;        /* Conversion start trigged at each external event */
+	AdcHandle.Init.ExternalTrigConv      = ADC_EXTERNALTRIGCONV_T1_CC1;
+	AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
+	AdcHandle.Init.NbrOfConversion       = 1;
+	AdcHandle.Init.DMAContinuousRequests = ENABLE;
+	AdcHandle.Init.EOCSelection          = ADC_EOC_SINGLE_CONV;
+
+	if (HAL_ADC_Init(&AdcHandle) != HAL_OK)
 	{
 		Error_Handler();
 	}
-	while (1)
+
+	/*##-2- Configure ADC regular channel ######################################*/
+	sConfig.Channel      = ADCx_CHANNEL;
+	sConfig.Rank         = 1;
+	sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;//ADC_SAMPLETIME_3CYCLES; //ADC_SAMPLETIME_480CYCLES
+	sConfig.Offset       = 0;
+
+	if (HAL_ADC_ConfigChannel(&AdcHandle, &sConfig) != HAL_OK)
 	{
-		cont++;
-		/* Wait end of half block recording */
-		while(audio_rec_buffer_state != BUFFER_OFFSET_HALF)
-		{
-			NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
-			NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
-			BSP_TS_GetState(&rawTouchState);
-			guiUpdateTouch(&rawTouchState, &touchState);
-			if(pedal_individual==1)
-			{
-				if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-					guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-				handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-				linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
-
-			}
-			else if(pedal_individual==0)
-			{
-				PushRequestHandler_menu(Pedales, &touchState);
-				linkRequestHandler_menu(Pedales, &touchState);
-				linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-				linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-			}
-			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream2_IRQn);
-			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
-			NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
-		}
-
-
-		audio_rec_buffer_state = BUFFER_OFFSET_NONE;//izquierdo -> mono guitarra red bull
-
-		/* Wait end of one block recording */
-		//		while(audio_rec_buffer_state != BUFFER_OFFSET_FULL);
-		audio_rec_buffer_state = BUFFER_OFFSET_NONE;
+		Error_Handler();
 	}
+}
+
+void Tim3_Patalla_Config (void)
+{
+	  /* Time Base configuration */
+	  htimx.Instance = TIMx;
+
+	  htimx.Init.Period            = 1800;//5400
+	  htimx.Init.Prescaler         = 5000;
+	  htimx.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV4;
+	  htimx.Init.CounterMode       = TIM_COUNTERMODE_UP;
+	  htimx.Init.RepetitionCounter = 0x0;
+	  htimx.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+
+	  if (HAL_TIM_Base_Init(&htimx) != HAL_OK)
+	  {
+	    /* Timer initialization Error */
+	    Error_Handler();
+	  }
 }
 
 /**
@@ -355,10 +354,6 @@ void DrawScreen(int num)
  */
 void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
-	audio_rec_buffer_state = BUFFER_OFFSET_FULL;
-	memcpy((uint16_t *)(AUDIO_BUFFER_OUT + (AUDIO_BLOCK_SIZE)),
-			(uint16_t *)(AUDIO_BUFFER_IN + (AUDIO_BLOCK_SIZE)),
-			AUDIO_BLOCK_SIZE);
 	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo
@@ -384,7 +379,6 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
  */
 void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
-	audio_rec_buffer_state = BUFFER_OFFSET_HALF;
 	for(i=0;i<AUDIO_BLOCK_HALFSIZE;i++)
 	{
 		if(i%2!=0)//Para solo usar el canal izquierdo
@@ -403,11 +397,53 @@ void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 	return;
 }
 
-void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* AdcHandle)
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *AdcHandle)
 {
-	/* Turn LED1 on: Transfer process is correct */
-	//BSP_LED_On(LED1);
-	NVIC_DisableIRQ((IRQn_Type)DMA2_Stream2_IRQn); //DMA2_Stream4_IRQn
+  /* Get the converted value of regular channel */
+  uhADCxConvertedValue = HAL_ADC_GetValue(AdcHandle);
+  if (HAL_ADC_Stop_IT(AdcHandle)!= HAL_OK)
+  {
+	/* Start Conversation Error */
+	Error_Handler();
+  }
+
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+		NVIC_DisableIRQ(TIMx_IRQn);
+		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
+		{
+			/* Start Conversation Error */
+			Error_Handler();
+		}
+		BSP_TS_GetState(&rawTouchState);
+		guiUpdateTouch(&rawTouchState, &touchState);
+		if(pedal_individual==1)
+		{
+			if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+				guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+			handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+			linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+
+		}
+		else if(pedal_individual==0)
+		{
+			PushRequestHandler_menu(Pedales, &touchState);
+			linkRequestHandler_menu(Pedales, &touchState);
+			linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+			linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+		}
+		NVIC_EnableIRQ(TIMx_IRQn);
+		NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+		NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
 }
 
 /**
@@ -424,3 +460,4 @@ void Error_Handler(void)
     HAL_Delay(20);
   }
 }
+

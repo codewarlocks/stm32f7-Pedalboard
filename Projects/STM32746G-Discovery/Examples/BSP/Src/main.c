@@ -109,6 +109,11 @@ LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
  */
 int main(void)
 {
+	  /* FPU settings ------------------------------------------------------------*/
+	  #if (__FPU_PRESENT == 1) //&& (__FPU_USED == 1)
+	    SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
+	  #endif
+
 	/* Enable the CPU Cache */
 	CPU_CACHE_Enable();
 
@@ -123,7 +128,7 @@ int main(void)
 	SystemClock_Config();
 
 	Tim3_Patalla_Config();
-	ADC_Config();
+//	ADC_Config();
 
 	BSP_LED_Init(LED1);
 	BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
@@ -167,7 +172,7 @@ void ADC_Config (void)
 	AdcHandle.Init.ContinuousConvMode    = DISABLE;                       /* Continuous mode enabled to have continuous conversion  */
 	AdcHandle.Init.DiscontinuousConvMode = DISABLE;                       /* Parameter discarded because sequencer is disabled */
 	AdcHandle.Init.NbrOfDiscConversion   = 0;
-	AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;;        /* Conversion start trigged at each external event */
+	AdcHandle.Init.ExternalTrigConvEdge  = ADC_EXTERNALTRIGCONVEDGE_NONE;        /* Conversion start trigged at each external event */
 	AdcHandle.Init.ExternalTrigConv      = ADC_EXTERNALTRIGCONV_T1_CC1;
 	AdcHandle.Init.DataAlign             = ADC_DATAALIGN_RIGHT;
 	AdcHandle.Init.NbrOfConversion       = 1;
@@ -427,11 +432,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
 		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
 		NVIC_DisableIRQ(TIMx_IRQn);
-		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
-		{
-			/* Start Conversation Error */
-			Error_Handler();
-		}
+//		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
+//		{
+//			/* Start Conversation Error */
+//			Error_Handler();
+//		}
 		BSP_TS_GetState(&rawTouchState);
 		guiUpdateTouch(&rawTouchState, &touchState);
 		if(pedal_individual==1)

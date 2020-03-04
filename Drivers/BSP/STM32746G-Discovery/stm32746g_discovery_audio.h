@@ -163,7 +163,7 @@
 #define AUDIO_TIMEOUT                       ((uint8_t)2)
 
 /* AudioFreq * DataSize (2 bytes) * NumChannels (Stereo: 2) */
-#define DEFAULT_AUDIO_IN_FREQ               I2S_AUDIOFREQ_16K
+#define DEFAULT_AUDIO_IN_FREQ               I2S_AUDIOFREQ_48K
 #define DEFAULT_AUDIO_IN_BIT_RESOLUTION     ((uint8_t)24)
 #define DEFAULT_AUDIO_IN_CHANNEL_NBR        ((uint8_t)2) /* Mono = 1, Stereo = 2 */
 #define DEFAULT_AUDIO_IN_VOLUME             ((uint16_t)64)

@@ -48,8 +48,9 @@ int autowahEfecto(int entrada)
 	x_0 = entrada;
 	y_0[0] = autowahBP2(fcentral,0);
 	y_0[1] = autowahBP2(400+fcentral,1);
-	y_0[2] = autowahBP2(800+fcentral,2);
-	salida = 3.0 * (volume * (y_0[0] + y_0[1] + y_0[2]) + (1 - volume) * x_0);
+//	y_0[2] = autowahBP2(800+fcentral,2);
+//	salida = (volume * (y_0[0] + y_0[1] + y_0[2]) + (1 - volume) * x_0);
+	salida = (volume * (y_0[0] + y_0[1]) + (1 - volume) * x_0);
 	return salida;
 }
 

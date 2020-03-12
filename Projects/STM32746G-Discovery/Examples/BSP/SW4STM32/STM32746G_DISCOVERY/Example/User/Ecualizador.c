@@ -1,7 +1,6 @@
 //Ecualizador.c
 #include "gui/prototipos.h"
 #include "math.h"
-#define ARM_MATH_CM7
 #include "arm_math.h"
 #include "arm_common_tables.h"
 #define N 6

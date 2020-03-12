@@ -1,6 +1,5 @@
 #include "math.h"
 #include "gui/prototipos.h"
-#define ARM_MATH_CM7
 #include "arm_math.h"
 #include "arm_common_tables.h"
 

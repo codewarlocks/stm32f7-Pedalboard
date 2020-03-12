@@ -31,6 +31,7 @@
    POSSIBILITY OF SUCH DAMAGE.
    ---------------------------------------------------------------------------*/
 
+#include "stm32f746xx.h"
 
 #if   defined ( __ICCARM__ )
  #pragma system_include         /* treat file as system include file for MISRA check */

@@ -244,6 +244,7 @@ uint8_t BSP_TS_GetState(TS_StateTypeDef *TS_State)
   {
 	if(flag_ts==0)
 	{
+		BSP_AUDIO_IN_SetVolume(0);
 		BSP_AUDIO_OUT_SetVolume(0); //Gonzalo
 		flag_ts=1;
 	}
@@ -336,7 +337,8 @@ uint8_t BSP_TS_GetState(TS_StateTypeDef *TS_State)
   } /* end of if(TS_State->touchDetected != 0) */
   else if (flag_ts==1)
   {
-	  BSP_AUDIO_OUT_SetVolume(85); //Gonzalo
+	  BSP_AUDIO_IN_SetVolume(90);
+		BSP_AUDIO_OUT_SetVolume(85); //Gonzalo
 	  flag_ts=0;
   }
   return (ts_status);

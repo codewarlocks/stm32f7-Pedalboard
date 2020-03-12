@@ -9,7 +9,7 @@
 #include "string.h"
 #include "gui/leds.h"
 #include "gui/whaondas.h"
-#include "gui/perilla35x35x25.h"
+//#include "gui/perilla35x35x25.h"
 #include "gui/perilla42x41x25.h"
 #include "gui/perilla52x52x25.h"
 #include "gui/eq_slider.h"
@@ -58,24 +58,18 @@ extern LTDC_HandleTypeDef hLtdcHandler;
 static void LL_ConvertLineToARGB8888(void *src,void *dst,uint32_t xstride,uint32_t color_mode);
 
 //Varibales Perillas Spritesheet_slider
-//static SpriteSheet slider5xpos = { .pixels = slider5pos,
-//		.spriteWidth = 10, .spriteHeight = 83, .numSprites = 5, .format =
-//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet eq_slider = { .pixels = eq_slider_30,
 		.spriteWidth = 30, .spriteHeight = 83, .numSprites = 26, .format =
 				CM_ARGB8888};//CM_RGB888
-//static SpriteSheet Spritesheet13_slider = { .pixels = Spritesheet_slider,
-//		.spriteWidth = 34, .spriteHeight = 83, .numSprites = 26, .format =
-//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
 		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
 				CM_ARGB8888};//CM_RGB888
 static SpriteSheet perilla5252 = { .pixels = perilla52x52x25,
 		.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
 				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
+//static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
+//		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
+//				CM_ARGB8888};//CM_RGB888
 static SpriteSheet whaonda = { .pixels = whaondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
 				CM_ARGB8888};//CM_RGB888
@@ -1000,7 +994,7 @@ void initPedals() {
 	//Ringmod
 	Pedales[11]=(PedalElement*)calloc(1, sizeof(PedalElement));
 	Pedales[11]->perilla = initPerilla(1);
-	Pedales[11]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.179f, 0.045f, PERILLA, &perilla3535, ringmodRate);
+	Pedales[11]->perilla->perillas[0] = guiDialButton(0, "", 223, 73, 0.179f, 0.045f, PERILLA, &perilla4241, ringmodRate);
 
 	//Inicializo los Push (3pdt) Pantalla 1
 	//PEDALES Menu

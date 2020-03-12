@@ -1167,7 +1167,7 @@ __weak void BSP_AUDIO_IN_MspInit(SAI_HandleTypeDef *hsai, void *Params)
     hdma_sai_rx.Init.PeriphDataAlignment = AUDIO_IN_SAIx_DMAx_PERIPH_DATA_SIZE;
     hdma_sai_rx.Init.MemDataAlignment    = AUDIO_IN_SAIx_DMAx_MEM_DATA_SIZE;
     hdma_sai_rx.Init.Mode                = DMA_CIRCULAR;
-    hdma_sai_rx.Init.Priority            = DMA_PRIORITY_HIGH;
+    hdma_sai_rx.Init.Priority            = DMA_PRIORITY_VERY_HIGH;
     hdma_sai_rx.Init.FIFOMode            = DMA_FIFOMODE_DISABLE;     //DISABLE
     hdma_sai_rx.Init.FIFOThreshold       = DMA_FIFO_THRESHOLD_FULL;
     hdma_sai_rx.Init.MemBurst            = DMA_MBURST_SINGLE;
@@ -1271,7 +1271,7 @@ static void SAIx_In_Init(uint32_t SaiOutMode, uint32_t SlotActive, uint32_t Audi
   FS Definition: Start frame + Channel Side identification
   FS Polarity: FS active Low
   FS Offset: FS asserted one bit before the first bit of slot 0 */
-  haudio_out_sai.FrameInit.FrameLength = 128;
+  haudio_out_sai.FrameInit.FrameLength = 128;  
   haudio_out_sai.FrameInit.ActiveFrameLength = 64;
   haudio_out_sai.FrameInit.FSDefinition = SAI_FS_CHANNEL_IDENTIFICATION;
   haudio_out_sai.FrameInit.FSPolarity = SAI_FS_ACTIVE_LOW;
@@ -1316,8 +1316,8 @@ static void SAIx_In_Init(uint32_t SaiOutMode, uint32_t SlotActive, uint32_t Audi
   FS Definition: Start frame + Channel Side identification
   FS Polarity: FS active Low
   FS Offset: FS asserted one bit before the first bit of slot 0 */
-  haudio_in_sai.FrameInit.FrameLength = 128;
-  haudio_in_sai.FrameInit.ActiveFrameLength = 64;
+  haudio_in_sai.FrameInit.FrameLength = 128; //gonza: (128)
+  haudio_in_sai.FrameInit.ActiveFrameLength = 64; //gonza: (64)
   haudio_in_sai.FrameInit.FSDefinition = SAI_FS_CHANNEL_IDENTIFICATION;
   haudio_in_sai.FrameInit.FSPolarity = SAI_FS_ACTIVE_LOW;
   haudio_in_sai.FrameInit.FSOffset = SAI_FS_BEFOREFIRSTBIT;
@@ -1329,7 +1329,7 @@ static void SAIx_In_Init(uint32_t SaiOutMode, uint32_t SlotActive, uint32_t Audi
   Slot Active: All slot active */
   haudio_in_sai.SlotInit.FirstBitOffset = 0;
   haudio_in_sai.SlotInit.SlotSize = SAI_SLOTSIZE_DATASIZE;
-  haudio_in_sai.SlotInit.SlotNumber = 4;
+  haudio_in_sai.SlotInit.SlotNumber = 4; //gonza: (4)
   haudio_in_sai.SlotInit.SlotActive = SlotActive;
 
   HAL_SAI_Init(&haudio_in_sai);

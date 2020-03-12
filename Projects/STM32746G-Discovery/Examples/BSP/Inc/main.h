@@ -88,14 +88,6 @@
 /* The Audio file is flashed with ST-Link Utility @ flash address =  AUDIO_SRC_FILE_ADDRESS */
 #define AUDIO_SRC_FILE_ADDRESS       0x08080000   /* Audio file address in flash */
 
-/* Exported types ------------------------------------------------------------*/
-typedef struct
-{
-  void   (*DemoFunc)(void);
-  uint8_t DemoName[50]; 
-  uint32_t DemoIndex;
-}BSP_DemoTypedef;
-
 typedef enum {
   AUDIO_ERROR_NONE = 0,
   AUDIO_ERROR_NOTREADY,
@@ -103,10 +95,6 @@ typedef enum {
   AUDIO_ERROR_EOF,
 }AUDIO_ErrorTypeDef;
 
-extern const unsigned char stlogo[];
-/* Exported variables ---------------------------------------------------*/
-extern uint8_t     NbLoop;
-extern uint8_t     MfxExtiReceived;
 #ifndef USE_FULL_ASSERT
 extern uint32_t    ErrorCounter;
 #endif
@@ -147,19 +135,7 @@ extern uint32_t    ErrorCounter;
 /* Exported functions ------------------------------------------------------- */
 //Efectos
 //#include "efectos.h"
-void AudioPlay_demo (void);
-void AudioRec_demo (void);
-void AudioLoopback_demo (void);
-void Touchscreen_demo (void);
-void LCD_Demo (void);
-void Log_demo(void);
-void SDRAM_demo(void);
-void SDRAM_DMA_demo(void);
-void SD_demo (void);
-void EEPROM_demo(void);
-void Camera_demo(void);
 uint8_t AUDIO_Process(void);
-void QSPI_demo(void);
 uint8_t CheckForUserInput(void);
 void BSP_LCD_DMA2D_IRQHandler(void);
 #ifdef USE_FULL_ASSERT

@@ -3,6 +3,8 @@
 #include "stdlib.h"
 #include "main.h"
 #include <stdio.h>
+#include "stdint.h"
+#include "stdbool.h"
 #include "string.h"
 #include "gui/leds.h"
 #include "gui/gui.h"
@@ -35,7 +37,6 @@
 #include "gui/prototipos.h"
 
 /* Global extern variables ---------------------------------------------------*/
-uint8_t NbLoop = 1;
 #ifndef USE_FULL_ASSERT
 uint32_t ErrorCounter = 0;
 #endif
@@ -49,7 +50,6 @@ void CPU_CACHE_Enable(void);
 /* TIM handler declaration */
 
 ADC_ChannelConfTypeDef sConfig;
-TIM_MasterConfigTypeDef sMasterConfig;
 
 TIM_HandleTypeDef  htimx;
 
@@ -59,46 +59,41 @@ ADC_HandleTypeDef    AdcHandle;
 __IO uint16_t uhADCxConvertedValue = 0;
 
 char SD_Path[4]; /* SD card logical drive path */
-char* pDirectoryFiles[25];//MAX_BMP_FILES
-uint8_t  ubNumberOfFiles = 0;
-uint32_t uwBmplen = 0, uwBmplen2=0;
+static uint32_t uwBmplen = 0;
 /* Internal Buffer defined in SDRAM memory */
-uint8_t *uwInternelBuffer = (uint8_t *)0xC0260000;
+static uint8_t *uwInternelBuffer = (uint8_t *)0xC0260000;
 /* Private function prototypes -----------------------------------------------*/
 void LCD_Config(void);
 void Tim3_Patalla_Config (void);
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
 {
-	BUFFER_OFFSET_NONE = 0,
+	NONE_STATE				 = 0,
 	BUFFER_OFFSET_HALF = 1,
 	BUFFER_OFFSET_FULL = 2,
-}BUFFER_StateTypeDef;
+	SCREEN_REFRESH 		 = 3,
+}machine_states_t;
 
 #define AUDIO_BLOCK_SIZE   ((uint32_t)256)
-#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)AUDIO_BLOCK_SIZE/2)
+#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)128)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
 #define AUDIO_BUFFER_OUT   (AUDIO_REC_START_ADDR + (AUDIO_BLOCK_SIZE * 2)) /* In SDRAM */
 
 /* Private define ------------------------------------------------------------*/
-//Para dibujar perillas
+/* Para dibujar perillas*/
 TS_StateTypeDef rawTouchState;
 GUITouchState touchState;
-__IO uint32_t isPressed = 0;
-
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-uint32_t  audio_rec_buffer_state;
-unsigned int cont=0;
-int *Buffer_in, *Buffer_out, i=0, i_audio=0;
-//Variables Pasabajos
-float32_t control_fcorte=1, cuenta;
-int entrada_izq=0, salida_izq=0, entrada_der=0, salida_der=0, pedal_individual=0, seleccion_pedal=0, pedal_prendido=0, seleccion_menu=MENU_1;
+static volatile machine_states_t  machine_state=NONE_STATE;
+int32_t Buffer_in[AUDIO_BLOCK_SIZE]={0}, Buffer_out[AUDIO_BLOCK_SIZE]={0}, Buffer_cuentas[AUDIO_BLOCK_HALFSIZE]={0};
+volatile int32_t pedal_individual=0, seleccion_pedal=0, seleccion_menu=MENU_1;
+static int32_t cont_muestras=0, cont_pedales=0;
 
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
-LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
+LinkElementMenu	*Flecha_Menu_Izquierda=NULL, *Flecha_Menu_Derecha=NULL;
 
 /* Private functions ---------------------------------------------------------*/
 
@@ -109,56 +104,147 @@ LinkElementMenu* Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
  */
 int main(void)
 {
-	  /* FPU settings ------------------------------------------------------------*/
-	  #if (__FPU_PRESENT == 1) //&& (__FPU_USED == 1)
-	    SCB->CPACR |= ((3UL << 10*2)|(3UL << 11*2));  /* set CP10 and CP11 Full Access */
-	  #endif
+		/* Enable the CPU Cache */
+		CPU_CACHE_Enable();
 
-	/* Enable the CPU Cache */
-	CPU_CACHE_Enable();
+		/* STM32F7xx HAL library initialization:
+				 - Configure the Flash prefetch, instruction and Data caches
+				 - Configure the Systick to generate an interrupt each 1 msec
+				 - Set NVIC Group Priority to 4
+				 - Global MSP (MCU Support Package) initialization
+		 */
+		HAL_Init();
+		/* Configure the system clock to 200 Mhz */
+		SystemClock_Config();
+	
+		/*Configuracion del Timer para refresco de pantalla*/
+		Tim3_Patalla_Config();
+	
+		/*Configuracion del ADC*/
+		//	ADC_Config();
 
-	/* STM32F7xx HAL library initialization:
-       - Configure the Flash prefetch, instruction and Data caches
-       - Configure the Systick to generate an interrupt each 1 msec
-       - Set NVIC Group Priority to 4
-       - Global MSP (MCU Support Package) initialization
-	 */
-	HAL_Init();
-	/* Configure the system clock to 200 Mhz */
-	SystemClock_Config();
+		/*Configuracion del LED*/
+		BSP_LED_Init(LED1);
+		
+		/*Configuracion del display*/
+		BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
+		BSP_LCD_Init();
+		LCD_Config();
+		BSP_SD_Init();
+		
+		/*Inicializo DMA2D para usar el LLconvertline*/
+		init_LL_ConvertLine_DMA2D(CM_RGB888);
+		
+		/*Inicializo estructuras de pedales*/
+		initPedals();
+		InitEfectos();
+		Demo_fondito();
 
-	Tim3_Patalla_Config();
-//	ADC_Config();
+		/* Start Playback */
+		BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
+		BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
+		BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
+		//	BSP_AUDIO_IN_SetVolume(90);
+		BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 
-	BSP_LED_Init(LED1);
-	BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
-	BSP_LCD_Init();
-	LCD_Config();
-	BSP_SD_Init();
+		if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
+		{
+			/* Starting Error */
+			Error_Handler();
+		}
+		
+		while (1)
+		{
+				switch (machine_state)
+				{
+						case NONE_STATE:
+						{
+							
+						}
+						case BUFFER_OFFSET_HALF:
+						{
+							memcpy(Buffer_cuentas, Buffer_in, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
+							for(cont_muestras=0;cont_muestras<AUDIO_BLOCK_HALFSIZE;cont_muestras++)
+							{
+									if(cont_muestras%2!=0)//Para solo usar el canal izquierdo
+									{
+											Buffer_cuentas[cont_muestras]=((int32_t)Buffer_cuentas[cont_muestras]<<8)>>8;
+											for(cont_pedales=11;cont_pedales>=0;cont_pedales--)
+											{
+													if((Pedales[cont_pedales])->push->push_state==GUI_ON)
+													{
+														Buffer_cuentas[cont_muestras]=Pedales[cont_pedales]->efecto(Buffer_cuentas[cont_muestras]);
+													}
+											}
+											Buffer_cuentas[cont_muestras]=((int32_t)(Buffer_cuentas[cont_muestras]<<8))>>8;
+									}
+							}
+							memcpy(Buffer_out, Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
+							machine_state=NONE_STATE;
+							break;
+						}
+						case BUFFER_OFFSET_FULL:
+						{
+								memcpy(Buffer_cuentas, &Buffer_in[AUDIO_BLOCK_HALFSIZE], AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
+								for(cont_muestras=0;cont_muestras<AUDIO_BLOCK_HALFSIZE;cont_muestras++)
+								{
+										if(cont_muestras%2!=0)//Para solo usar el canal izquierdo
+										{
+												Buffer_cuentas[cont_muestras]=((int32_t)Buffer_cuentas[cont_muestras]<<8)>>8;
+												for(cont_pedales=11;cont_pedales>=0;cont_pedales--)
+												{
+														if((Pedales[cont_pedales])->push->push_state==GUI_ON)
+														{
+															Buffer_cuentas[cont_muestras]=Pedales[cont_pedales]->efecto(Buffer_cuentas[cont_muestras]);
+														}
+												}
+												Buffer_cuentas[cont_muestras]=((int32_t)(Buffer_cuentas[cont_muestras]<<8))>>8;
+										}
+								}
+								memcpy(&Buffer_out[AUDIO_BLOCK_HALFSIZE], Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
+								machine_state=NONE_STATE;
+								break;
+						}
+						case SCREEN_REFRESH:
+						{
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ(TIMx_IRQn);
+						//		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
+						//		{
+						//			/* Start Conversation Error */
+						//			Error_Handler();
+						//		}
+								BSP_TS_GetState(&rawTouchState);
+								guiUpdateTouch(&rawTouchState, &touchState);
+								if(pedal_individual==1)
+								{
+										if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+											guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+										handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+										linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
 
-	initPedals();
-	InitEfectos();
-	Demo_fondito();
-
-	audio_rec_buffer_state = BUFFER_OFFSET_NONE;
-	Buffer_in=(int*)malloc(sizeof(int)*AUDIO_BLOCK_SIZE);
-	Buffer_out=(int*)malloc(sizeof(int)*AUDIO_BLOCK_SIZE);
-	/* Start Playback */
-	BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
-	BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
-	BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
-	BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
-	BSP_LCD_SelectLayer(1);
-
-	  if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
-	  {
-	    /* Starting Error */
-	    Error_Handler();
-	  }
-	while (1)
-	{
-
-	}
+								}
+								else if(pedal_individual==0)
+								{
+										PushRequestHandler_menu(Pedales, &touchState);
+										linkRequestHandler_menu(Pedales, &touchState);
+										linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+										linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+								}
+								machine_state=NONE_STATE;
+								NVIC_EnableIRQ(TIMx_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+								break;
+						}
+						default:
+						{
+								Error_Handler();
+								break;
+						}
+				}
+		}
 }
 
 void ADC_Config (void)
@@ -288,7 +374,7 @@ void CPU_CACHE_Enable(void)
 	SCB_EnableICache(); //Sin esta cache no llega hacer las cuentas de muchos efectos
 
 	/* Enable D-Cache */
-	//SCB_EnableDCache(); //si usa esta cache me limita la ram muchisimo (no mas de 5kb)
+//	SCB_EnableDCache(); //si usa esta cache me limita la ram muchisimo (no mas de 5kb)
 }
 
 void LCD_Config(void)
@@ -359,21 +445,7 @@ void DrawScreen(int num)
  */
 void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
-	for(i=AUDIO_BLOCK_HALFSIZE;i<AUDIO_BLOCK_SIZE;i++)
-	{
-		if(i%2!=0)//Para solo usar el canal izquierdo
-		{
-			salida_izq=((int)Buffer_in[i]<<8)>>8;
-			for(i_audio=11;i_audio>=0;i_audio--)
-			{
-				if((Pedales[i_audio])->push->push_state==GUI_ON)
-				{
-					salida_izq=Pedales[i_audio]->efecto(salida_izq);
-				}
-			}
-			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
-		}
-	}
+	machine_state=BUFFER_OFFSET_FULL;
 	return;
 }
 
@@ -384,21 +456,25 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
  */
 void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
-	for(i=0;i<AUDIO_BLOCK_HALFSIZE;i++)
-	{
-		if(i%2!=0)//Para solo usar el canal izquierdo
-		{
-			salida_izq=((int)Buffer_in[i]<<8)>>8;
-			for(i_audio=11;i_audio>=0;i_audio--)
-			{
-				if((Pedales[i_audio])->push->push_state==GUI_ON)
-				{
-					salida_izq=Pedales[i_audio]->efecto(salida_izq);
-				}
-			}
-			Buffer_out[i]=((unsigned int)(salida_izq<<8))>>8;
-		}
-	}
+	machine_state=BUFFER_OFFSET_HALF;
+	return;
+}
+
+/**
+  * @brief  Manages the DMA full Transfer complete event.
+  * @retval None
+  */
+void BSP_AUDIO_OUT_TransferComplete_CallBack(void)
+{
+	return;
+}
+
+/**
+  * @brief  Manages the DMA Half Transfer complete event.
+  * @retval None
+  */
+void BSP_AUDIO_OUT_HalfTransfer_CallBack(void)
+{	
 	return;
 }
 
@@ -429,34 +505,8 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *AdcHandle)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
-		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
-		NVIC_DisableIRQ(TIMx_IRQn);
-//		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
-//		{
-//			/* Start Conversation Error */
-//			Error_Handler();
-//		}
-		BSP_TS_GetState(&rawTouchState);
-		guiUpdateTouch(&rawTouchState, &touchState);
-		if(pedal_individual==1)
-		{
-			if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-				guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-			handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-			linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
-
-		}
-		else if(pedal_individual==0)
-		{
-			PushRequestHandler_menu(Pedales, &touchState);
-			linkRequestHandler_menu(Pedales, &touchState);
-			linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-			linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-		}
-		NVIC_EnableIRQ(TIMx_IRQn);
-		NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
-		NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+		machine_state=SCREEN_REFRESH;
+		return;
 }
 
 /**
@@ -466,11 +516,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   */
 void Error_Handler(void)
 {
-  while (1)
-  {
-    /* LED1 blinks */
-    BSP_LED_Toggle(LED1);
-    HAL_Delay(20);
-  }
+		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+		NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+		NVIC_DisableIRQ(TIMx_IRQn);
+	
+		while (1)
+		{
+			/* LED1 blinks */
+			BSP_LED_Toggle(LED1);
+			HAL_Delay(20);
+		}
 }
 

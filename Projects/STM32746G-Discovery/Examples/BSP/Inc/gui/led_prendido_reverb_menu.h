@@ -30,7 +30,7 @@
 
 
 
-static const uint8_t ledprendidoreverbmenu[100] = {
+static const uint8_t ledprendidoreverbmenu[224] = {
     // ∙░▒░∙
     // ░▓▓░░
     // ▒▒░▓▒

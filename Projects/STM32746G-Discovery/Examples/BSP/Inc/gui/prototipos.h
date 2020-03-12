@@ -1,5 +1,5 @@
 #include "gui/gui.h"
-#define ARM_MATH_CM7
+
 #include "arm_math.h"
 #include "arm_common_tables.h"
 #include "stm32746g_discovery_audio.h"
@@ -18,16 +18,16 @@ void initAppGUI(void);
 void InitEfectos (void);
 
 // Delay.c
-void delayInit ();
-void delayParametros ();
+void delayInit (void);
+void delayParametros (void);
 int delayEfecto (int);
 void delayTime (GUIElement*);
 void delayFeedback (GUIElement*);
 void delayLevel (GUIElement*);
 
 // Autowah.c
-void autowahInit ();
-void autowahParametros ();
+void autowahInit (void);
+void autowahParametros (void);
 int autowahEfecto (int);
 int autowahBP2(float32_t, int);
 float32_t autowahLFO (int);
@@ -37,16 +37,16 @@ void autowahVolume (GUIElement*);
 void autowahMod (GUIElement*);
 
 // Distorsion.c
-void distorsionInit ();
-void distorsionParametros ();
-int distorsionEfecto (int);
+void distorsionInit (void);
+void distorsionParametros (void);
+int32_t distorsionEfecto (int32_t);
 int distorsionShelve (int, int);
 void distorsionGain (GUIElement*);
 void distorsionBlend (GUIElement*);
 
 // Vibrato.c
-void vibratoInit ();
-void vibratoParametros ();
+void vibratoInit (void);
+void vibratoParametros (void);
 int vibratoEfecto (int);
 float32_t vibratoLFO (int);
 void vibratoRate (GUIElement*);
@@ -55,31 +55,31 @@ void vibratoMod (GUIElement*);
 
 
 // Tremolo.c
-void tremoloInit ();
-void tremoloParametros ();
+void tremoloInit (void);
+void tremoloParametros (void);
 int tremoloEfecto (int);
-float32_t tremoloLFO();
+float32_t tremoloLFO(void);
 void tremoloRate (GUIElement*);
 void tremoloDepth (GUIElement*);
 void tremoloMod (GUIElement*);
 
 // Ringmod.c
-void ringmodInit ();
-void ringmodParametros();
+void ringmodInit (void);
+void ringmodParametros(void);
 int ringmodEfecto(int);
 void ringmodRate (GUIElement*);
 
 //Chorus.c
-void chorusInit ();
-void chorusParametros();
+void chorusInit (void);
+void chorusParametros(void);
 int chorusEfecto(int);
 float32_t chorusLFO(int);
 void chorusRate (GUIElement *e);
 void chorusDepth (GUIElement *e);
 
 //Flanger.c
-void flangerInit();
-void flangerParametros();
+void flangerInit(void);
+void flangerParametros(void);
 int flangerEfecto (int);
 float32_t flangerLFO(int);
 void flangerManual (GUIElement *e);
@@ -88,13 +88,13 @@ void flangerRate (GUIElement *e);
 void flangerFeedback (GUIElement *e);
 
 //Octavador.c
-void octavadorInit ();
-void octavadorParametros ();
+void octavadorInit (void);
+void octavadorParametros (void);
 int octavadorEfecto (int);
 
 //Reverb
-void reverbInit ();
-void reverbParametros ();
+void reverbInit (void);
+void reverbParametros (void);
 int reverbEfecto (int entrada);
 int reverbAP (int in, int* line, int delay, int cont);
 int reverbFBCF (int in, int line[], int delay, int cont, int inst);
@@ -102,16 +102,16 @@ void reverbMix (GUIElement *e);
 void reverbDecay (GUIElement *e);
 
 // Phaser.c
-void phaserInit ();
-void phaserParametros ();
+void phaserInit (void);
+void phaserParametros (void);
 int phaserEfecto (int);
 int phaserAP1 (int, int);
 float phaserLFO (int);
 void phaserRate (GUIElement*);
 
 // Ecualizador.c
-void eqInit ();
-void eqParametros ();
+void eqInit (void);
+void eqParametros (void);
 int eqEfecto (int);
 int eqPeak (int,int);
 int eqShelve (int,int);

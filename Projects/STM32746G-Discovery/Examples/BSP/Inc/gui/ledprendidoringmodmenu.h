@@ -1,3 +1,4 @@
+#include "stdint.h"
 
 static const uint8_t ledprendidoringmodmenu[144] = {
     // ░∙∙∙∙░

@@ -1,4 +1,6 @@
 
+#include <stdint.h>
+
 static const uint8_t ledapagadowahpedal[1368] = {
     // ∙∙∙∙∙░▒▓▓▓▒░∙∙∙∙∙∙∙
     // ∙∙∙▒▒▓▓▒░░░░∙∙∙░∙∙∙

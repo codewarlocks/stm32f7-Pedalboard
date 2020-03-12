@@ -1,4 +1,6 @@
 
+#include "stdint.h"
+
 static const uint8_t ledprendidoringmodpedal[400] = {
     // ∙∙∙░░░∙∙∙∙
     // ∙░░░░░░░∙∙

@@ -86,6 +86,8 @@ void renderPushButton(GUIElement *bt);
 void handleDialButton(GUIElement *bt, GUITouchState *touch);
 void renderDialButton(GUIElement *bt);
 
+void init_LL_ConvertLine_DMA2D (uint32_t color_mode);
+void LL_ConvertLineToARGB8888(void *src,void *dst,uint32_t xstride, uint32_t color_mode);
 void drawSprite(uint16_t x, uint16_t y, uint8_t id, SpriteSheet *sprite);
 void drawBitmapRaw(uint16_t x, uint16_t y, uint16_t width, uint16_t height,
 		uint8_t *pixels, uint32_t colorMode, uint8_t active_label);

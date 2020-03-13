@@ -74,8 +74,8 @@ typedef enum
 	SCREEN_REFRESH 		 = 3,
 }machine_states_t;
 
-#define AUDIO_BLOCK_SIZE   ((uint32_t)256)
-#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)128)
+#define AUDIO_BLOCK_SIZE   ((uint32_t)2800)
+#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)1400)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
 #define AUDIO_BUFFER_OUT   (AUDIO_REC_START_ADDR + (AUDIO_BLOCK_SIZE * 2)) /* In SDRAM */
 
@@ -94,7 +94,6 @@ static int32_t cont_muestras=0, cont_pedales=0;
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
 LinkElementMenu	*Flecha_Menu_Izquierda=NULL, *Flecha_Menu_Derecha=NULL;
-
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -144,7 +143,7 @@ int main(void)
 		BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
 		BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
 		BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
-		//	BSP_AUDIO_IN_SetVolume(90);
+		BSP_AUDIO_IN_SetVolume(90);
 		BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 
 		if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
@@ -159,10 +158,10 @@ int main(void)
 				{
 						case NONE_STATE:
 						{
-							
+								break;
 						}
 						case BUFFER_OFFSET_HALF:
-						{
+						{						
 							memcpy(Buffer_cuentas, Buffer_in, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
 							for(cont_muestras=0;cont_muestras<AUDIO_BLOCK_HALFSIZE;cont_muestras++)
 							{
@@ -180,7 +179,7 @@ int main(void)
 									}
 							}
 							memcpy(Buffer_out, Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
-							machine_state=NONE_STATE;
+							machine_state=NONE_STATE;										
 							break;
 						}
 						case BUFFER_OFFSET_FULL:
@@ -202,41 +201,41 @@ int main(void)
 										}
 								}
 								memcpy(&Buffer_out[AUDIO_BLOCK_HALFSIZE], Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
-								machine_state=NONE_STATE;
+								machine_state=NONE_STATE;						
 								break;
 						}
 						case SCREEN_REFRESH:
 						{
-								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
-								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
-								NVIC_DisableIRQ(TIMx_IRQn);
 						//		if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
 						//		{
 						//			/* Start Conversation Error */
 						//			Error_Handler();
 						//		}
-								BSP_TS_GetState(&rawTouchState);
-								guiUpdateTouch(&rawTouchState, &touchState);
-								if(pedal_individual==1)
-								{
-										if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-											guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-										handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-										linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+							NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+							NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+							NVIC_DisableIRQ(TIMx_IRQn);
+							BSP_TS_GetState(&rawTouchState);
+							guiUpdateTouch(&rawTouchState, &touchState);
+							if(pedal_individual==1)
+							{
+									if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+										guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+									handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+									linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
 
-								}
-								else if(pedal_individual==0)
-								{
-										PushRequestHandler_menu(Pedales, &touchState);
-										linkRequestHandler_menu(Pedales, &touchState);
-										linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-										linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-								}
-								machine_state=NONE_STATE;
-								NVIC_EnableIRQ(TIMx_IRQn);
-								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
-								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
-								break;
+							}
+							else if(pedal_individual==0)
+							{
+									PushRequestHandler_menu(Pedales, &touchState);
+									linkRequestHandler_menu(Pedales, &touchState);
+									linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+									linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+							}
+							machine_state=NONE_STATE;
+							NVIC_EnableIRQ(TIMx_IRQn);
+							NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+							NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+							break;
 						}
 						default:
 						{

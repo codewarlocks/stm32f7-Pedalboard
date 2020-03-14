@@ -74,8 +74,8 @@ typedef enum
 	SCREEN_REFRESH 		 = 3,
 }machine_states_t;
 
-#define AUDIO_BLOCK_SIZE   ((uint32_t)2800)
-#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)1400)
+#define AUDIO_BLOCK_SIZE   ((uint32_t)512)
+#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)256)
 #define AUDIO_BUFFER_IN    AUDIO_REC_START_ADDR     /* In SDRAM */
 #define AUDIO_BUFFER_OUT   (AUDIO_REC_START_ADDR + (AUDIO_BLOCK_SIZE * 2)) /* In SDRAM */
 
@@ -143,7 +143,7 @@ int main(void)
 		BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
 		BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
 		BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
-		BSP_AUDIO_IN_SetVolume(90);
+		BSP_AUDIO_IN_SetVolume(75);
 		BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
 
 		if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
@@ -286,7 +286,7 @@ void Tim3_Patalla_Config (void)
 	  /* Time Base configuration */
 	  htimx.Instance = TIMx;
 
-	  htimx.Init.Period            = 1800;//5400
+	  htimx.Init.Period            = 900;//5400
 	  htimx.Init.Prescaler         = 5000;
 	  htimx.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV4;
 	  htimx.Init.CounterMode       = TIM_COUNTERMODE_UP;

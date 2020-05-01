@@ -36,12 +36,14 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+#if EXTERNAL_WHEEL_ENABLE
 extern ADC_HandleTypeDef    AdcHandle;
+#endif
+
+#if SCREEN_ENABLE
 extern TIM_HandleTypeDef  htimx;
-//extern DMA_HandleTypeDef   hdma;
-///*DMA status declared in "sdram_dma.c" file */
-//extern uint32_t uwDMA_Transfer_Complete;
-/* SAI handler declared in "stm32746g_discovery_audio.c" file */
+#endif
+
 extern SAI_HandleTypeDef haudio_out_sai;
 /* SAI handler declared in "stm32746g_discovery_audio.c" file */
 extern SAI_HandleTypeDef haudio_in_sai;
@@ -248,6 +250,7 @@ void DCMI_IRQHandler(void)
   BSP_CAMERA_IRQHandler();
 }
 
+#if EXTERNAL_WHEEL_ENABLE
 /**
 * @brief  This function handles DMA interrupt request.
 * @param  None
@@ -257,7 +260,9 @@ void ADCx_IRQHandler(void)
 {
   HAL_ADC_IRQHandler(&AdcHandle);
 }
+#endif
 
+#if SCREEN_ENABLE
 /**
   * @brief  This function handles TIM interrupt request.
   * @param  None
@@ -267,6 +272,7 @@ void TIMx_IRQHandler(void)
 {
   HAL_TIM_IRQHandler(&htimx);
 }
+#endif
 
 /**
   * @brief  This function handles DMA2D Handler.

@@ -1,4 +1,4 @@
-/**
+	/**
   ******************************************************************************
   * @file    BSP/Inc/main.h 
   * @author  MCD Application Team
@@ -62,31 +62,41 @@
 #define CAMERA_RES_MAX_X          640
 #define CAMERA_RES_MAX_Y          480
 
+#define SDRAM_WRITE_READ_ADDR_OFFSET ((uint32_t)0x0800)
+#define SRAM_WRITE_READ_ADDR_OFFSET  SDRAM_WRITE_READ_ADDR_OFFSET
+
+/* The Audio file is flashed with ST-Link Utility @ flash address =  AUDIO_SRC_FILE_ADDRESS */
+//#define AUDIO_SRC_FILE_ADDRESS       0x08080000   /* Audio file address in flash */
+																							
+																							
+/* Todos los BUFFERS DE SDRAM QUE ESTAMOS USANDO*/
+
+#define AUDIO_BLOCK_SIZE   ((uint32_t)512)
+#define AUDIO_BLOCK_HALFSIZE   ((uint32_t)256)
+
 /**
   * @brief  LCD FB_StartAddress
   * LCD Frame buffer start address : starts at beginning of SDRAM
   */
-#define LCD_FRAME_BUFFER          SDRAM_DEVICE_ADDR
+#define LCD_FRAME_BUFFER          LCD_FB_START_ADDRESS
 
-/**
-  * @brief  Camera frame buffer start address
-  * Assuming LCD frame buffer is of size 480x800 and format ARGB8888 (32 bits per pixel).
-  */
-#define CAMERA_FRAME_BUFFER       ((uint32_t)(LCD_FRAME_BUFFER + (RK043FN48H_WIDTH * RK043FN48H_HEIGHT * ARBG8888_BYTE_PER_PIXEL)))
+//#define CAMERA_FRAME_BUFFER       ((uint32_t)(LCD_FRAME_BUFFER + (RK043FN48H_WIDTH * RK043FN48H_HEIGHT * ARBG8888_BYTE_PER_PIXEL)))
 
 /**
   * @brief  SDRAM Write read buffer start address after CAM Frame buffer
   * Assuming Camera frame buffer is of size 640x480 and format RGB565 (16 bits per pixel).
   */
-#define SDRAM_WRITE_READ_ADDR        ((uint32_t)(CAMERA_FRAME_BUFFER + (CAMERA_RES_MAX_X * CAMERA_RES_MAX_Y * RGB565_BYTE_PER_PIXEL)))
+//#define SDRAM_WRITE_READ_ADDR        ((uint32_t)(CAMERA_FRAME_BUFFER + (CAMERA_RES_MAX_X * CAMERA_RES_MAX_Y * RGB565_BYTE_PER_PIXEL)))
 
-#define SDRAM_WRITE_READ_ADDR_OFFSET ((uint32_t)0x0800)
-#define SRAM_WRITE_READ_ADDR_OFFSET  SDRAM_WRITE_READ_ADDR_OFFSET
+#define BMP_IMAGE_BUFFER       					LCD_FRAME_BUFFER + (RK043FN48H_WIDTH * RK043FN48H_HEIGHT * ARBG8888_BYTE_PER_PIXEL)*2		/* El buffer tienen 2 layers (2 * size pantalla) */
 
-#define AUDIO_REC_START_ADDR         SDRAM_WRITE_READ_ADDR
+#define AUDIO_REC_START_ADDR         BMP_IMAGE_BUFFER+0x07D000															/* El buffer tienen 512000 bytes */
 
-/* The Audio file is flashed with ST-Link Utility @ flash address =  AUDIO_SRC_FILE_ADDRESS */
-#define AUDIO_SRC_FILE_ADDRESS       0x08080000   /* Audio file address in flash */
+#define AUDIO_PLAY_BUFFER								AUDIO_REC_START_ADDR+AUDIO_BLOCK_SIZE*4	/* El buffer tienen 512 muestrras */
+
+#define AUDIO_CUENTAS_BUFFER					AUDIO_PLAY_BUFFER+AUDIO_BLOCK_SIZE*4				/* El buffer tienen 512 muestrras */
+
+#define AUDIO_DELAY_BUFFER							AUDIO_CUENTAS_BUFFER+AUDIO_BLOCK_SIZE*4  /* El delay tienen 50k muestrras */
 
 typedef enum {
   AUDIO_ERROR_NONE = 0,
@@ -142,5 +152,12 @@ void BSP_LCD_DMA2D_IRQHandler(void);
 void assert_failed(uint8_t* file, uint32_t line);
 #endif
 #endif /* __MAIN_H */
+
+/* Enable Features ---------------------------------------------------*/
+#define EXTERNAL_WHEEL_ENABLE	0
+
+#define AUDIO_ENABLE											1
+
+#define SCREEN_ENABLE									1
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

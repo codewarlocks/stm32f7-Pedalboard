@@ -28,7 +28,6 @@
 makefile
 Projects/STM32746G-Discovery/Examples/BSP/Binary
 Projects/STM32746G-Discovery/Examples/BSP/EWARM
-Projects/STM32746G-Discovery/Examples/BSP/MDK-ARM
 Middlewares
 Documentation
 Utilities

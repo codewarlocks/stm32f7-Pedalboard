@@ -25,6 +25,7 @@
 "stm32746g_discovery\stm32f7xx_hal_msp.o"
 "stm32746g_discovery\tremolo.o"
 "stm32746g_discovery\vibrato.o"
+"stm32746g_discovery\wav_recorder.o"
 "stm32746g_discovery\stm32746g_discovery.o"
 "stm32746g_discovery\stm32746g_discovery_lcd.o"
 "stm32746g_discovery\stm32746g_discovery_ts.o"

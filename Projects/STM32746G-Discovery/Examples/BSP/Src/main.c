@@ -33,7 +33,6 @@
 //Para dibujar perillas
 //EJEMPLO WSLDN4 -> EX03
 #include <math.h>
-#include "ex03/mainex.h"
 #include "gui/prototipos.h"
 
 /* Global extern variables ---------------------------------------------------*/
@@ -84,7 +83,16 @@ void Tim3_Patalla_Config (void);
 //int32_t Buffer_in[AUDIO_BLOCK_SIZE]={0}, Buffer_out[AUDIO_BLOCK_SIZE]={0}, Buffer_cuentas[AUDIO_BLOCK_HALFSIZE]={0};
 int32_t *Buffer_in=(int32_t*)AUDIO_REC_START_ADDR, *Buffer_out=(int32_t*)(AUDIO_PLAY_BUFFER), *Buffer_cuentas=(int32_t*)(AUDIO_CUENTAS_BUFFER);
 static int32_t cont_muestras=0, cont_pedales=0;
+static uint8_t* AUDIO_RECORD_BUFFER = (uint8_t*)(AUDIO_DELAY_BUFFER+(50000*4)); //Alberga 10 segundos de audio, uso TIM3 (200ms) para copiarlas
+volatile bool estado_grabacion=false;
+static uint32_t timer_grabacion=0, offset_grabacion=0;
+volatile unsigned long *timer_counter_reg=(unsigned long *)0x40000424;
+volatile bool timer_count=false;
+volatile bool block_machine=false;
+//wav_header audio_file;
 #endif
+
+FIL wav_ptr;
 
 void Error_Handler(void);
 void SystemClock_Config(void);
@@ -93,10 +101,13 @@ void CPU_CACHE_Enable(void);
 /* Private typedef -----------------------------------------------------------*/
 typedef enum
 {
-	NONE_STATE				 = 0,
-	BUFFER_OFFSET_HALF = 1,
-	BUFFER_OFFSET_FULL = 2,
-	SCREEN_REFRESH 		 = 3,
+		NONE_STATE				 							= 	0,
+		INIT_SCREEN_AUDIO					=	1,
+		BUFFER_OFFSET_HALF 		= 	2,
+		BUFFER_OFFSET_FULL 		= 	3,
+		SCREEN_REFRESH 		 			= 	4,
+		INICIAR_GRABACION					=	5,
+		GRABACION_TERMINADA	=	6
 }machine_states_t;
 
 /* Private define ------------------------------------------------------------*/
@@ -104,7 +115,7 @@ typedef enum
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static volatile machine_states_t  machine_state=NONE_STATE;
+static volatile machine_states_t  machine_state=INICIAR_GRABACION;
 
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
@@ -139,7 +150,8 @@ int main(void)
 		BSP_TS_Init(BSP_LCD_GetXSize(), BSP_LCD_GetYSize());
 		BSP_LCD_Init();
 		LCD_Config();
-		BSP_SD_Init();
+//		BSP_SD_Init();
+		Storage_Init();
 		/*Configuracion del LED*/
 		BSP_LED_Init(LED1);
 		/*Inicializo DMA2D para usar el LLconvertline*/
@@ -152,27 +164,17 @@ int main(void)
 		#endif
 
 		/*Inicializo estructuras de pedales*/
+		FATFS_LinkDriver(&SD_Driver, SD_Path);
 		initPedals();
 		InitEfectos();
 		
+		init_wav_header(AUDIO_RECORD_BUFFER);
+		
+		unsigned int aux_cont_bytes=0, cont_aux=0;
+		int32_t	bytes_por_escribir=0;
+
 		#if SCREEN_ENABLE
 		Demo_fondito();
-		#endif
-
-		/* Start Playback */
-		#if AUDIO_ENABLE
-		BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
-		BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
-		BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
-		BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
-		#endif
-			
-		#if SCREEN_ENABLE
-		if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
-		{
-				/* Starting Error */
-				Error_Handler();
-		}
 		#endif
 		
 		while (1)
@@ -181,6 +183,27 @@ int main(void)
 				{
 						case NONE_STATE:
 						{
+								break;
+						}
+						case INIT_SCREEN_AUDIO:
+						{
+								/* Start Playback */
+								#if AUDIO_ENABLE
+								BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
+								BSP_AUDIO_IN_Record((uint16_t*)Buffer_in, AUDIO_BLOCK_SIZE);
+								BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
+								BSP_AUDIO_OUT_Play((uint16_t*)Buffer_out, AUDIO_BLOCK_SIZE);
+								#endif
+							
+								machine_state=NONE_STATE;								
+								#if SCREEN_ENABLE
+							HAL_NVIC_SetPriority(TIM3_IRQn, AUDIO_IN_IRQ_PREPRIO-1, 0);
+							if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
+								{
+										/* Starting Error */
+										Error_Handler();
+								}
+								#endif
 								break;
 						}
 						#if AUDIO_ENABLE
@@ -204,11 +227,40 @@ int main(void)
 										}
 										if (Buffer_cuentas[cont_muestras]<0)
 										{
+												if (estado_grabacion==true)
+												{
+															AUDIO_RECORD_BUFFER[offset_grabacion]=Buffer_cuentas[cont_muestras]&0xFF;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<8))>>8;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<16))>>16;
+															offset_grabacion++;
+												}
 												Buffer_cuentas[cont_muestras]=(~((-1*Buffer_cuentas[cont_muestras])-1))&0xFFFFFF;
+										}
+										else
+										{
+												if (estado_grabacion==true)
+												{
+															AUDIO_RECORD_BUFFER[offset_grabacion]=Buffer_cuentas[cont_muestras]&0xFF;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<8))>>8;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<16))>>16;
+															offset_grabacion++;
+												}
 										}
 								}
 								memcpy(Buffer_out, Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
-								machine_state=NONE_STATE;										
+								if (machine_state==SCREEN_REFRESH)
+								{
+										break;
+								}
+								else
+								{
+										machine_state=NONE_STATE;
+										block_machine=false;
+								}
 								break;
 						}
 						/* AUDIO */
@@ -232,52 +284,157 @@ int main(void)
 											}
 											if (Buffer_cuentas[cont_muestras]<0)
 											{
+													if (estado_grabacion==true)
+													{
+															AUDIO_RECORD_BUFFER[offset_grabacion]=Buffer_cuentas[cont_muestras]&0xFF;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<8))>>8;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<16))>>16;
+															offset_grabacion++;
+													}
 													Buffer_cuentas[cont_muestras]=(~((-1*Buffer_cuentas[cont_muestras])-1))&0xFFFFFF;
+											}
+											else
+											{
+													if (estado_grabacion==true)
+													{
+															AUDIO_RECORD_BUFFER[offset_grabacion]=Buffer_cuentas[cont_muestras]&0xFF;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<8))>>8;
+															offset_grabacion++;
+															AUDIO_RECORD_BUFFER[offset_grabacion]=(Buffer_cuentas[cont_muestras]&(0xFF<<16))>>16;
+															offset_grabacion++;
+													}
 											}
 									}
 									memcpy(&Buffer_out[AUDIO_BLOCK_HALFSIZE], Buffer_cuentas, AUDIO_BLOCK_HALFSIZE*sizeof(int32_t));
-									machine_state=NONE_STATE;						
-									break;
+								if (machine_state==SCREEN_REFRESH)
+								{
+										break;
+								}
+								else
+								{
+										machine_state=NONE_STATE;
+										block_machine=false;
+								}				
+								break;
 						}
 						#endif
 						#if SCREEN_ENABLE
 						case SCREEN_REFRESH:
 						{
-								#if EXTERNAL_WHEEL_ENABLE
+							timer_count=!timer_count;	
+							#if EXTERNAL_WHEEL_ENABLE
 								if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
 								{
 										/* Start Conversation Error */
 										Error_Handler();
 								}
-							#endif
-							NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
-							NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
-							NVIC_DisableIRQ(TIMx_IRQn);
-							BSP_TS_GetState(&rawTouchState);
-							guiUpdateTouch(&rawTouchState, &touchState);
-							if(pedal_individual==1)
-							{
-									if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
-									{
-											guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
-									}
-									handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
-									linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
-							}
-							else if(pedal_individual==0)
-							{
-									PushRequestHandler_menu(Pedales, &touchState);
-									linkRequestHandler_menu(Pedales, &touchState);
-									linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
-									linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
-							}
-							machine_state=NONE_STATE;
-							NVIC_EnableIRQ(TIMx_IRQn);
-							NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
-							NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
-							break;
+								#endif
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ(TIMx_IRQn);
+							
+								BSP_TS_GetState(&rawTouchState);
+								guiUpdateTouch(&rawTouchState, &touchState);
+								if(pedal_individual==1)
+								{
+										if((Pedales[seleccion_pedal]->perilla->perillas[0]->id)!=8)
+										{
+												guiUpdate(Pedales[seleccion_pedal]->perilla, &touchState);
+										}
+										handlePushIndividualButton(Pedales[seleccion_pedal], &touchState);
+										linkRequestHandlers_pedal_individual(Pedales[seleccion_pedal], &touchState);
+								}
+								else if(pedal_individual==0)
+								{
+										PushRequestHandler_menu(Pedales, &touchState);
+										linkRequestHandler_menu(Pedales, &touchState);
+										linkRequestHandler_Flechas_Menu(Flecha_Menu_Izquierda, &touchState);
+										linkRequestHandler_Flechas_Menu(Flecha_Menu_Derecha, &touchState);
+								}
+								machine_state=NONE_STATE;
+								
+								if (estado_grabacion==true)	
+								{
+										if (timer_grabacion<100)			/* 50=10s, 5=1s (200ms) ||	*/
+										{
+											 timer_grabacion++;
+										}
+										else
+										{
+												machine_state=GRABACION_TERMINADA;
+												break;
+										}
+								}
+								timer_count=!timer_count;
+								block_machine=false;
+								NVIC_EnableIRQ(TIMx_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+								break;
 						}
 						#endif
+						case INICIAR_GRABACION:
+						{
+								BSP_LED_Off(LED1);
+								estado_grabacion=true;
+								timer_grabacion=0;
+								offset_grabacion=44;
+								machine_state=INIT_SCREEN_AUDIO;
+								break;
+						}
+						case GRABACION_TERMINADA:
+						{
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ(TIMx_IRQn);
+								
+//								AUDIO_RECORD_BUFFER[4]=((offset_grabacion-300)&0xFF)+36;//0xF0;
+//								AUDIO_RECORD_BUFFER[5]=((offset_grabacion-300)&(0xFF<<8))>>8;//0x04;
+//								AUDIO_RECORD_BUFFER[6]=((offset_grabacion-300)&(0xFF<<16))>>16;
+//								AUDIO_RECORD_BUFFER[7]=(uint8_t)(((offset_grabacion-300)&(0xFF<<24))>>24);//0x00;
+//								AUDIO_RECORD_BUFFER[40]=(offset_grabacion-300)&0xFF;//0xF0;
+//								AUDIO_RECORD_BUFFER[41]=((offset_grabacion-300)&(0xFF<<8))>>8;//0x04;
+//								AUDIO_RECORD_BUFFER[42]=((offset_grabacion-300)&(0xFF<<16))>>16;
+//								AUDIO_RECORD_BUFFER[43]=((offset_grabacion-300)&(0xFF<<24))>>24;//0x00;
+							
+								AUDIO_RECORD_BUFFER[4]=0xD4+36;//0xF0;
+								AUDIO_RECORD_BUFFER[5]=0xFB;//0x04;
+								AUDIO_RECORD_BUFFER[6]=0x13;
+								AUDIO_RECORD_BUFFER[7]=0x00;//0x00;
+								AUDIO_RECORD_BUFFER[40]=0xD4;//0xF0;
+								AUDIO_RECORD_BUFFER[41]=0xFB;//0x04;
+								AUDIO_RECORD_BUFFER[42]=0x13;
+								AUDIO_RECORD_BUFFER[43]=0x00;//0x00;
+								
+								f_open(&wav_ptr, "r1.wav", FA_CREATE_ALWAYS | FA_WRITE);
+								for (uint32_t cont_i_bytes=0; cont_i_bytes<5116; cont_i_bytes++)
+								{
+										f_write(&wav_ptr, &(AUDIO_RECORD_BUFFER[cont_i_bytes*256]), 256, &aux_cont_bytes);
+								}
+								
+								f_close(&wav_ptr);
+								
+//								f_open(&wav_ptr, "r2.txt", FA_CREATE_ALWAYS | FA_WRITE);
+//								sprintf((char*)AUDIO_RECORD_BUFFER, "offset_grabacion=%d, timer_grabacion=%d", offset_grabacion-300, timer_grabacion);
+//								f_write(&wav_ptr, AUDIO_RECORD_BUFFER, strlen((char*)AUDIO_RECORD_BUFFER), &aux_cont_bytes);
+//								f_close(&wav_ptr);
+								
+								machine_state=NONE_STATE;
+								
+								estado_grabacion=false;
+								timer_grabacion=0;
+								offset_grabacion=0;
+								BSP_LED_On(LED1);
+								
+								block_machine=false;
+								NVIC_EnableIRQ(TIMx_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+								break;
+						}
 						default:
 						{
 								Error_Handler();
@@ -360,7 +517,7 @@ void CPU_CACHE_Enable(void)
 		SCB_EnableICache(); //Sin esta cache no llega hacer las cuentas de muchos efectos
 
 		/* Enable D-Cache */
-		//	SCB_EnableDCache(); //si usa esta cache me limita la ram muchisimo (no mas de 5kb)
+		SCB_EnableDCache(); //si usa esta cache me limita la ram muchisimo (no mas de 5kb)
 }
 
 void InitEfectos()
@@ -402,11 +559,11 @@ void Error_Handler(void)
 void Tim3_Patalla_Config (void)
 {
 		/* Time Base configuration */
-		htimx.Instance = TIMx;
+		htimx.Instance = TIMx; //TIM3 utilizado, APB1 (100MHZ de clock source), APB1=HSE/2
 
-		htimx.Init.Period            = 900;//5400
-		htimx.Init.Prescaler         = 5000;
-		htimx.Init.ClockDivision     = TIM_CLOCKDIVISION_DIV4;
+		htimx.Init.Period            = 999;//2000-1 0->0.2s (200ms) , 999(100ms)
+		htimx.Init.Prescaler         = 9999;
+		htimx.Init.ClockDivision     = 0;
 		htimx.Init.CounterMode       = TIM_COUNTERMODE_UP;
 		htimx.Init.RepetitionCounter = 0x0;
 		htimx.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -447,7 +604,6 @@ void LCD_Config(void)
 
 void Demo_fondito(void){
 		/* LCD Initialization */
-		FATFS_LinkDriver(&SD_Driver, SD_Path);
 		DrawScreen(MENU_1);
 }
 
@@ -471,6 +627,7 @@ void DrawScreen(int num)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
 		machine_state=SCREEN_REFRESH;
+		block_machine=true;
 		return;
 }
 #endif /* SCREEN_ENABLE */
@@ -483,7 +640,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
  */
 void BSP_AUDIO_IN_TransferComplete_CallBack(void)
 {
-		machine_state=BUFFER_OFFSET_FULL;
+		if (block_machine==false)
+		{
+				machine_state=BUFFER_OFFSET_FULL;
+				block_machine=true;
+		}
 		return;
 }
 
@@ -494,7 +655,11 @@ void BSP_AUDIO_IN_TransferComplete_CallBack(void)
  */
 void BSP_AUDIO_IN_HalfTransfer_CallBack(void)
 {
-		machine_state=BUFFER_OFFSET_HALF;
+		if (block_machine==false)
+		{
+				machine_state=BUFFER_OFFSET_HALF;
+				block_machine=true;
+		}
 		return;
 }
 

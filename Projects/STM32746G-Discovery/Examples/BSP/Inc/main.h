@@ -98,6 +98,8 @@
 
 #define AUDIO_DELAY_BUFFER							AUDIO_CUENTAS_BUFFER+AUDIO_BLOCK_SIZE*4  /* El delay tienen 50k muestrras */
 
+#define AUDIO_RECORDER_BUFFER			AUDIO_DELAY_BUFFER+(50000*4)														/*	Alberga 10 segundos de audio (44100*10*3)	*/
+
 typedef enum {
   AUDIO_ERROR_NONE = 0,
   AUDIO_ERROR_NOTREADY,

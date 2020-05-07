@@ -121,3 +121,29 @@ void eqGain2 (GUIElement*);
 void eqGain3 (GUIElement*);
 void eqGain4 (GUIElement*);
 void eqGain5 (GUIElement*);
+
+//wav_recorder.c
+typedef struct /* Caso Generico */
+{
+		uint8_t     ChunkID[4];         /*  Contains the letters "RIFF" in ASCII form */
+		uint8_t     ChunkSize[4];       /* 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size) o (36 + NumSamples * NumChannels * BitsPerSample/8)*/
+		uint8_t     Format[4];          /* Contains the letters "WAVE" */
+		uint8_t     Subchunk1ID[4];     /*  Contains the letters "fmt " */
+		uint8_t     Subchunk1Size[4];   /* 16 for PCM.  This is the size of the rest of the Subchunk which follows this number. */
+		uint8_t     AudioFormat[2];     /* PCM = 1 (i.e. Linear quantization) Values other than 1 indicate some  form of compression. */
+		uint8_t     NumChannels[2];     /*  Mono = 1, Stereo = 2, etc. */
+		uint8_t     SampleRate[4];      /* 8000, 44100, etc. */
+		uint8_t     ByteRate[4];        /* == SampleRate * NumChannels * BitsPerSample/8 */
+		uint8_t     BlockAlign[2];      /* == NumChannels * BitsPerSample/8 */
+		uint8_t     BitsPerSample[2];   /* 8 bits = 8, 16 bits = 16, etc. */
+		uint8_t     ExtraParamSize[2];  /* if PCM, then doesn't exist */
+		uint8_t     Subchunk2ID[4];     /* Contains the letters "data" */
+		uint8_t     Subchunk2Size[4];   /* == NumSamples * NumChannels * BitsPerSample/8
+																			 This is the number of bytes in the data.
+																			 You can also think of this as the size
+																			 of the read of the subchunk following this
+																			 number. */
+}wav_header;
+
+void init_wav_header (uint8_t * buffer);
+//void init_wav_header (wav_header * wav_hdr_ptr);

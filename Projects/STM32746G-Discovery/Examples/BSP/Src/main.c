@@ -115,7 +115,7 @@ typedef enum
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-static volatile machine_states_t  machine_state=INICIAR_GRABACION;
+static volatile machine_states_t  machine_state=INIT_SCREEN_AUDIO;
 
 //Declaracion de objeto pedales
 PedalElement* Pedales[12];
@@ -154,6 +154,7 @@ int main(void)
 		Storage_Init();
 		/*Configuracion del LED*/
 		BSP_LED_Init(LED1);
+		BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
 		/*Inicializo DMA2D para usar el LLconvertline*/
 		init_LL_ConvertLine_DMA2D(CM_RGB888);
 		#endif
@@ -368,6 +369,14 @@ int main(void)
 												break;
 										}
 								}
+								else
+								{
+										if(BSP_PB_GetState(BUTTON_KEY)==SET)
+										{
+												machine_state=INICIAR_GRABACION;
+												break;
+										}
+								}
 								timer_count=!timer_count;
 								block_machine=false;
 								NVIC_EnableIRQ(TIMx_IRQn);
@@ -378,11 +387,18 @@ int main(void)
 						#endif
 						case INICIAR_GRABACION:
 						{
-								BSP_LED_Off(LED1);
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
+								NVIC_DisableIRQ(TIMx_IRQn);
+								BSP_LED_On(LED1);
 								estado_grabacion=true;
 								timer_grabacion=0;
 								offset_grabacion=44;
-								machine_state=INIT_SCREEN_AUDIO;
+								block_machine=false;
+								machine_state=NONE_STATE;
+								NVIC_EnableIRQ(TIMx_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
 								break;
 						}
 						case GRABACION_TERMINADA:
@@ -427,7 +443,7 @@ int main(void)
 								estado_grabacion=false;
 								timer_grabacion=0;
 								offset_grabacion=0;
-								BSP_LED_On(LED1);
+								BSP_LED_Off(LED1);
 								
 								block_machine=false;
 								NVIC_EnableIRQ(TIMx_IRQn);

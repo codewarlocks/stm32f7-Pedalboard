@@ -48,7 +48,7 @@ int32_t distorsionEfecto (int32_t entrada)
 	aux = (aux * 3106891.5f); //para que no suba tanto el volumen
 	
 	// refuerzo de graves
-//	aux = (float32_t) distorsionShelve(aux,1);
+	aux = (float32_t) distorsionShelve(aux,1);
 
 	//control de volumen
 	//aux = 1.5 * aux / gain;

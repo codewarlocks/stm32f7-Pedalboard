@@ -84,12 +84,19 @@ void Tim3_Patalla_Config (void);
 int32_t *Buffer_in=(int32_t*)AUDIO_REC_START_ADDR, *Buffer_out=(int32_t*)(AUDIO_PLAY_BUFFER), *Buffer_cuentas=(int32_t*)(AUDIO_CUENTAS_BUFFER);
 static int32_t cont_muestras=0, cont_pedales=0;
 static uint8_t* AUDIO_RECORD_BUFFER = (uint8_t*)(AUDIO_DELAY_BUFFER+(50000*4)); //Alberga 10 segundos de audio, uso TIM3 (200ms) para copiarlas
+
 volatile bool estado_grabacion=false;
 static uint32_t timer_grabacion=0, offset_grabacion=0;
-volatile unsigned long *timer_counter_reg=(unsigned long *)0x40000424;
-volatile bool timer_count=false;
+volatile bool screen_refresh_flag=false;
 volatile bool block_machine=false;
-//wav_header audio_file;
+static uint32_t escritura_sd=0;
+#define SEGUNDOS 							20
+#define SECTOR_SD_WRITE	256
+unsigned int aux_cont_bytes=0;
+DIR directorio;
+FILINFO	file_info_for_search;
+FRESULT	f_result;
+uint16_t cantidad_records=0;
 #endif
 
 FIL wav_ptr;
@@ -171,12 +178,33 @@ int main(void)
 		
 		init_wav_header(AUDIO_RECORD_BUFFER);
 		
-		unsigned int aux_cont_bytes=0, cont_aux=0;
-		int32_t	bytes_por_escribir=0;
-
+		escritura_sd=(DEFAULT_AUDIO_IN_FREQ*3*SEGUNDOS)/SECTOR_SD_WRITE;
+		
+		if ((f_result=f_findfirst(&directorio, &file_info_for_search, "", "*.WAV"))==FR_OK)
+		{
+				while (file_info_for_search.fname[0]!=0x00)
+				{
+						if (f_result==FR_OK)
+						{
+								if (file_info_for_search.fname[2]>='0' && file_info_for_search.fname[2]<='9')
+								{
+												cantidad_records=((file_info_for_search.fname[1]-48)*10+(file_info_for_search.fname[2]-48))+1;
+								}
+								else
+								{
+										cantidad_records=(file_info_for_search.fname[1]-48)+1;
+								}
+								f_result=f_findnext(&directorio, &file_info_for_search);
+						}
+				}
+		}
+		f_closedir(&directorio);
+	
 		#if SCREEN_ENABLE
 		Demo_fondito();
 		#endif
+		
+		
 		
 		while (1)
 		{
@@ -325,7 +353,7 @@ int main(void)
 						#if SCREEN_ENABLE
 						case SCREEN_REFRESH:
 						{
-							timer_count=!timer_count;	
+							screen_refresh_flag=!screen_refresh_flag;	
 							#if EXTERNAL_WHEEL_ENABLE
 								if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK)
 								{
@@ -359,7 +387,7 @@ int main(void)
 								
 								if (estado_grabacion==true)	
 								{
-										if (timer_grabacion<100)			/* 50=10s, 5=1s (200ms) ||	*/
+										if (timer_grabacion<SEGUNDOS*10)			/* 50=10s, 5=1s (200ms) ||	*/
 										{
 											 timer_grabacion++;
 										}
@@ -377,7 +405,7 @@ int main(void)
 												break;
 										}
 								}
-								timer_count=!timer_count;
+								screen_refresh_flag=!screen_refresh_flag;
 								block_machine=false;
 								NVIC_EnableIRQ(TIMx_IRQn);
 								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
@@ -407,32 +435,38 @@ int main(void)
 								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn); //DMA2_Stream4_IRQn
 								NVIC_DisableIRQ(TIMx_IRQn);
 								
-//								AUDIO_RECORD_BUFFER[4]=((offset_grabacion-300)&0xFF)+36;//0xF0;
-//								AUDIO_RECORD_BUFFER[5]=((offset_grabacion-300)&(0xFF<<8))>>8;//0x04;
-//								AUDIO_RECORD_BUFFER[6]=((offset_grabacion-300)&(0xFF<<16))>>16;
-//								AUDIO_RECORD_BUFFER[7]=(uint8_t)(((offset_grabacion-300)&(0xFF<<24))>>24);//0x00;
-//								AUDIO_RECORD_BUFFER[40]=(offset_grabacion-300)&0xFF;//0xF0;
-//								AUDIO_RECORD_BUFFER[41]=((offset_grabacion-300)&(0xFF<<8))>>8;//0x04;
-//								AUDIO_RECORD_BUFFER[42]=((offset_grabacion-300)&(0xFF<<16))>>16;
-//								AUDIO_RECORD_BUFFER[43]=((offset_grabacion-300)&(0xFF<<24))>>24;//0x00;
+								BSP_AUDIO_OUT_SetVolume(0);
 							
-								AUDIO_RECORD_BUFFER[4]=0xD4+36;//0xF0;
-								AUDIO_RECORD_BUFFER[5]=0xFB;//0x04;
-								AUDIO_RECORD_BUFFER[6]=0x13;
-								AUDIO_RECORD_BUFFER[7]=0x00;//0x00;
-								AUDIO_RECORD_BUFFER[40]=0xD4;//0xF0;
-								AUDIO_RECORD_BUFFER[41]=0xFB;//0x04;
-								AUDIO_RECORD_BUFFER[42]=0x13;
-								AUDIO_RECORD_BUFFER[43]=0x00;//0x00;
+								AUDIO_RECORD_BUFFER[4]=(((escritura_sd*SECTOR_SD_WRITE)-44)+36)&(0xFF);//0xF0;
+								AUDIO_RECORD_BUFFER[5]=(((escritura_sd*SECTOR_SD_WRITE)-44)&(0xFF<<8))>>8;//0x04;
+								AUDIO_RECORD_BUFFER[6]=(((escritura_sd*SECTOR_SD_WRITE)-44)&(0xFF<<16))>>16;
+								AUDIO_RECORD_BUFFER[7]=((int32_t)(((int32_t)(escritura_sd*SECTOR_SD_WRITE)-44)&((int32_t)0xFF000000))>>24);//0x00;
+								AUDIO_RECORD_BUFFER[40]=(AUDIO_RECORD_BUFFER[4]-36)&(0xFF);
+								AUDIO_RECORD_BUFFER[41]=AUDIO_RECORD_BUFFER[5];
+								AUDIO_RECORD_BUFFER[42]=AUDIO_RECORD_BUFFER[6];
+								AUDIO_RECORD_BUFFER[43]=AUDIO_RECORD_BUFFER[7];
 								
-								f_open(&wav_ptr, "r1.wav", FA_CREATE_ALWAYS | FA_WRITE);
-								for (uint32_t cont_i_bytes=0; cont_i_bytes<5116; cont_i_bytes++)
+//								AUDIO_RECORD_BUFFER[4]=0xD4+36;//0xF0;
+//								AUDIO_RECORD_BUFFER[5]=0xFB;//0x04;
+//								AUDIO_RECORD_BUFFER[6]=0x13;
+//								AUDIO_RECORD_BUFFER[7]=0x00;//0x00;
+//								AUDIO_RECORD_BUFFER[40]=0xD4;//0xF0;
+//								AUDIO_RECORD_BUFFER[41]=0xFB;//0x04;
+//								AUDIO_RECORD_BUFFER[42]=0x13;
+//								AUDIO_RECORD_BUFFER[43]=0x00;//0x00;
+								
+								char nombre_archivo[20];
+								
+								sprintf(nombre_archivo, "R%d.wav", cantidad_records);
+								f_open(&wav_ptr, nombre_archivo, FA_CREATE_ALWAYS | FA_WRITE);
+//								for (uint32_t cont_i_bytes=0; cont_i_bytes<5116; cont_i_bytes++)
+								for (uint32_t cont_i_bytes=0; cont_i_bytes<escritura_sd; cont_i_bytes++)
 								{
 										f_write(&wav_ptr, &(AUDIO_RECORD_BUFFER[cont_i_bytes*256]), 256, &aux_cont_bytes);
 								}
 								
 								f_close(&wav_ptr);
-								
+								cantidad_records++;
 //								f_open(&wav_ptr, "r2.txt", FA_CREATE_ALWAYS | FA_WRITE);
 //								sprintf((char*)AUDIO_RECORD_BUFFER, "offset_grabacion=%d, timer_grabacion=%d", offset_grabacion-300, timer_grabacion);
 //								f_write(&wav_ptr, AUDIO_RECORD_BUFFER, strlen((char*)AUDIO_RECORD_BUFFER), &aux_cont_bytes);
@@ -446,6 +480,9 @@ int main(void)
 								BSP_LED_Off(LED1);
 								
 								block_machine=false;
+								
+								BSP_AUDIO_OUT_SetVolume(80);
+								
 								NVIC_EnableIRQ(TIMx_IRQn);
 								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
 								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);

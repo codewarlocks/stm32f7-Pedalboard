@@ -158,37 +158,27 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>wav_ptr</ItemText>
+          <ItemText>resultado_find</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>bytes_por_escribir,0x0A</ItemText>
+          <ItemText>archivo_wav</ItemText>
         </Ww>
         <Ww>
           <count>2</count>
           <WinNumber>1</WinNumber>
-          <ItemText>aux_cont_bytes</ItemText>
+          <ItemText>directorio</ItemText>
         </Ww>
         <Ww>
           <count>3</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Buffer_cuentas[cont_muestras]</ItemText>
+          <ItemText>file_info_for_search</ItemText>
         </Ww>
         <Ww>
           <count>4</count>
           <WinNumber>1</WinNumber>
-          <ItemText>offset_grabacion,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>5</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>timer_count</ItemText>
-        </Ww>
-        <Ww>
-          <count>6</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>cont_aux,0x0A</ItemText>
+          <ItemText>cantidad_records,0x0A</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -264,13 +254,8 @@
       <LogicAnalyzers>
         <Wi>
           <IntNumber>0</IntNumber>
-          <FirstString>`timer_count</FirstString>
-          <SecondString>008000000000000000000000000000000000F03F0100000000000000000000000000000074696D65725F636F756E740000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000000000000000E03F170000000000000000000000000000000000000012030108</SecondString>
-        </Wi>
-        <Wi>
-          <IntNumber>1</IntNumber>
           <FirstString>`block_machine</FirstString>
-          <SecondString>0000000000000000000060C00000000000C05F4001000000000000000000000000000000626C6F636B5F6D616368696E65000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000002000000000000000000E03F1700000000000000000000000000000000000000CADC0008</SecondString>
+          <SecondString>0000000000000000000060C00000000000C05F4001000000000000000000000000000000626C6F636B5F6D616368696E65000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000000000000000F03F1700000000000000000000000000000000000000CADC0008</SecondString>
         </Wi>
       </LogicAnalyzers>
       <DebugDescription>

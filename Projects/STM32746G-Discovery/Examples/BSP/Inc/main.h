@@ -98,15 +98,15 @@
 
 #define AUDIO_DELAY_BUFFER								AUDIO_CUENTAS_BUFFER+AUDIO_BLOCK_SIZE*4  /* El delay tienen 50k muestrras */
 
-#define PERILLA_35x35x25												AUDIO_DELAY_BUFFER+(50000*4)														/*	Alberga 10 segundos de audio (44100*10*3)	*/
+#define PERILLA_35x35x25												AUDIO_DELAY_BUFFER+(50000*4)														/* Se movieron las perilles de flash a SDRAM	*/
 
-#define PERILLA_42x41x25												PERILLA_35x35x25+(122528)		
+#define PERILLA_42x41x25												PERILLA_35x35x25+(122528)																		/* Se movieron las perilles de flash a SDRAM	*/
 
-#define PERILLA_52x52x25												PERILLA_42x41x25+(172224)
+#define PERILLA_52x52x25												PERILLA_42x41x25+(172224)																		/* Se movieron las perilles de flash a SDRAM	*/
 
-#define	PERILLA_EQ_SLIDER										PERILLA_52x52x25+(270432)
+#define	PERILLA_EQ_SLIDER										PERILLA_52x52x25+(270432)																		/* Se movieron las perilles de flash a SDRAM	*/
 
-#define AUDIO_WAV_RECORD_BUFFER		PERILLA_EQ_SLIDER+(258976)
+#define AUDIO_WAV_RECORD_BUFFER		PERILLA_EQ_SLIDER+(258976)																/* Nos quedan 40 segundos de grabacion aproximadamente */
 
 typedef enum {
   AUDIO_ERROR_NONE = 0,

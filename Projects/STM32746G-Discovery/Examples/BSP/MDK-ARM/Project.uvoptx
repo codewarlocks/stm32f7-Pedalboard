@@ -197,7 +197,7 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>Perillas_Buffer_eq_slider</ItemText>
+          <ItemText>AUDIO_RECORD_BUFFER</ItemText>
           <AccSizeX>0</AccSizeX>
         </Mm>
       </MemoryWindow1>

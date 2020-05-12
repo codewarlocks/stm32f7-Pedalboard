@@ -1,0 +1,1911 @@
+/*
+ *  CMSIS Pack Debug Access Sequence Log
+ *  File        : C:\Users\gonza\STM32Cube\Repository\STM32Cube_FW_F7_V1.14.0 modificado\Projects\STM32746G-Discovery\Examples\BSP\MDK-ARM\Project_Sequences_0018.log
+ *  Created     : 23:51:34 (11/05/2020)
+ *  Device      : STM32F746NGHx
+ *  PDSC File   : C:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Keil.STM32F7xx_DFP.pdsc
+ *  Config File : C:\Users\gonza\STM32Cube\Repository\STM32Cube_FW_F7_V1.14.0 modificado\Projects\STM32746G-Discovery\Examples\BSP\MDK-ARM\DebugConfig\STM32746G_DISCOVERY_STM32F746NGHx_2.0.0.dbgconf
+ *
+ */
+
+[23:51:34.379]  **********  Sequence "DebugDeviceUnlock"  (Context="Connect", Pname="", info="")
+[23:51:34.379]  
+[23:51:34.380]  <debugvars>
+[23:51:34.380]    // Pre-defined
+[23:51:34.380]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:51:34.380]    __connection=0x00010202    (Connection Type="Flash", Reset Type="System Reset", Connection Under HW Reset)
+[23:51:34.380]    __dp=0x00000000
+[23:51:34.381]    __ap=0x00000000
+[23:51:34.381]    __traceout=0x00000001      (SWO Trace)
+[23:51:34.381]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:51:34.381]    __FlashAddr=0x00000000
+[23:51:34.381]    __FlashLen=0x00000000
+[23:51:34.382]    __FlashArg=0x00000000
+[23:51:34.382]    __FlashOp=0x00000000
+[23:51:34.382]    __Result=0x00000000
+[23:51:34.382]    
+[23:51:34.382]    // User-defined
+[23:51:34.382]    DbgMCU_CR=0x00000007
+[23:51:34.382]    DbgMCU_APB1_Fz=0x00000000
+[23:51:34.383]    DbgMCU_APB2_Fz=0x00000000
+[23:51:34.383]    TraceClk_Pin=0x00040002
+[23:51:34.383]    TraceD0_Pin=0x00040003
+[23:51:34.383]    TraceD1_Pin=0x00040004
+[23:51:34.383]    TraceD2_Pin=0x00040005
+[23:51:34.383]    TraceD3_Pin=0x00040006
+[23:51:34.383]  </debugvars>
+[23:51:34.384]  
+[23:51:34.384]  <sequence name="DebugDeviceUnlock" Pname="" disable="false" info="">
+[23:51:34.384]    <block atomic="false" info="">
+[23:51:34.384]      Sequence("CheckID");
+[23:51:34.384]        <sequence name="CheckID" Pname="" disable="false" info="">
+[23:51:34.384]          <block atomic="false" info="">
+[23:51:34.385]            __var pidr1 = 0;
+[23:51:34.385]              // -> [pidr1 <= 0x00000000]
+[23:51:34.385]            __var pidr2 = 0;
+[23:51:34.385]              // -> [pidr2 <= 0x00000000]
+[23:51:34.385]            __var jep106id = 0;
+[23:51:34.385]              // -> [jep106id <= 0x00000000]
+[23:51:34.385]            __var ROMTableBase = 0;
+[23:51:34.385]              // -> [ROMTableBase <= 0x00000000]
+[23:51:34.386]            __ap = 0;      // AHB-AP
+[23:51:34.386]              // -> [__ap <= 0x00000000]
+[23:51:34.386]            ROMTableBase = ReadAP(0xF8) & ~0x3;
+[23:51:34.386]              // -> [ReadAP(0x000000F8) => 0xE00FD003]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.386]              // -> [ROMTableBase <= 0xE00FD000]
+[23:51:34.386]            pidr1 = Read32(ROMTableBase + 0x0FE4);
+[23:51:34.387]              // -> [Read32(0xE00FDFE4) => 0x00000004]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.387]              // -> [pidr1 <= 0x00000004]
+[23:51:34.387]            pidr2 = Read32(ROMTableBase + 0x0FE8);
+[23:51:34.387]              // -> [Read32(0xE00FDFE8) => 0x0000001A]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.388]              // -> [pidr2 <= 0x0000001A]
+[23:51:34.388]            jep106id = ((pidr2 & 0x7) << 4 ) | ((pidr1 >> 4) & 0xF);
+[23:51:34.388]              // -> [jep106id <= 0x00000020]
+[23:51:34.388]          </block>
+[23:51:34.388]          <control if="jep106id != 0x20" while="" timeout="0" info="">
+[23:51:34.388]            // if-block "jep106id != 0x20"
+[23:51:34.388]              // =>  FALSE
+[23:51:34.388]            // skip if-block "jep106id != 0x20"
+[23:51:34.388]          </control>
+[23:51:34.389]        </sequence>
+[23:51:34.389]    </block>
+[23:51:34.389]  </sequence>
+[23:51:34.389]  
+[23:51:34.405]  **********  Sequence "DebugCoreStart"  (Context="Connect", Pname="", info="")
+[23:51:34.405]  
+[23:51:34.405]  <debugvars>
+[23:51:34.405]    // Pre-defined
+[23:51:34.406]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:51:34.406]    __connection=0x00010202    (Connection Type="Flash", Reset Type="System Reset", Connection Under HW Reset)
+[23:51:34.406]    __dp=0x00000000
+[23:51:34.406]    __ap=0x00000000
+[23:51:34.406]    __traceout=0x00000001      (SWO Trace)
+[23:51:34.407]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:51:34.407]    __FlashAddr=0x00000000
+[23:51:34.407]    __FlashLen=0x00000000
+[23:51:34.407]    __FlashArg=0x00000000
+[23:51:34.407]    __FlashOp=0x00000000
+[23:51:34.407]    __Result=0x00000000
+[23:51:34.408]    
+[23:51:34.408]    // User-defined
+[23:51:34.408]    DbgMCU_CR=0x00000007
+[23:51:34.408]    DbgMCU_APB1_Fz=0x00000000
+[23:51:34.408]    DbgMCU_APB2_Fz=0x00000000
+[23:51:34.408]    TraceClk_Pin=0x00040002
+[23:51:34.408]    TraceD0_Pin=0x00040003
+[23:51:34.408]    TraceD1_Pin=0x00040004
+[23:51:34.409]    TraceD2_Pin=0x00040005
+[23:51:34.409]    TraceD3_Pin=0x00040006
+[23:51:34.409]  </debugvars>
+[23:51:34.409]  
+[23:51:34.409]  <sequence name="DebugCoreStart" Pname="" disable="false" info="">
+[23:51:34.409]    <block atomic="false" info="">
+[23:51:34.409]      Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+[23:51:34.410]        // -> [Write32(0xE000EDF0, 0xA05F0001)]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.410]      Write32(0xE0042004, DbgMCU_CR);                                         // DBGMCU_CR: Configure MCU Debug
+[23:51:34.410]        // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.411]      Write32(0xE0042008, DbgMCU_APB1_Fz);                                    // DBGMCU_APB1_FZ: Configure APB1 Peripheral Freeze Behavior
+[23:51:34.411]        // -> [Write32(0xE0042008, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.411]      Write32(0xE004200C, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+[23:51:34.412]        // -> [Write32(0xE004200C, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:51:34.412]    </block>
+[23:51:34.412]  </sequence>
+[23:51:34.412]  
+[23:52:06.597]  **********  Sequence "DebugDeviceUnlock"  (Context="Connect", Pname="", info="")
+[23:52:06.597]  
+[23:52:06.597]  <debugvars>
+[23:52:06.597]    // Pre-defined
+[23:52:06.597]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:52:06.598]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[23:52:06.598]    __dp=0x00000000
+[23:52:06.598]    __ap=0x00000000
+[23:52:06.598]    __traceout=0x00000001      (SWO Trace)
+[23:52:06.598]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:52:06.598]    __FlashAddr=0x00000000
+[23:52:06.598]    __FlashLen=0x00000000
+[23:52:06.598]    __FlashArg=0x00000000
+[23:52:06.599]    __FlashOp=0x00000000
+[23:52:06.599]    __Result=0x00000000
+[23:52:06.599]    
+[23:52:06.599]    // User-defined
+[23:52:06.599]    DbgMCU_CR=0x00000007
+[23:52:06.599]    DbgMCU_APB1_Fz=0x00000000
+[23:52:06.599]    DbgMCU_APB2_Fz=0x00000000
+[23:52:06.599]    TraceClk_Pin=0x00040002
+[23:52:06.600]    TraceD0_Pin=0x00040003
+[23:52:06.600]    TraceD1_Pin=0x00040004
+[23:52:06.600]    TraceD2_Pin=0x00040005
+[23:52:06.600]    TraceD3_Pin=0x00040006
+[23:52:06.600]  </debugvars>
+[23:52:06.600]  
+[23:52:06.600]  <sequence name="DebugDeviceUnlock" Pname="" disable="false" info="">
+[23:52:06.601]    <block atomic="false" info="">
+[23:52:06.601]      Sequence("CheckID");
+[23:52:06.601]        <sequence name="CheckID" Pname="" disable="false" info="">
+[23:52:06.601]          <block atomic="false" info="">
+[23:52:06.601]            __var pidr1 = 0;
+[23:52:06.601]              // -> [pidr1 <= 0x00000000]
+[23:52:06.601]            __var pidr2 = 0;
+[23:52:06.601]              // -> [pidr2 <= 0x00000000]
+[23:52:06.602]            __var jep106id = 0;
+[23:52:06.602]              // -> [jep106id <= 0x00000000]
+[23:52:06.602]            __var ROMTableBase = 0;
+[23:52:06.602]              // -> [ROMTableBase <= 0x00000000]
+[23:52:06.602]            __ap = 0;      // AHB-AP
+[23:52:06.602]              // -> [__ap <= 0x00000000]
+[23:52:06.602]            ROMTableBase = ReadAP(0xF8) & ~0x3;
+[23:52:06.603]              // -> [ReadAP(0x000000F8) => 0xE00FD003]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.603]              // -> [ROMTableBase <= 0xE00FD000]
+[23:52:06.603]            pidr1 = Read32(ROMTableBase + 0x0FE4);
+[23:52:06.603]              // -> [Read32(0xE00FDFE4) => 0x00000004]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.604]              // -> [pidr1 <= 0x00000004]
+[23:52:06.604]            pidr2 = Read32(ROMTableBase + 0x0FE8);
+[23:52:06.604]              // -> [Read32(0xE00FDFE8) => 0x0000001A]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.604]              // -> [pidr2 <= 0x0000001A]
+[23:52:06.604]            jep106id = ((pidr2 & 0x7) << 4 ) | ((pidr1 >> 4) & 0xF);
+[23:52:06.605]              // -> [jep106id <= 0x00000020]
+[23:52:06.605]          </block>
+[23:52:06.605]          <control if="jep106id != 0x20" while="" timeout="0" info="">
+[23:52:06.605]            // if-block "jep106id != 0x20"
+[23:52:06.605]              // =>  FALSE
+[23:52:06.605]            // skip if-block "jep106id != 0x20"
+[23:52:06.605]          </control>
+[23:52:06.605]        </sequence>
+[23:52:06.606]    </block>
+[23:52:06.606]  </sequence>
+[23:52:06.606]  
+[23:52:06.620]  **********  Sequence "DebugCoreStart"  (Context="Connect", Pname="", info="")
+[23:52:06.620]  
+[23:52:06.620]  <debugvars>
+[23:52:06.620]    // Pre-defined
+[23:52:06.621]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:52:06.621]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[23:52:06.621]    __dp=0x00000000
+[23:52:06.621]    __ap=0x00000000
+[23:52:06.621]    __traceout=0x00000001      (SWO Trace)
+[23:52:06.621]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:52:06.621]    __FlashAddr=0x00000000
+[23:52:06.622]    __FlashLen=0x00000000
+[23:52:06.622]    __FlashArg=0x00000000
+[23:52:06.622]    __FlashOp=0x00000000
+[23:52:06.622]    __Result=0x00000000
+[23:52:06.622]    
+[23:52:06.622]    // User-defined
+[23:52:06.622]    DbgMCU_CR=0x00000007
+[23:52:06.622]    DbgMCU_APB1_Fz=0x00000000
+[23:52:06.623]    DbgMCU_APB2_Fz=0x00000000
+[23:52:06.623]    TraceClk_Pin=0x00040002
+[23:52:06.623]    TraceD0_Pin=0x00040003
+[23:52:06.623]    TraceD1_Pin=0x00040004
+[23:52:06.623]    TraceD2_Pin=0x00040005
+[23:52:06.623]    TraceD3_Pin=0x00040006
+[23:52:06.623]  </debugvars>
+[23:52:06.624]  
+[23:52:06.624]  <sequence name="DebugCoreStart" Pname="" disable="false" info="">
+[23:52:06.624]    <block atomic="false" info="">
+[23:52:06.624]      Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+[23:52:06.624]        // -> [Write32(0xE000EDF0, 0xA05F0001)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.625]      Write32(0xE0042004, DbgMCU_CR);                                         // DBGMCU_CR: Configure MCU Debug
+[23:52:06.625]        // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.625]      Write32(0xE0042008, DbgMCU_APB1_Fz);                                    // DBGMCU_APB1_FZ: Configure APB1 Peripheral Freeze Behavior
+[23:52:06.626]        // -> [Write32(0xE0042008, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.626]      Write32(0xE004200C, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+[23:52:06.626]        // -> [Write32(0xE004200C, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.626]    </block>
+[23:52:06.626]  </sequence>
+[23:52:06.627]  
+[23:52:06.643]  **********  Sequence "TraceStart"  (Context="Connect", Pname="", info="")
+[23:52:06.643]  
+[23:52:06.643]  <debugvars>
+[23:52:06.643]    // Pre-defined
+[23:52:06.643]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:52:06.643]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[23:52:06.644]    __dp=0x00000000
+[23:52:06.644]    __ap=0x00000000
+[23:52:06.644]    __traceout=0x00000001      (SWO Trace)
+[23:52:06.644]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:52:06.644]    __FlashAddr=0x00000000
+[23:52:06.644]    __FlashLen=0x00000000
+[23:52:06.645]    __FlashArg=0x00000000
+[23:52:06.645]    __FlashOp=0x00000000
+[23:52:06.645]    __Result=0x00000000
+[23:52:06.645]    
+[23:52:06.645]    // User-defined
+[23:52:06.645]    DbgMCU_CR=0x00000007
+[23:52:06.645]    DbgMCU_APB1_Fz=0x00000000
+[23:52:06.646]    DbgMCU_APB2_Fz=0x00000000
+[23:52:06.646]    TraceClk_Pin=0x00040002
+[23:52:06.646]    TraceD0_Pin=0x00040003
+[23:52:06.646]    TraceD1_Pin=0x00040004
+[23:52:06.646]    TraceD2_Pin=0x00040005
+[23:52:06.646]    TraceD3_Pin=0x00040006
+[23:52:06.646]  </debugvars>
+[23:52:06.647]  
+[23:52:06.647]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[23:52:06.647]    <block atomic="false" info="">
+[23:52:06.647]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[23:52:06.647]        // -> [traceSWO <= 0x00000001]
+[23:52:06.647]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[23:52:06.647]        // -> [traceTPIU <= 0x00000000]
+[23:52:06.647]    </block>
+[23:52:06.648]    <control if="traceSWO" while="" timeout="0" info="">
+[23:52:06.648]      // if-block "traceSWO"
+[23:52:06.648]        // =>  TRUE
+[23:52:06.648]      <block atomic="false" info="">
+[23:52:06.648]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[23:52:06.648]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[23:52:06.648]            <block atomic="false" info="">
+[23:52:06.649]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[23:52:06.649]                // -> [dbgmcu_val <= 0x00000000]
+[23:52:06.649]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[23:52:06.649]                // -> [dbgmcu_trace_val <= 0x00000000]
+[23:52:06.649]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[23:52:06.649]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.650]                // -> [dbgmcu_val <= 0x00000007]
+[23:52:06.650]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[23:52:06.650]                // -> [dbgmcu_trace_val <= 0x00000020]
+[23:52:06.650]              Sequence("ConfigureTraceSWOPin");
+[23:52:06.650]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[23:52:06.650]                  <block atomic="false" info="">
+[23:52:06.650]                    __var pin     = 0;
+[23:52:06.650]                      // -> [pin <= 0x00000000]
+[23:52:06.650]                    __var port    = 0;
+[23:52:06.651]                      // -> [port <= 0x00000000]
+[23:52:06.651]                    __var portAdr = 0;
+[23:52:06.651]                      // -> [portAdr <= 0x00000000]
+[23:52:06.651]                    __var pos     = 0;
+[23:52:06.651]                      // -> [pos <= 0x00000000]
+[23:52:06.651]                    __var SWO_Pin = 0x00010003;          // PB3
+[23:52:06.651]                      // -> [SWO_Pin <= 0x00010003]
+[23:52:06.651]                  </block>
+[23:52:06.651]                  <block atomic="false" info="configure SWO">
+[23:52:06.652]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[23:52:06.652]                      // -> [pin <= 0x00000003]
+[23:52:06.652]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[23:52:06.652]                      // -> [port <= 0x00000001]
+[23:52:06.652]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[23:52:06.652]                      // -> [portAdr <= 0x40020400]
+[23:52:06.652]                    pos = pin * 2;
+[23:52:06.653]                      // -> [pos <= 0x00000006]
+[23:52:06.653]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[23:52:06.653]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.654]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.654]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[23:52:06.654]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.655]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.655]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[23:52:06.655]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.655]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.656]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[23:52:06.656]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.656]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.656]                  </block>
+[23:52:06.657]                  <control if="pin <  8" while="" timeout="0" info="">
+[23:52:06.657]                    // if-block "pin <  8"
+[23:52:06.657]                      // =>  TRUE
+[23:52:06.657]                    <block atomic="false" info="">
+[23:52:06.657]                      pos = ((pin    ) & 7) * 4;
+[23:52:06.657]                        // -> [pos <= 0x0000000C]
+[23:52:06.657]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[23:52:06.658]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.658]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.658]                    </block>
+[23:52:06.658]                    // end if-block "pin <  8"
+[23:52:06.658]                  </control>
+[23:52:06.659]                  <control if="pin >= 8" while="" timeout="0" info="">
+[23:52:06.659]                    // if-block "pin >= 8"
+[23:52:06.659]                      // =>  FALSE
+[23:52:06.659]                    // skip if-block "pin >= 8"
+[23:52:06.659]                  </control>
+[23:52:06.659]                </sequence>
+[23:52:06.659]            </block>
+[23:52:06.659]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[23:52:06.660]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[23:52:06.660]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.660]            </block>
+[23:52:06.660]          </sequence>
+[23:52:06.660]      </block>
+[23:52:06.661]      // end if-block "traceSWO"
+[23:52:06.661]    </control>
+[23:52:06.661]    <control if="traceTPIU" while="" timeout="0" info="">
+[23:52:06.661]      // if-block "traceTPIU"
+[23:52:06.661]        // =>  FALSE
+[23:52:06.661]      // skip if-block "traceTPIU"
+[23:52:06.661]    </control>
+[23:52:06.662]  </sequence>
+[23:52:06.662]  
+[23:52:06.666]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[23:52:06.666]  
+[23:52:06.666]  <debugvars>
+[23:52:06.666]    // Pre-defined
+[23:52:06.666]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:52:06.666]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[23:52:06.666]    __dp=0x00000000
+[23:52:06.666]    __ap=0x00000000
+[23:52:06.667]    __traceout=0x00000001      (SWO Trace)
+[23:52:06.667]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:52:06.667]    __FlashAddr=0x00000000
+[23:52:06.667]    __FlashLen=0x00000000
+[23:52:06.667]    __FlashArg=0x00000000
+[23:52:06.667]    __FlashOp=0x00000000
+[23:52:06.667]    __Result=0x00000000
+[23:52:06.667]    
+[23:52:06.667]    // User-defined
+[23:52:06.667]    DbgMCU_CR=0x00000007
+[23:52:06.668]    DbgMCU_APB1_Fz=0x00000000
+[23:52:06.668]    DbgMCU_APB2_Fz=0x00000000
+[23:52:06.668]    TraceClk_Pin=0x00040002
+[23:52:06.668]    TraceD0_Pin=0x00040003
+[23:52:06.668]    TraceD1_Pin=0x00040004
+[23:52:06.668]    TraceD2_Pin=0x00040005
+[23:52:06.668]    TraceD3_Pin=0x00040006
+[23:52:06.668]  </debugvars>
+[23:52:06.669]  
+[23:52:06.669]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[23:52:06.669]    <block atomic="false" info="">
+[23:52:06.669]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[23:52:06.669]        // -> [traceSWO <= 0x00000001]
+[23:52:06.669]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[23:52:06.669]        // -> [traceTPIU <= 0x00000000]
+[23:52:06.669]    </block>
+[23:52:06.669]    <control if="traceSWO" while="" timeout="0" info="">
+[23:52:06.670]      // if-block "traceSWO"
+[23:52:06.670]        // =>  TRUE
+[23:52:06.670]      <block atomic="false" info="">
+[23:52:06.670]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[23:52:06.670]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[23:52:06.670]            <block atomic="false" info="">
+[23:52:06.670]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[23:52:06.670]                // -> [dbgmcu_val <= 0x00000000]
+[23:52:06.670]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[23:52:06.671]                // -> [dbgmcu_trace_val <= 0x00000000]
+[23:52:06.671]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[23:52:06.671]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.671]                // -> [dbgmcu_val <= 0x00000007]
+[23:52:06.671]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[23:52:06.672]                // -> [dbgmcu_trace_val <= 0x00000020]
+[23:52:06.672]              Sequence("ConfigureTraceSWOPin");
+[23:52:06.672]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[23:52:06.672]                  <block atomic="false" info="">
+[23:52:06.672]                    __var pin     = 0;
+[23:52:06.672]                      // -> [pin <= 0x00000000]
+[23:52:06.672]                    __var port    = 0;
+[23:52:06.672]                      // -> [port <= 0x00000000]
+[23:52:06.672]                    __var portAdr = 0;
+[23:52:06.673]                      // -> [portAdr <= 0x00000000]
+[23:52:06.673]                    __var pos     = 0;
+[23:52:06.673]                      // -> [pos <= 0x00000000]
+[23:52:06.673]                    __var SWO_Pin = 0x00010003;          // PB3
+[23:52:06.673]                      // -> [SWO_Pin <= 0x00010003]
+[23:52:06.673]                  </block>
+[23:52:06.673]                  <block atomic="false" info="configure SWO">
+[23:52:06.673]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[23:52:06.673]                      // -> [pin <= 0x00000003]
+[23:52:06.674]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[23:52:06.674]                      // -> [port <= 0x00000001]
+[23:52:06.674]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[23:52:06.674]                      // -> [portAdr <= 0x40020400]
+[23:52:06.674]                    pos = pin * 2;
+[23:52:06.674]                      // -> [pos <= 0x00000006]
+[23:52:06.674]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[23:52:06.675]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.675]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.675]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[23:52:06.676]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.676]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.676]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[23:52:06.677]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.677]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.677]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[23:52:06.678]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.678]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.678]                  </block>
+[23:52:06.678]                  <control if="pin <  8" while="" timeout="0" info="">
+[23:52:06.678]                    // if-block "pin <  8"
+[23:52:06.679]                      // =>  TRUE
+[23:52:06.679]                    <block atomic="false" info="">
+[23:52:06.679]                      pos = ((pin    ) & 7) * 4;
+[23:52:06.679]                        // -> [pos <= 0x0000000C]
+[23:52:06.679]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[23:52:06.679]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.680]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.680]                    </block>
+[23:52:06.680]                    // end if-block "pin <  8"
+[23:52:06.680]                  </control>
+[23:52:06.680]                  <control if="pin >= 8" while="" timeout="0" info="">
+[23:52:06.680]                    // if-block "pin >= 8"
+[23:52:06.680]                      // =>  FALSE
+[23:52:06.681]                    // skip if-block "pin >= 8"
+[23:52:06.681]                  </control>
+[23:52:06.681]                </sequence>
+[23:52:06.681]            </block>
+[23:52:06.681]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[23:52:06.681]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[23:52:06.682]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.682]            </block>
+[23:52:06.682]          </sequence>
+[23:52:06.682]      </block>
+[23:52:06.682]      // end if-block "traceSWO"
+[23:52:06.682]    </control>
+[23:52:06.682]    <control if="traceTPIU" while="" timeout="0" info="">
+[23:52:06.682]      // if-block "traceTPIU"
+[23:52:06.682]        // =>  FALSE
+[23:52:06.683]      // skip if-block "traceTPIU"
+[23:52:06.683]    </control>
+[23:52:06.683]  </sequence>
+[23:52:06.683]  
+[23:52:06.910]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[23:52:06.910]  
+[23:52:06.910]  <debugvars>
+[23:52:06.911]    // Pre-defined
+[23:52:06.911]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[23:52:06.911]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[23:52:06.911]    __dp=0x00000000
+[23:52:06.911]    __ap=0x00000000
+[23:52:06.911]    __traceout=0x00000001      (SWO Trace)
+[23:52:06.911]    __errorcontrol=0x00000000  (Skip Errors="False")
+[23:52:06.912]    __FlashAddr=0x00000000
+[23:52:06.912]    __FlashLen=0x00000000
+[23:52:06.912]    __FlashArg=0x00000000
+[23:52:06.912]    __FlashOp=0x00000000
+[23:52:06.912]    __Result=0x00000000
+[23:52:06.912]    
+[23:52:06.912]    // User-defined
+[23:52:06.912]    DbgMCU_CR=0x00000007
+[23:52:06.913]    DbgMCU_APB1_Fz=0x00000000
+[23:52:06.913]    DbgMCU_APB2_Fz=0x00000000
+[23:52:06.913]    TraceClk_Pin=0x00040002
+[23:52:06.913]    TraceD0_Pin=0x00040003
+[23:52:06.913]    TraceD1_Pin=0x00040004
+[23:52:06.913]    TraceD2_Pin=0x00040005
+[23:52:06.913]    TraceD3_Pin=0x00040006
+[23:52:06.914]  </debugvars>
+[23:52:06.914]  
+[23:52:06.914]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[23:52:06.914]    <block atomic="false" info="">
+[23:52:06.914]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[23:52:06.914]        // -> [traceSWO <= 0x00000001]
+[23:52:06.914]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[23:52:06.914]        // -> [traceTPIU <= 0x00000000]
+[23:52:06.914]    </block>
+[23:52:06.915]    <control if="traceSWO" while="" timeout="0" info="">
+[23:52:06.915]      // if-block "traceSWO"
+[23:52:06.915]        // =>  TRUE
+[23:52:06.915]      <block atomic="false" info="">
+[23:52:06.915]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[23:52:06.915]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[23:52:06.915]            <block atomic="false" info="">
+[23:52:06.915]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[23:52:06.916]                // -> [dbgmcu_val <= 0x00000000]
+[23:52:06.916]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[23:52:06.916]                // -> [dbgmcu_trace_val <= 0x00000000]
+[23:52:06.916]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[23:52:06.916]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.916]                // -> [dbgmcu_val <= 0x00000007]
+[23:52:06.917]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[23:52:06.917]                // -> [dbgmcu_trace_val <= 0x00000020]
+[23:52:06.917]              Sequence("ConfigureTraceSWOPin");
+[23:52:06.917]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[23:52:06.917]                  <block atomic="false" info="">
+[23:52:06.917]                    __var pin     = 0;
+[23:52:06.917]                      // -> [pin <= 0x00000000]
+[23:52:06.917]                    __var port    = 0;
+[23:52:06.918]                      // -> [port <= 0x00000000]
+[23:52:06.918]                    __var portAdr = 0;
+[23:52:06.918]                      // -> [portAdr <= 0x00000000]
+[23:52:06.918]                    __var pos     = 0;
+[23:52:06.918]                      // -> [pos <= 0x00000000]
+[23:52:06.918]                    __var SWO_Pin = 0x00010003;          // PB3
+[23:52:06.918]                      // -> [SWO_Pin <= 0x00010003]
+[23:52:06.918]                  </block>
+[23:52:06.918]                  <block atomic="false" info="configure SWO">
+[23:52:06.919]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[23:52:06.919]                      // -> [pin <= 0x00000003]
+[23:52:06.919]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[23:52:06.919]                      // -> [port <= 0x00000001]
+[23:52:06.919]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[23:52:06.919]                      // -> [portAdr <= 0x40020400]
+[23:52:06.919]                    pos = pin * 2;
+[23:52:06.919]                      // -> [pos <= 0x00000006]
+[23:52:06.920]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[23:52:06.920]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.920]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.921]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[23:52:06.921]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.921]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.922]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[23:52:06.922]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.923]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.923]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[23:52:06.923]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.924]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.924]                  </block>
+[23:52:06.924]                  <control if="pin <  8" while="" timeout="0" info="">
+[23:52:06.924]                    // if-block "pin <  8"
+[23:52:06.924]                      // =>  TRUE
+[23:52:06.924]                    <block atomic="false" info="">
+[23:52:06.925]                      pos = ((pin    ) & 7) * 4;
+[23:52:06.925]                        // -> [pos <= 0x0000000C]
+[23:52:06.925]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[23:52:06.925]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.926]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.926]                    </block>
+[23:52:06.926]                    // end if-block "pin <  8"
+[23:52:06.926]                  </control>
+[23:52:06.926]                  <control if="pin >= 8" while="" timeout="0" info="">
+[23:52:06.927]                    // if-block "pin >= 8"
+[23:52:06.927]                      // =>  FALSE
+[23:52:06.927]                    // skip if-block "pin >= 8"
+[23:52:06.927]                  </control>
+[23:52:06.927]                </sequence>
+[23:52:06.927]            </block>
+[23:52:06.927]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[23:52:06.927]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[23:52:06.928]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[23:52:06.928]            </block>
+[23:52:06.928]          </sequence>
+[23:52:06.928]      </block>
+[23:52:06.928]      // end if-block "traceSWO"
+[23:52:06.929]    </control>
+[23:52:06.929]    <control if="traceTPIU" while="" timeout="0" info="">
+[23:52:06.929]      // if-block "traceTPIU"
+[23:52:06.929]        // =>  FALSE
+[23:52:06.929]      // skip if-block "traceTPIU"
+[23:52:06.929]    </control>
+[23:52:06.929]  </sequence>
+[23:52:06.929]  
+[00:17:12.730]  **********  Sequence "TraceStop"  (Context="Disconnect", Pname="", info="")
+[00:17:12.730]  
+[00:17:12.730]  <debugvars>
+[00:17:12.731]    // Pre-defined
+[00:17:12.731]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:17:12.731]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:17:12.731]    __dp=0x00000000
+[00:17:12.732]    __ap=0x00000000
+[00:17:12.732]    __traceout=0x00000001      (SWO Trace)
+[00:17:12.732]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:17:12.732]    __FlashAddr=0x00000000
+[00:17:12.732]    __FlashLen=0x00000000
+[00:17:12.732]    __FlashArg=0x00000000
+[00:17:12.733]    __FlashOp=0x00000000
+[00:17:12.733]    __Result=0x00000000
+[00:17:12.733]    
+[00:17:12.733]    // User-defined
+[00:17:12.733]    DbgMCU_CR=0x00000007
+[00:17:12.733]    DbgMCU_APB1_Fz=0x00000000
+[00:17:12.734]    DbgMCU_APB2_Fz=0x00000000
+[00:17:12.734]    TraceClk_Pin=0x00040002
+[00:17:12.734]    TraceD0_Pin=0x00040003
+[00:17:12.734]    TraceD1_Pin=0x00040004
+[00:17:12.734]    TraceD2_Pin=0x00040005
+[00:17:12.734]    TraceD3_Pin=0x00040006
+[00:17:12.735]  </debugvars>
+[00:17:12.735]  
+[00:17:12.735]  <sequence name="TraceStop" Pname="" disable="false" info="">
+[00:17:12.735]    <block atomic="false" info="">
+[00:17:12.735]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO enabled?
+[00:17:12.736]        // -> [traceSWO <= 0x00000001]
+[00:17:12.736]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // Synchronous trace port enabled?
+[00:17:12.736]        // -> [traceTPIU <= 0x00000000]
+[00:17:12.736]    </block>
+[00:17:12.736]    <control if="traceSWO" while="" timeout="0" info="">
+[00:17:12.736]      // if-block "traceSWO"
+[00:17:12.737]        // =>  TRUE
+[00:17:12.737]      <block atomic="false" info="">
+[00:17:12.737]        Sequence("DisableTraceSWO");
+[00:17:12.737]          <sequence name="DisableTraceSWO" Pname="" disable="false" info="">
+[00:17:12.737]            <block atomic="false" info="">
+[00:17:12.737]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:17:12.737]                // -> [dbgmcu_val <= 0x00000000]
+[00:17:12.738]            </block>
+[00:17:12.738]            <block atomic="false" info="unconfigure Trace I/O Enable + Trace Mode Asynchronous">
+[00:17:12.738]              dbgmcu_val = Read32(0xE0042004) & (~0xE0);                                // Read DBGMCU_CR and clear trace setup
+[00:17:12.738]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:17:12.738]                // -> [dbgmcu_val <= 0x00000007]
+[00:17:12.738]              Write32(0xE0042004, dbgmcu_val);                                              // Write DBGMCU_CR: Trace Settings
+[00:17:12.739]                // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:17:12.739]            </block>
+[00:17:12.739]          </sequence>
+[00:17:12.739]      </block>
+[00:17:12.739]      // end if-block "traceSWO"
+[00:17:12.740]    </control>
+[00:17:12.740]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:17:12.740]      // if-block "traceTPIU"
+[00:17:12.740]        // =>  FALSE
+[00:17:12.740]      // skip if-block "traceTPIU"
+[00:17:12.740]    </control>
+[00:17:12.740]  </sequence>
+[00:17:12.740]  
+[00:37:45.929]  **********  Sequence "DebugDeviceUnlock"  (Context="Connect", Pname="", info="")
+[00:37:45.929]  
+[00:37:45.930]  <debugvars>
+[00:37:45.930]    // Pre-defined
+[00:37:45.930]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:45.930]    __connection=0x00010202    (Connection Type="Flash", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:45.930]    __dp=0x00000000
+[00:37:45.930]    __ap=0x00000000
+[00:37:45.931]    __traceout=0x00000001      (SWO Trace)
+[00:37:45.931]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:45.931]    __FlashAddr=0x00000000
+[00:37:45.931]    __FlashLen=0x00000000
+[00:37:45.931]    __FlashArg=0x00000000
+[00:37:45.932]    __FlashOp=0x00000000
+[00:37:45.932]    __Result=0x00000000
+[00:37:45.932]    
+[00:37:45.932]    // User-defined
+[00:37:45.932]    DbgMCU_CR=0x00000007
+[00:37:45.932]    DbgMCU_APB1_Fz=0x00000000
+[00:37:45.932]    DbgMCU_APB2_Fz=0x00000000
+[00:37:45.933]    TraceClk_Pin=0x00040002
+[00:37:45.933]    TraceD0_Pin=0x00040003
+[00:37:45.933]    TraceD1_Pin=0x00040004
+[00:37:45.933]    TraceD2_Pin=0x00040005
+[00:37:45.933]    TraceD3_Pin=0x00040006
+[00:37:45.933]  </debugvars>
+[00:37:45.934]  
+[00:37:45.934]  <sequence name="DebugDeviceUnlock" Pname="" disable="false" info="">
+[00:37:45.934]    <block atomic="false" info="">
+[00:37:45.934]      Sequence("CheckID");
+[00:37:45.934]        <sequence name="CheckID" Pname="" disable="false" info="">
+[00:37:45.934]          <block atomic="false" info="">
+[00:37:45.935]            __var pidr1 = 0;
+[00:37:45.935]              // -> [pidr1 <= 0x00000000]
+[00:37:45.935]            __var pidr2 = 0;
+[00:37:45.935]              // -> [pidr2 <= 0x00000000]
+[00:37:45.935]            __var jep106id = 0;
+[00:37:45.935]              // -> [jep106id <= 0x00000000]
+[00:37:45.936]            __var ROMTableBase = 0;
+[00:37:45.936]              // -> [ROMTableBase <= 0x00000000]
+[00:37:45.936]            __ap = 0;      // AHB-AP
+[00:37:45.936]              // -> [__ap <= 0x00000000]
+[00:37:45.936]            ROMTableBase = ReadAP(0xF8) & ~0x3;
+[00:37:45.936]              // -> [ReadAP(0x000000F8) => 0xE00FD003]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.937]              // -> [ROMTableBase <= 0xE00FD000]
+[00:37:45.937]            pidr1 = Read32(ROMTableBase + 0x0FE4);
+[00:37:45.937]              // -> [Read32(0xE00FDFE4) => 0x00000004]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.937]              // -> [pidr1 <= 0x00000004]
+[00:37:45.938]            pidr2 = Read32(ROMTableBase + 0x0FE8);
+[00:37:45.938]              // -> [Read32(0xE00FDFE8) => 0x0000001A]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.938]              // -> [pidr2 <= 0x0000001A]
+[00:37:45.938]            jep106id = ((pidr2 & 0x7) << 4 ) | ((pidr1 >> 4) & 0xF);
+[00:37:45.938]              // -> [jep106id <= 0x00000020]
+[00:37:45.938]          </block>
+[00:37:45.939]          <control if="jep106id != 0x20" while="" timeout="0" info="">
+[00:37:45.939]            // if-block "jep106id != 0x20"
+[00:37:45.939]              // =>  FALSE
+[00:37:45.939]            // skip if-block "jep106id != 0x20"
+[00:37:45.939]          </control>
+[00:37:45.939]        </sequence>
+[00:37:45.939]    </block>
+[00:37:45.940]  </sequence>
+[00:37:45.940]  
+[00:37:45.954]  **********  Sequence "DebugCoreStart"  (Context="Connect", Pname="", info="")
+[00:37:45.954]  
+[00:37:45.954]  <debugvars>
+[00:37:45.954]    // Pre-defined
+[00:37:45.955]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:45.955]    __connection=0x00010202    (Connection Type="Flash", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:45.955]    __dp=0x00000000
+[00:37:45.955]    __ap=0x00000000
+[00:37:45.955]    __traceout=0x00000001      (SWO Trace)
+[00:37:45.955]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:45.956]    __FlashAddr=0x00000000
+[00:37:45.956]    __FlashLen=0x00000000
+[00:37:45.956]    __FlashArg=0x00000000
+[00:37:45.956]    __FlashOp=0x00000000
+[00:37:45.956]    __Result=0x00000000
+[00:37:45.957]    
+[00:37:45.957]    // User-defined
+[00:37:45.957]    DbgMCU_CR=0x00000007
+[00:37:45.957]    DbgMCU_APB1_Fz=0x00000000
+[00:37:45.957]    DbgMCU_APB2_Fz=0x00000000
+[00:37:45.957]    TraceClk_Pin=0x00040002
+[00:37:45.957]    TraceD0_Pin=0x00040003
+[00:37:45.958]    TraceD1_Pin=0x00040004
+[00:37:45.958]    TraceD2_Pin=0x00040005
+[00:37:45.958]    TraceD3_Pin=0x00040006
+[00:37:45.958]  </debugvars>
+[00:37:45.958]  
+[00:37:45.958]  <sequence name="DebugCoreStart" Pname="" disable="false" info="">
+[00:37:45.959]    <block atomic="false" info="">
+[00:37:45.959]      Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+[00:37:45.959]        // -> [Write32(0xE000EDF0, 0xA05F0001)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.960]      Write32(0xE0042004, DbgMCU_CR);                                         // DBGMCU_CR: Configure MCU Debug
+[00:37:45.960]        // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.960]      Write32(0xE0042008, DbgMCU_APB1_Fz);                                    // DBGMCU_APB1_FZ: Configure APB1 Peripheral Freeze Behavior
+[00:37:45.961]        // -> [Write32(0xE0042008, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.961]      Write32(0xE004200C, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+[00:37:45.961]        // -> [Write32(0xE004200C, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:45.962]    </block>
+[00:37:45.962]  </sequence>
+[00:37:45.962]  
+[00:37:53.430]  **********  Sequence "DebugDeviceUnlock"  (Context="Connect", Pname="", info="")
+[00:37:53.430]  
+[00:37:53.430]  <debugvars>
+[00:37:53.431]    // Pre-defined
+[00:37:53.431]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:53.431]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:53.431]    __dp=0x00000000
+[00:37:53.431]    __ap=0x00000000
+[00:37:53.431]    __traceout=0x00000001      (SWO Trace)
+[00:37:53.431]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:53.432]    __FlashAddr=0x00000000
+[00:37:53.432]    __FlashLen=0x00000000
+[00:37:53.432]    __FlashArg=0x00000000
+[00:37:53.432]    __FlashOp=0x00000000
+[00:37:53.432]    __Result=0x00000000
+[00:37:53.432]    
+[00:37:53.432]    // User-defined
+[00:37:53.433]    DbgMCU_CR=0x00000007
+[00:37:53.433]    DbgMCU_APB1_Fz=0x00000000
+[00:37:53.433]    DbgMCU_APB2_Fz=0x00000000
+[00:37:53.433]    TraceClk_Pin=0x00040002
+[00:37:53.433]    TraceD0_Pin=0x00040003
+[00:37:53.433]    TraceD1_Pin=0x00040004
+[00:37:53.434]    TraceD2_Pin=0x00040005
+[00:37:53.434]    TraceD3_Pin=0x00040006
+[00:37:53.434]  </debugvars>
+[00:37:53.434]  
+[00:37:53.434]  <sequence name="DebugDeviceUnlock" Pname="" disable="false" info="">
+[00:37:53.434]    <block atomic="false" info="">
+[00:37:53.434]      Sequence("CheckID");
+[00:37:53.435]        <sequence name="CheckID" Pname="" disable="false" info="">
+[00:37:53.435]          <block atomic="false" info="">
+[00:37:53.435]            __var pidr1 = 0;
+[00:37:53.435]              // -> [pidr1 <= 0x00000000]
+[00:37:53.435]            __var pidr2 = 0;
+[00:37:53.435]              // -> [pidr2 <= 0x00000000]
+[00:37:53.435]            __var jep106id = 0;
+[00:37:53.436]              // -> [jep106id <= 0x00000000]
+[00:37:53.436]            __var ROMTableBase = 0;
+[00:37:53.436]              // -> [ROMTableBase <= 0x00000000]
+[00:37:53.436]            __ap = 0;      // AHB-AP
+[00:37:53.436]              // -> [__ap <= 0x00000000]
+[00:37:53.436]            ROMTableBase = ReadAP(0xF8) & ~0x3;
+[00:37:53.437]              // -> [ReadAP(0x000000F8) => 0xE00FD003]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.437]              // -> [ROMTableBase <= 0xE00FD000]
+[00:37:53.437]            pidr1 = Read32(ROMTableBase + 0x0FE4);
+[00:37:53.437]              // -> [Read32(0xE00FDFE4) => 0x00000004]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.438]              // -> [pidr1 <= 0x00000004]
+[00:37:53.438]            pidr2 = Read32(ROMTableBase + 0x0FE8);
+[00:37:53.438]              // -> [Read32(0xE00FDFE8) => 0x0000001A]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.438]              // -> [pidr2 <= 0x0000001A]
+[00:37:53.438]            jep106id = ((pidr2 & 0x7) << 4 ) | ((pidr1 >> 4) & 0xF);
+[00:37:53.439]              // -> [jep106id <= 0x00000020]
+[00:37:53.439]          </block>
+[00:37:53.439]          <control if="jep106id != 0x20" while="" timeout="0" info="">
+[00:37:53.439]            // if-block "jep106id != 0x20"
+[00:37:53.439]              // =>  FALSE
+[00:37:53.439]            // skip if-block "jep106id != 0x20"
+[00:37:53.439]          </control>
+[00:37:53.439]        </sequence>
+[00:37:53.439]    </block>
+[00:37:53.440]  </sequence>
+[00:37:53.440]  
+[00:37:53.454]  **********  Sequence "DebugCoreStart"  (Context="Connect", Pname="", info="")
+[00:37:53.454]  
+[00:37:53.454]  <debugvars>
+[00:37:53.454]    // Pre-defined
+[00:37:53.454]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:53.454]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:53.455]    __dp=0x00000000
+[00:37:53.455]    __ap=0x00000000
+[00:37:53.455]    __traceout=0x00000001      (SWO Trace)
+[00:37:53.455]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:53.455]    __FlashAddr=0x00000000
+[00:37:53.455]    __FlashLen=0x00000000
+[00:37:53.456]    __FlashArg=0x00000000
+[00:37:53.456]    __FlashOp=0x00000000
+[00:37:53.456]    __Result=0x00000000
+[00:37:53.456]    
+[00:37:53.456]    // User-defined
+[00:37:53.456]    DbgMCU_CR=0x00000007
+[00:37:53.457]    DbgMCU_APB1_Fz=0x00000000
+[00:37:53.457]    DbgMCU_APB2_Fz=0x00000000
+[00:37:53.457]    TraceClk_Pin=0x00040002
+[00:37:53.457]    TraceD0_Pin=0x00040003
+[00:37:53.457]    TraceD1_Pin=0x00040004
+[00:37:53.457]    TraceD2_Pin=0x00040005
+[00:37:53.458]    TraceD3_Pin=0x00040006
+[00:37:53.458]  </debugvars>
+[00:37:53.458]  
+[00:37:53.458]  <sequence name="DebugCoreStart" Pname="" disable="false" info="">
+[00:37:53.458]    <block atomic="false" info="">
+[00:37:53.458]      Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+[00:37:53.459]        // -> [Write32(0xE000EDF0, 0xA05F0001)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.459]      Write32(0xE0042004, DbgMCU_CR);                                         // DBGMCU_CR: Configure MCU Debug
+[00:37:53.460]        // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.460]      Write32(0xE0042008, DbgMCU_APB1_Fz);                                    // DBGMCU_APB1_FZ: Configure APB1 Peripheral Freeze Behavior
+[00:37:53.460]        // -> [Write32(0xE0042008, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.460]      Write32(0xE004200C, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+[00:37:53.461]        // -> [Write32(0xE004200C, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.461]    </block>
+[00:37:53.461]  </sequence>
+[00:37:53.461]  
+[00:37:53.477]  **********  Sequence "TraceStart"  (Context="Connect", Pname="", info="")
+[00:37:53.478]  
+[00:37:53.478]  <debugvars>
+[00:37:53.478]    // Pre-defined
+[00:37:53.478]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:53.478]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:53.478]    __dp=0x00000000
+[00:37:53.478]    __ap=0x00000000
+[00:37:53.479]    __traceout=0x00000001      (SWO Trace)
+[00:37:53.479]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:53.479]    __FlashAddr=0x00000000
+[00:37:53.479]    __FlashLen=0x00000000
+[00:37:53.479]    __FlashArg=0x00000000
+[00:37:53.479]    __FlashOp=0x00000000
+[00:37:53.480]    __Result=0x00000000
+[00:37:53.480]    
+[00:37:53.480]    // User-defined
+[00:37:53.480]    DbgMCU_CR=0x00000007
+[00:37:53.480]    DbgMCU_APB1_Fz=0x00000000
+[00:37:53.480]    DbgMCU_APB2_Fz=0x00000000
+[00:37:53.480]    TraceClk_Pin=0x00040002
+[00:37:53.481]    TraceD0_Pin=0x00040003
+[00:37:53.481]    TraceD1_Pin=0x00040004
+[00:37:53.481]    TraceD2_Pin=0x00040005
+[00:37:53.481]    TraceD3_Pin=0x00040006
+[00:37:53.481]  </debugvars>
+[00:37:53.481]  
+[00:37:53.482]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:37:53.482]    <block atomic="false" info="">
+[00:37:53.482]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:37:53.482]        // -> [traceSWO <= 0x00000001]
+[00:37:53.482]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:37:53.482]        // -> [traceTPIU <= 0x00000000]
+[00:37:53.483]    </block>
+[00:37:53.483]    <control if="traceSWO" while="" timeout="0" info="">
+[00:37:53.483]      // if-block "traceSWO"
+[00:37:53.483]        // =>  TRUE
+[00:37:53.483]      <block atomic="false" info="">
+[00:37:53.483]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:37:53.483]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:37:53.484]            <block atomic="false" info="">
+[00:37:53.484]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:37:53.484]                // -> [dbgmcu_val <= 0x00000000]
+[00:37:53.484]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:37:53.484]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:37:53.484]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:37:53.484]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.484]                // -> [dbgmcu_val <= 0x00000007]
+[00:37:53.484]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:37:53.484]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:37:53.484]              Sequence("ConfigureTraceSWOPin");
+[00:37:53.485]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:37:53.485]                  <block atomic="false" info="">
+[00:37:53.485]                    __var pin     = 0;
+[00:37:53.485]                      // -> [pin <= 0x00000000]
+[00:37:53.485]                    __var port    = 0;
+[00:37:53.485]                      // -> [port <= 0x00000000]
+[00:37:53.485]                    __var portAdr = 0;
+[00:37:53.485]                      // -> [portAdr <= 0x00000000]
+[00:37:53.485]                    __var pos     = 0;
+[00:37:53.486]                      // -> [pos <= 0x00000000]
+[00:37:53.486]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:37:53.486]                      // -> [SWO_Pin <= 0x00010003]
+[00:37:53.486]                  </block>
+[00:37:53.486]                  <block atomic="false" info="configure SWO">
+[00:37:53.486]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:37:53.486]                      // -> [pin <= 0x00000003]
+[00:37:53.486]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:37:53.486]                      // -> [port <= 0x00000001]
+[00:37:53.487]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:37:53.487]                      // -> [portAdr <= 0x40020400]
+[00:37:53.487]                    pos = pin * 2;
+[00:37:53.487]                      // -> [pos <= 0x00000006]
+[00:37:53.487]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:37:53.488]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.488]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.488]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:37:53.488]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.489]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.489]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:37:53.489]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.490]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.490]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:37:53.490]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.491]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.491]                  </block>
+[00:37:53.491]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:37:53.491]                    // if-block "pin <  8"
+[00:37:53.491]                      // =>  TRUE
+[00:37:53.491]                    <block atomic="false" info="">
+[00:37:53.492]                      pos = ((pin    ) & 7) * 4;
+[00:37:53.492]                        // -> [pos <= 0x0000000C]
+[00:37:53.492]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:37:53.492]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.493]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.493]                    </block>
+[00:37:53.493]                    // end if-block "pin <  8"
+[00:37:53.493]                  </control>
+[00:37:53.493]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:37:53.493]                    // if-block "pin >= 8"
+[00:37:53.494]                      // =>  FALSE
+[00:37:53.494]                    // skip if-block "pin >= 8"
+[00:37:53.494]                  </control>
+[00:37:53.494]                </sequence>
+[00:37:53.494]            </block>
+[00:37:53.494]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:37:53.494]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:37:53.495]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.495]            </block>
+[00:37:53.495]          </sequence>
+[00:37:53.495]      </block>
+[00:37:53.495]      // end if-block "traceSWO"
+[00:37:53.496]    </control>
+[00:37:53.496]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:37:53.496]      // if-block "traceTPIU"
+[00:37:53.496]        // =>  FALSE
+[00:37:53.496]      // skip if-block "traceTPIU"
+[00:37:53.496]    </control>
+[00:37:53.496]  </sequence>
+[00:37:53.497]  
+[00:37:53.500]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[00:37:53.500]  
+[00:37:53.500]  <debugvars>
+[00:37:53.501]    // Pre-defined
+[00:37:53.501]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:53.501]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:53.501]    __dp=0x00000000
+[00:37:53.501]    __ap=0x00000000
+[00:37:53.501]    __traceout=0x00000001      (SWO Trace)
+[00:37:53.501]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:53.502]    __FlashAddr=0x00000000
+[00:37:53.502]    __FlashLen=0x00000000
+[00:37:53.502]    __FlashArg=0x00000000
+[00:37:53.502]    __FlashOp=0x00000000
+[00:37:53.502]    __Result=0x00000000
+[00:37:53.502]    
+[00:37:53.502]    // User-defined
+[00:37:53.502]    DbgMCU_CR=0x00000007
+[00:37:53.502]    DbgMCU_APB1_Fz=0x00000000
+[00:37:53.503]    DbgMCU_APB2_Fz=0x00000000
+[00:37:53.503]    TraceClk_Pin=0x00040002
+[00:37:53.503]    TraceD0_Pin=0x00040003
+[00:37:53.503]    TraceD1_Pin=0x00040004
+[00:37:53.503]    TraceD2_Pin=0x00040005
+[00:37:53.503]    TraceD3_Pin=0x00040006
+[00:37:53.503]  </debugvars>
+[00:37:53.503]  
+[00:37:53.504]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:37:53.504]    <block atomic="false" info="">
+[00:37:53.504]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:37:53.504]        // -> [traceSWO <= 0x00000001]
+[00:37:53.504]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:37:53.504]        // -> [traceTPIU <= 0x00000000]
+[00:37:53.504]    </block>
+[00:37:53.504]    <control if="traceSWO" while="" timeout="0" info="">
+[00:37:53.505]      // if-block "traceSWO"
+[00:37:53.505]        // =>  TRUE
+[00:37:53.505]      <block atomic="false" info="">
+[00:37:53.505]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:37:53.505]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:37:53.505]            <block atomic="false" info="">
+[00:37:53.505]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:37:53.505]                // -> [dbgmcu_val <= 0x00000000]
+[00:37:53.505]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:37:53.506]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:37:53.506]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:37:53.506]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.506]                // -> [dbgmcu_val <= 0x00000007]
+[00:37:53.506]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:37:53.506]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:37:53.507]              Sequence("ConfigureTraceSWOPin");
+[00:37:53.507]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:37:53.507]                  <block atomic="false" info="">
+[00:37:53.507]                    __var pin     = 0;
+[00:37:53.507]                      // -> [pin <= 0x00000000]
+[00:37:53.507]                    __var port    = 0;
+[00:37:53.507]                      // -> [port <= 0x00000000]
+[00:37:53.507]                    __var portAdr = 0;
+[00:37:53.507]                      // -> [portAdr <= 0x00000000]
+[00:37:53.508]                    __var pos     = 0;
+[00:37:53.508]                      // -> [pos <= 0x00000000]
+[00:37:53.508]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:37:53.508]                      // -> [SWO_Pin <= 0x00010003]
+[00:37:53.508]                  </block>
+[00:37:53.508]                  <block atomic="false" info="configure SWO">
+[00:37:53.508]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:37:53.508]                      // -> [pin <= 0x00000003]
+[00:37:53.509]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:37:53.509]                      // -> [port <= 0x00000001]
+[00:37:53.509]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:37:53.509]                      // -> [portAdr <= 0x40020400]
+[00:37:53.509]                    pos = pin * 2;
+[00:37:53.509]                      // -> [pos <= 0x00000006]
+[00:37:53.509]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:37:53.510]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.510]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.510]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:37:53.511]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.511]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.511]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:37:53.512]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.512]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.512]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:37:53.512]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.513]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.513]                  </block>
+[00:37:53.513]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:37:53.513]                    // if-block "pin <  8"
+[00:37:53.513]                      // =>  TRUE
+[00:37:53.513]                    <block atomic="false" info="">
+[00:37:53.513]                      pos = ((pin    ) & 7) * 4;
+[00:37:53.514]                        // -> [pos <= 0x0000000C]
+[00:37:53.514]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:37:53.514]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.515]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.515]                    </block>
+[00:37:53.515]                    // end if-block "pin <  8"
+[00:37:53.515]                  </control>
+[00:37:53.515]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:37:53.515]                    // if-block "pin >= 8"
+[00:37:53.515]                      // =>  FALSE
+[00:37:53.515]                    // skip if-block "pin >= 8"
+[00:37:53.515]                  </control>
+[00:37:53.516]                </sequence>
+[00:37:53.516]            </block>
+[00:37:53.516]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:37:53.516]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:37:53.516]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.516]            </block>
+[00:37:53.516]          </sequence>
+[00:37:53.517]      </block>
+[00:37:53.517]      // end if-block "traceSWO"
+[00:37:53.517]    </control>
+[00:37:53.517]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:37:53.517]      // if-block "traceTPIU"
+[00:37:53.517]        // =>  FALSE
+[00:37:53.517]      // skip if-block "traceTPIU"
+[00:37:53.517]    </control>
+[00:37:53.518]  </sequence>
+[00:37:53.518]  
+[00:37:53.667]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[00:37:53.667]  
+[00:37:53.668]  <debugvars>
+[00:37:53.668]    // Pre-defined
+[00:37:53.668]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:37:53.668]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:37:53.668]    __dp=0x00000000
+[00:37:53.668]    __ap=0x00000000
+[00:37:53.669]    __traceout=0x00000001      (SWO Trace)
+[00:37:53.669]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:37:53.669]    __FlashAddr=0x00000000
+[00:37:53.669]    __FlashLen=0x00000000
+[00:37:53.669]    __FlashArg=0x00000000
+[00:37:53.670]    __FlashOp=0x00000000
+[00:37:53.670]    __Result=0x00000000
+[00:37:53.670]    
+[00:37:53.670]    // User-defined
+[00:37:53.670]    DbgMCU_CR=0x00000007
+[00:37:53.670]    DbgMCU_APB1_Fz=0x00000000
+[00:37:53.670]    DbgMCU_APB2_Fz=0x00000000
+[00:37:53.671]    TraceClk_Pin=0x00040002
+[00:37:53.671]    TraceD0_Pin=0x00040003
+[00:37:53.671]    TraceD1_Pin=0x00040004
+[00:37:53.671]    TraceD2_Pin=0x00040005
+[00:37:53.671]    TraceD3_Pin=0x00040006
+[00:37:53.671]  </debugvars>
+[00:37:53.672]  
+[00:37:53.672]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:37:53.672]    <block atomic="false" info="">
+[00:37:53.672]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:37:53.672]        // -> [traceSWO <= 0x00000001]
+[00:37:53.672]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:37:53.672]        // -> [traceTPIU <= 0x00000000]
+[00:37:53.673]    </block>
+[00:37:53.673]    <control if="traceSWO" while="" timeout="0" info="">
+[00:37:53.673]      // if-block "traceSWO"
+[00:37:53.673]        // =>  TRUE
+[00:37:53.673]      <block atomic="false" info="">
+[00:37:53.673]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:37:53.674]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:37:53.674]            <block atomic="false" info="">
+[00:37:53.674]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:37:53.674]                // -> [dbgmcu_val <= 0x00000000]
+[00:37:53.674]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:37:53.674]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:37:53.674]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:37:53.675]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.675]                // -> [dbgmcu_val <= 0x00000007]
+[00:37:53.675]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:37:53.675]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:37:53.676]              Sequence("ConfigureTraceSWOPin");
+[00:37:53.676]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:37:53.676]                  <block atomic="false" info="">
+[00:37:53.676]                    __var pin     = 0;
+[00:37:53.676]                      // -> [pin <= 0x00000000]
+[00:37:53.676]                    __var port    = 0;
+[00:37:53.676]                      // -> [port <= 0x00000000]
+[00:37:53.676]                    __var portAdr = 0;
+[00:37:53.677]                      // -> [portAdr <= 0x00000000]
+[00:37:53.677]                    __var pos     = 0;
+[00:37:53.677]                      // -> [pos <= 0x00000000]
+[00:37:53.677]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:37:53.677]                      // -> [SWO_Pin <= 0x00010003]
+[00:37:53.677]                  </block>
+[00:37:53.677]                  <block atomic="false" info="configure SWO">
+[00:37:53.677]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:37:53.677]                      // -> [pin <= 0x00000003]
+[00:37:53.677]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:37:53.678]                      // -> [port <= 0x00000001]
+[00:37:53.678]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:37:53.678]                      // -> [portAdr <= 0x40020400]
+[00:37:53.678]                    pos = pin * 2;
+[00:37:53.678]                      // -> [pos <= 0x00000006]
+[00:37:53.678]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:37:53.679]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.679]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.679]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:37:53.680]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.680]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.680]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:37:53.681]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.681]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.681]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:37:53.681]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.682]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.682]                  </block>
+[00:37:53.682]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:37:53.682]                    // if-block "pin <  8"
+[00:37:53.682]                      // =>  TRUE
+[00:37:53.682]                    <block atomic="false" info="">
+[00:37:53.683]                      pos = ((pin    ) & 7) * 4;
+[00:37:53.683]                        // -> [pos <= 0x0000000C]
+[00:37:53.683]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:37:53.683]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.684]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.684]                    </block>
+[00:37:53.684]                    // end if-block "pin <  8"
+[00:37:53.684]                  </control>
+[00:37:53.684]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:37:53.684]                    // if-block "pin >= 8"
+[00:37:53.684]                      // =>  FALSE
+[00:37:53.684]                    // skip if-block "pin >= 8"
+[00:37:53.685]                  </control>
+[00:37:53.685]                </sequence>
+[00:37:53.685]            </block>
+[00:37:53.685]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:37:53.685]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:37:53.685]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:37:53.686]            </block>
+[00:37:53.686]          </sequence>
+[00:37:53.686]      </block>
+[00:37:53.686]      // end if-block "traceSWO"
+[00:37:53.686]    </control>
+[00:37:53.686]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:37:53.686]      // if-block "traceTPIU"
+[00:37:53.687]        // =>  FALSE
+[00:37:53.687]      // skip if-block "traceTPIU"
+[00:37:53.687]    </control>
+[00:37:53.687]  </sequence>
+[00:37:53.687]  
+[00:40:50.423]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[00:40:50.423]  
+[00:40:50.423]  <debugvars>
+[00:40:50.424]    // Pre-defined
+[00:40:50.424]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:40:50.424]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:40:50.424]    __dp=0x00000000
+[00:40:50.424]    __ap=0x00000000
+[00:40:50.425]    __traceout=0x00000001      (SWO Trace)
+[00:40:50.425]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:40:50.425]    __FlashAddr=0x00000000
+[00:40:50.425]    __FlashLen=0x00000000
+[00:40:50.425]    __FlashArg=0x00000000
+[00:40:50.426]    __FlashOp=0x00000000
+[00:40:50.426]    __Result=0x00000000
+[00:40:50.426]    
+[00:40:50.426]    // User-defined
+[00:40:50.426]    DbgMCU_CR=0x00000007
+[00:40:50.426]    DbgMCU_APB1_Fz=0x00000000
+[00:40:50.427]    DbgMCU_APB2_Fz=0x00000000
+[00:40:50.427]    TraceClk_Pin=0x00040002
+[00:40:50.427]    TraceD0_Pin=0x00040003
+[00:40:50.427]    TraceD1_Pin=0x00040004
+[00:40:50.427]    TraceD2_Pin=0x00040005
+[00:40:50.428]    TraceD3_Pin=0x00040006
+[00:40:50.428]  </debugvars>
+[00:40:50.428]  
+[00:40:50.428]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:40:50.428]    <block atomic="false" info="">
+[00:40:50.428]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:40:50.428]        // -> [traceSWO <= 0x00000001]
+[00:40:50.429]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:40:50.429]        // -> [traceTPIU <= 0x00000000]
+[00:40:50.429]    </block>
+[00:40:50.429]    <control if="traceSWO" while="" timeout="0" info="">
+[00:40:50.429]      // if-block "traceSWO"
+[00:40:50.429]        // =>  TRUE
+[00:40:50.429]      <block atomic="false" info="">
+[00:40:50.430]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:40:50.430]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:40:50.430]            <block atomic="false" info="">
+[00:40:50.430]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:40:50.430]                // -> [dbgmcu_val <= 0x00000000]
+[00:40:50.430]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:40:50.431]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:40:50.431]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:40:50.431]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.431]                // -> [dbgmcu_val <= 0x00000007]
+[00:40:50.432]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:40:50.432]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:40:50.432]              Sequence("ConfigureTraceSWOPin");
+[00:40:50.432]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:40:50.432]                  <block atomic="false" info="">
+[00:40:50.432]                    __var pin     = 0;
+[00:40:50.432]                      // -> [pin <= 0x00000000]
+[00:40:50.432]                    __var port    = 0;
+[00:40:50.433]                      // -> [port <= 0x00000000]
+[00:40:50.433]                    __var portAdr = 0;
+[00:40:50.433]                      // -> [portAdr <= 0x00000000]
+[00:40:50.433]                    __var pos     = 0;
+[00:40:50.433]                      // -> [pos <= 0x00000000]
+[00:40:50.433]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:40:50.433]                      // -> [SWO_Pin <= 0x00010003]
+[00:40:50.433]                  </block>
+[00:40:50.434]                  <block atomic="false" info="configure SWO">
+[00:40:50.434]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:40:50.434]                      // -> [pin <= 0x00000003]
+[00:40:50.434]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:40:50.434]                      // -> [port <= 0x00000001]
+[00:40:50.434]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:40:50.434]                      // -> [portAdr <= 0x40020400]
+[00:40:50.434]                    pos = pin * 2;
+[00:40:50.435]                      // -> [pos <= 0x00000006]
+[00:40:50.435]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:40:50.435]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.436]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.436]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:40:50.436]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.437]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.437]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:40:50.437]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.438]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.438]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:40:50.438]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.438]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.439]                  </block>
+[00:40:50.439]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:40:50.439]                    // if-block "pin <  8"
+[00:40:50.439]                      // =>  TRUE
+[00:40:50.439]                    <block atomic="false" info="">
+[00:40:50.439]                      pos = ((pin    ) & 7) * 4;
+[00:40:50.439]                        // -> [pos <= 0x0000000C]
+[00:40:50.439]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:40:50.440]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.440]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.440]                    </block>
+[00:40:50.440]                    // end if-block "pin <  8"
+[00:40:50.441]                  </control>
+[00:40:50.441]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:40:50.441]                    // if-block "pin >= 8"
+[00:40:50.441]                      // =>  FALSE
+[00:40:50.441]                    // skip if-block "pin >= 8"
+[00:40:50.441]                  </control>
+[00:40:50.441]                </sequence>
+[00:40:50.441]            </block>
+[00:40:50.442]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:40:50.442]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:40:50.442]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:50.442]            </block>
+[00:40:50.442]          </sequence>
+[00:40:50.442]      </block>
+[00:40:50.443]      // end if-block "traceSWO"
+[00:40:50.443]    </control>
+[00:40:50.443]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:40:50.443]      // if-block "traceTPIU"
+[00:40:50.443]        // =>  FALSE
+[00:40:50.443]      // skip if-block "traceTPIU"
+[00:40:50.443]    </control>
+[00:40:50.443]  </sequence>
+[00:40:50.443]  
+[00:40:57.860]  **********  Sequence "TraceStop"  (Context="Disconnect", Pname="", info="")
+[00:40:57.860]  
+[00:40:57.860]  <debugvars>
+[00:40:57.861]    // Pre-defined
+[00:40:57.861]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:40:57.861]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:40:57.862]    __dp=0x00000000
+[00:40:57.862]    __ap=0x00000000
+[00:40:57.862]    __traceout=0x00000001      (SWO Trace)
+[00:40:57.862]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:40:57.863]    __FlashAddr=0x00000000
+[00:40:57.863]    __FlashLen=0x00000000
+[00:40:57.863]    __FlashArg=0x00000000
+[00:40:57.863]    __FlashOp=0x00000000
+[00:40:57.863]    __Result=0x00000000
+[00:40:57.864]    
+[00:40:57.864]    // User-defined
+[00:40:57.864]    DbgMCU_CR=0x00000007
+[00:40:57.864]    DbgMCU_APB1_Fz=0x00000000
+[00:40:57.864]    DbgMCU_APB2_Fz=0x00000000
+[00:40:57.864]    TraceClk_Pin=0x00040002
+[00:40:57.864]    TraceD0_Pin=0x00040003
+[00:40:57.865]    TraceD1_Pin=0x00040004
+[00:40:57.865]    TraceD2_Pin=0x00040005
+[00:40:57.865]    TraceD3_Pin=0x00040006
+[00:40:57.865]  </debugvars>
+[00:40:57.865]  
+[00:40:57.866]  <sequence name="TraceStop" Pname="" disable="false" info="">
+[00:40:57.866]    <block atomic="false" info="">
+[00:40:57.866]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO enabled?
+[00:40:57.866]        // -> [traceSWO <= 0x00000001]
+[00:40:57.866]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // Synchronous trace port enabled?
+[00:40:57.867]        // -> [traceTPIU <= 0x00000000]
+[00:40:57.867]    </block>
+[00:40:57.867]    <control if="traceSWO" while="" timeout="0" info="">
+[00:40:57.867]      // if-block "traceSWO"
+[00:40:57.867]        // =>  TRUE
+[00:40:57.867]      <block atomic="false" info="">
+[00:40:57.868]        Sequence("DisableTraceSWO");
+[00:40:57.868]          <sequence name="DisableTraceSWO" Pname="" disable="false" info="">
+[00:40:57.868]            <block atomic="false" info="">
+[00:40:57.868]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:40:57.868]                // -> [dbgmcu_val <= 0x00000000]
+[00:40:57.868]            </block>
+[00:40:57.869]            <block atomic="false" info="unconfigure Trace I/O Enable + Trace Mode Asynchronous">
+[00:40:57.869]              dbgmcu_val = Read32(0xE0042004) & (~0xE0);                                // Read DBGMCU_CR and clear trace setup
+[00:40:57.869]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:57.869]                // -> [dbgmcu_val <= 0x00000007]
+[00:40:57.870]              Write32(0xE0042004, dbgmcu_val);                                              // Write DBGMCU_CR: Trace Settings
+[00:40:57.870]                // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:40:57.870]            </block>
+[00:40:57.870]          </sequence>
+[00:40:57.871]      </block>
+[00:40:57.871]      // end if-block "traceSWO"
+[00:40:57.871]    </control>
+[00:40:57.871]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:40:57.871]      // if-block "traceTPIU"
+[00:40:57.871]        // =>  FALSE
+[00:40:57.871]      // skip if-block "traceTPIU"
+[00:40:57.871]    </control>
+[00:40:57.871]  </sequence>
+[00:40:57.872]  
+[00:43:58.616]  **********  Sequence "DebugDeviceUnlock"  (Context="Connect", Pname="", info="")
+[00:43:58.617]  
+[00:43:58.617]  <debugvars>
+[00:43:58.617]    // Pre-defined
+[00:43:58.617]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:43:58.617]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:43:58.617]    __dp=0x00000000
+[00:43:58.618]    __ap=0x00000000
+[00:43:58.618]    __traceout=0x00000001      (SWO Trace)
+[00:43:58.618]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:43:58.618]    __FlashAddr=0x00000000
+[00:43:58.618]    __FlashLen=0x00000000
+[00:43:58.618]    __FlashArg=0x00000000
+[00:43:58.618]    __FlashOp=0x00000000
+[00:43:58.618]    __Result=0x00000000
+[00:43:58.618]    
+[00:43:58.618]    // User-defined
+[00:43:58.618]    DbgMCU_CR=0x00000007
+[00:43:58.619]    DbgMCU_APB1_Fz=0x00000000
+[00:43:58.619]    DbgMCU_APB2_Fz=0x00000000
+[00:43:58.619]    TraceClk_Pin=0x00040002
+[00:43:58.619]    TraceD0_Pin=0x00040003
+[00:43:58.619]    TraceD1_Pin=0x00040004
+[00:43:58.619]    TraceD2_Pin=0x00040005
+[00:43:58.619]    TraceD3_Pin=0x00040006
+[00:43:58.619]  </debugvars>
+[00:43:58.620]  
+[00:43:58.620]  <sequence name="DebugDeviceUnlock" Pname="" disable="false" info="">
+[00:43:58.620]    <block atomic="false" info="">
+[00:43:58.620]      Sequence("CheckID");
+[00:43:58.620]        <sequence name="CheckID" Pname="" disable="false" info="">
+[00:43:58.620]          <block atomic="false" info="">
+[00:43:58.620]            __var pidr1 = 0;
+[00:43:58.621]              // -> [pidr1 <= 0x00000000]
+[00:43:58.621]            __var pidr2 = 0;
+[00:43:58.621]              // -> [pidr2 <= 0x00000000]
+[00:43:58.621]            __var jep106id = 0;
+[00:43:58.621]              // -> [jep106id <= 0x00000000]
+[00:43:58.621]            __var ROMTableBase = 0;
+[00:43:58.621]              // -> [ROMTableBase <= 0x00000000]
+[00:43:58.621]            __ap = 0;      // AHB-AP
+[00:43:58.622]              // -> [__ap <= 0x00000000]
+[00:43:58.622]            ROMTableBase = ReadAP(0xF8) & ~0x3;
+[00:43:58.622]              // -> [ReadAP(0x000000F8) => 0xE00FD003]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.622]              // -> [ROMTableBase <= 0xE00FD000]
+[00:43:58.622]            pidr1 = Read32(ROMTableBase + 0x0FE4);
+[00:43:58.623]              // -> [Read32(0xE00FDFE4) => 0x00000004]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.623]              // -> [pidr1 <= 0x00000004]
+[00:43:58.623]            pidr2 = Read32(ROMTableBase + 0x0FE8);
+[00:43:58.624]              // -> [Read32(0xE00FDFE8) => 0x0000001A]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.624]              // -> [pidr2 <= 0x0000001A]
+[00:43:58.624]            jep106id = ((pidr2 & 0x7) << 4 ) | ((pidr1 >> 4) & 0xF);
+[00:43:58.624]              // -> [jep106id <= 0x00000020]
+[00:43:58.624]          </block>
+[00:43:58.624]          <control if="jep106id != 0x20" while="" timeout="0" info="">
+[00:43:58.624]            // if-block "jep106id != 0x20"
+[00:43:58.625]              // =>  FALSE
+[00:43:58.625]            // skip if-block "jep106id != 0x20"
+[00:43:58.625]          </control>
+[00:43:58.625]        </sequence>
+[00:43:58.625]    </block>
+[00:43:58.625]  </sequence>
+[00:43:58.625]  
+[00:43:58.640]  **********  Sequence "DebugCoreStart"  (Context="Connect", Pname="", info="")
+[00:43:58.640]  
+[00:43:58.640]  <debugvars>
+[00:43:58.640]    // Pre-defined
+[00:43:58.640]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:43:58.640]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:43:58.641]    __dp=0x00000000
+[00:43:58.641]    __ap=0x00000000
+[00:43:58.641]    __traceout=0x00000001      (SWO Trace)
+[00:43:58.641]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:43:58.641]    __FlashAddr=0x00000000
+[00:43:58.641]    __FlashLen=0x00000000
+[00:43:58.642]    __FlashArg=0x00000000
+[00:43:58.642]    __FlashOp=0x00000000
+[00:43:58.642]    __Result=0x00000000
+[00:43:58.642]    
+[00:43:58.642]    // User-defined
+[00:43:58.642]    DbgMCU_CR=0x00000007
+[00:43:58.642]    DbgMCU_APB1_Fz=0x00000000
+[00:43:58.643]    DbgMCU_APB2_Fz=0x00000000
+[00:43:58.643]    TraceClk_Pin=0x00040002
+[00:43:58.643]    TraceD0_Pin=0x00040003
+[00:43:58.643]    TraceD1_Pin=0x00040004
+[00:43:58.643]    TraceD2_Pin=0x00040005
+[00:43:58.643]    TraceD3_Pin=0x00040006
+[00:43:58.644]  </debugvars>
+[00:43:58.644]  
+[00:43:58.644]  <sequence name="DebugCoreStart" Pname="" disable="false" info="">
+[00:43:58.644]    <block atomic="false" info="">
+[00:43:58.644]      Write32(0xE000EDF0, 0xA05F0001);                                        // Enable Core Debug via DHCSR
+[00:43:58.645]        // -> [Write32(0xE000EDF0, 0xA05F0001)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.645]      Write32(0xE0042004, DbgMCU_CR);                                         // DBGMCU_CR: Configure MCU Debug
+[00:43:58.646]        // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.646]      Write32(0xE0042008, DbgMCU_APB1_Fz);                                    // DBGMCU_APB1_FZ: Configure APB1 Peripheral Freeze Behavior
+[00:43:58.646]        // -> [Write32(0xE0042008, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.647]      Write32(0xE004200C, DbgMCU_APB2_Fz);                                    // DBGMCU_APB1_FZ: Configure APB2 Peripheral Freeze Behavior
+[00:43:58.647]        // -> [Write32(0xE004200C, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.647]    </block>
+[00:43:58.647]  </sequence>
+[00:43:58.648]  
+[00:43:58.664]  **********  Sequence "TraceStart"  (Context="Connect", Pname="", info="")
+[00:43:58.664]  
+[00:43:58.664]  <debugvars>
+[00:43:58.664]    // Pre-defined
+[00:43:58.665]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:43:58.665]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:43:58.665]    __dp=0x00000000
+[00:43:58.665]    __ap=0x00000000
+[00:43:58.665]    __traceout=0x00000001      (SWO Trace)
+[00:43:58.665]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:43:58.666]    __FlashAddr=0x00000000
+[00:43:58.666]    __FlashLen=0x00000000
+[00:43:58.666]    __FlashArg=0x00000000
+[00:43:58.666]    __FlashOp=0x00000000
+[00:43:58.666]    __Result=0x00000000
+[00:43:58.666]    
+[00:43:58.666]    // User-defined
+[00:43:58.666]    DbgMCU_CR=0x00000007
+[00:43:58.667]    DbgMCU_APB1_Fz=0x00000000
+[00:43:58.667]    DbgMCU_APB2_Fz=0x00000000
+[00:43:58.667]    TraceClk_Pin=0x00040002
+[00:43:58.667]    TraceD0_Pin=0x00040003
+[00:43:58.667]    TraceD1_Pin=0x00040004
+[00:43:58.667]    TraceD2_Pin=0x00040005
+[00:43:58.667]    TraceD3_Pin=0x00040006
+[00:43:58.668]  </debugvars>
+[00:43:58.668]  
+[00:43:58.668]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:43:58.668]    <block atomic="false" info="">
+[00:43:58.668]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:43:58.668]        // -> [traceSWO <= 0x00000001]
+[00:43:58.668]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:43:58.668]        // -> [traceTPIU <= 0x00000000]
+[00:43:58.669]    </block>
+[00:43:58.669]    <control if="traceSWO" while="" timeout="0" info="">
+[00:43:58.669]      // if-block "traceSWO"
+[00:43:58.669]        // =>  TRUE
+[00:43:58.669]      <block atomic="false" info="">
+[00:43:58.669]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:43:58.669]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:43:58.670]            <block atomic="false" info="">
+[00:43:58.670]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:43:58.670]                // -> [dbgmcu_val <= 0x00000000]
+[00:43:58.670]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:43:58.670]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:43:58.670]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:43:58.671]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.671]                // -> [dbgmcu_val <= 0x00000007]
+[00:43:58.671]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:43:58.671]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:43:58.671]              Sequence("ConfigureTraceSWOPin");
+[00:43:58.671]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:43:58.672]                  <block atomic="false" info="">
+[00:43:58.672]                    __var pin     = 0;
+[00:43:58.672]                      // -> [pin <= 0x00000000]
+[00:43:58.672]                    __var port    = 0;
+[00:43:58.672]                      // -> [port <= 0x00000000]
+[00:43:58.672]                    __var portAdr = 0;
+[00:43:58.672]                      // -> [portAdr <= 0x00000000]
+[00:43:58.672]                    __var pos     = 0;
+[00:43:58.672]                      // -> [pos <= 0x00000000]
+[00:43:58.673]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:43:58.673]                      // -> [SWO_Pin <= 0x00010003]
+[00:43:58.673]                  </block>
+[00:43:58.673]                  <block atomic="false" info="configure SWO">
+[00:43:58.673]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:43:58.673]                      // -> [pin <= 0x00000003]
+[00:43:58.673]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:43:58.673]                      // -> [port <= 0x00000001]
+[00:43:58.674]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:43:58.674]                      // -> [portAdr <= 0x40020400]
+[00:43:58.674]                    pos = pin * 2;
+[00:43:58.674]                      // -> [pos <= 0x00000006]
+[00:43:58.674]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:43:58.675]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.675]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.675]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:43:58.676]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.676]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.676]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:43:58.677]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.677]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.677]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:43:58.678]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.678]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.678]                  </block>
+[00:43:58.678]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:43:58.678]                    // if-block "pin <  8"
+[00:43:58.679]                      // =>  TRUE
+[00:43:58.679]                    <block atomic="false" info="">
+[00:43:58.679]                      pos = ((pin    ) & 7) * 4;
+[00:43:58.679]                        // -> [pos <= 0x0000000C]
+[00:43:58.679]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:43:58.679]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.680]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.680]                    </block>
+[00:43:58.680]                    // end if-block "pin <  8"
+[00:43:58.680]                  </control>
+[00:43:58.680]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:43:58.680]                    // if-block "pin >= 8"
+[00:43:58.680]                      // =>  FALSE
+[00:43:58.681]                    // skip if-block "pin >= 8"
+[00:43:58.682]                  </control>
+[00:43:58.682]                </sequence>
+[00:43:58.682]            </block>
+[00:43:58.682]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:43:58.682]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:43:58.682]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.682]            </block>
+[00:43:58.682]          </sequence>
+[00:43:58.683]      </block>
+[00:43:58.683]      // end if-block "traceSWO"
+[00:43:58.683]    </control>
+[00:43:58.683]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:43:58.683]      // if-block "traceTPIU"
+[00:43:58.683]        // =>  FALSE
+[00:43:58.683]      // skip if-block "traceTPIU"
+[00:43:58.683]    </control>
+[00:43:58.683]  </sequence>
+[00:43:58.684]  
+[00:43:58.687]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[00:43:58.687]  
+[00:43:58.687]  <debugvars>
+[00:43:58.688]    // Pre-defined
+[00:43:58.688]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:43:58.688]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:43:58.688]    __dp=0x00000000
+[00:43:58.688]    __ap=0x00000000
+[00:43:58.688]    __traceout=0x00000001      (SWO Trace)
+[00:43:58.688]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:43:58.689]    __FlashAddr=0x00000000
+[00:43:58.689]    __FlashLen=0x00000000
+[00:43:58.689]    __FlashArg=0x00000000
+[00:43:58.689]    __FlashOp=0x00000000
+[00:43:58.689]    __Result=0x00000000
+[00:43:58.689]    
+[00:43:58.689]    // User-defined
+[00:43:58.689]    DbgMCU_CR=0x00000007
+[00:43:58.689]    DbgMCU_APB1_Fz=0x00000000
+[00:43:58.690]    DbgMCU_APB2_Fz=0x00000000
+[00:43:58.690]    TraceClk_Pin=0x00040002
+[00:43:58.690]    TraceD0_Pin=0x00040003
+[00:43:58.690]    TraceD1_Pin=0x00040004
+[00:43:58.690]    TraceD2_Pin=0x00040005
+[00:43:58.690]    TraceD3_Pin=0x00040006
+[00:43:58.690]  </debugvars>
+[00:43:58.690]  
+[00:43:58.690]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:43:58.691]    <block atomic="false" info="">
+[00:43:58.691]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:43:58.691]        // -> [traceSWO <= 0x00000001]
+[00:43:58.691]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:43:58.691]        // -> [traceTPIU <= 0x00000000]
+[00:43:58.691]    </block>
+[00:43:58.691]    <control if="traceSWO" while="" timeout="0" info="">
+[00:43:58.691]      // if-block "traceSWO"
+[00:43:58.691]        // =>  TRUE
+[00:43:58.692]      <block atomic="false" info="">
+[00:43:58.692]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:43:58.692]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:43:58.692]            <block atomic="false" info="">
+[00:43:58.692]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:43:58.692]                // -> [dbgmcu_val <= 0x00000000]
+[00:43:58.692]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:43:58.692]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:43:58.692]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:43:58.693]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.693]                // -> [dbgmcu_val <= 0x00000007]
+[00:43:58.693]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:43:58.693]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:43:58.693]              Sequence("ConfigureTraceSWOPin");
+[00:43:58.693]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:43:58.694]                  <block atomic="false" info="">
+[00:43:58.694]                    __var pin     = 0;
+[00:43:58.694]                      // -> [pin <= 0x00000000]
+[00:43:58.694]                    __var port    = 0;
+[00:43:58.694]                      // -> [port <= 0x00000000]
+[00:43:58.694]                    __var portAdr = 0;
+[00:43:58.694]                      // -> [portAdr <= 0x00000000]
+[00:43:58.695]                    __var pos     = 0;
+[00:43:58.695]                      // -> [pos <= 0x00000000]
+[00:43:58.695]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:43:58.695]                      // -> [SWO_Pin <= 0x00010003]
+[00:43:58.695]                  </block>
+[00:43:58.695]                  <block atomic="false" info="configure SWO">
+[00:43:58.695]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:43:58.695]                      // -> [pin <= 0x00000003]
+[00:43:58.695]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:43:58.696]                      // -> [port <= 0x00000001]
+[00:43:58.696]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:43:58.696]                      // -> [portAdr <= 0x40020400]
+[00:43:58.696]                    pos = pin * 2;
+[00:43:58.696]                      // -> [pos <= 0x00000006]
+[00:43:58.696]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:43:58.697]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.697]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.697]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:43:58.698]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.698]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.698]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:43:58.698]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.699]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.699]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:43:58.699]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.700]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.700]                  </block>
+[00:43:58.700]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:43:58.700]                    // if-block "pin <  8"
+[00:43:58.700]                      // =>  TRUE
+[00:43:58.700]                    <block atomic="false" info="">
+[00:43:58.700]                      pos = ((pin    ) & 7) * 4;
+[00:43:58.701]                        // -> [pos <= 0x0000000C]
+[00:43:58.701]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:43:58.701]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.702]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.702]                    </block>
+[00:43:58.702]                    // end if-block "pin <  8"
+[00:43:58.702]                  </control>
+[00:43:58.702]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:43:58.702]                    // if-block "pin >= 8"
+[00:43:58.702]                      // =>  FALSE
+[00:43:58.702]                    // skip if-block "pin >= 8"
+[00:43:58.702]                  </control>
+[00:43:58.703]                </sequence>
+[00:43:58.703]            </block>
+[00:43:58.703]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:43:58.703]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:43:58.703]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.704]            </block>
+[00:43:58.704]          </sequence>
+[00:43:58.704]      </block>
+[00:43:58.704]      // end if-block "traceSWO"
+[00:43:58.704]    </control>
+[00:43:58.704]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:43:58.704]      // if-block "traceTPIU"
+[00:43:58.704]        // =>  FALSE
+[00:43:58.704]      // skip if-block "traceTPIU"
+[00:43:58.704]    </control>
+[00:43:58.705]  </sequence>
+[00:43:58.705]  
+[00:43:58.850]  **********  Sequence "TraceStart"  (Context="Reset", Pname="", info="")
+[00:43:58.850]  
+[00:43:58.850]  <debugvars>
+[00:43:58.851]    // Pre-defined
+[00:43:58.851]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:43:58.851]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:43:58.851]    __dp=0x00000000
+[00:43:58.852]    __ap=0x00000000
+[00:43:58.852]    __traceout=0x00000001      (SWO Trace)
+[00:43:58.852]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:43:58.852]    __FlashAddr=0x00000000
+[00:43:58.852]    __FlashLen=0x00000000
+[00:43:58.853]    __FlashArg=0x00000000
+[00:43:58.853]    __FlashOp=0x00000000
+[00:43:58.853]    __Result=0x00000000
+[00:43:58.853]    
+[00:43:58.853]    // User-defined
+[00:43:58.853]    DbgMCU_CR=0x00000007
+[00:43:58.853]    DbgMCU_APB1_Fz=0x00000000
+[00:43:58.854]    DbgMCU_APB2_Fz=0x00000000
+[00:43:58.854]    TraceClk_Pin=0x00040002
+[00:43:58.854]    TraceD0_Pin=0x00040003
+[00:43:58.854]    TraceD1_Pin=0x00040004
+[00:43:58.854]    TraceD2_Pin=0x00040005
+[00:43:58.854]    TraceD3_Pin=0x00040006
+[00:43:58.854]  </debugvars>
+[00:43:58.855]  
+[00:43:58.855]  <sequence name="TraceStart" Pname="" disable="false" info="">
+[00:43:58.855]    <block atomic="false" info="">
+[00:43:58.855]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO (asynchronous) Trace Selected?
+[00:43:58.855]        // -> [traceSWO <= 0x00000001]
+[00:43:58.855]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // TPIU (synchronous) Trace Selected?
+[00:43:58.855]        // -> [traceTPIU <= 0x00000000]
+[00:43:58.856]    </block>
+[00:43:58.856]    <control if="traceSWO" while="" timeout="0" info="">
+[00:43:58.856]      // if-block "traceSWO"
+[00:43:58.856]        // =>  TRUE
+[00:43:58.856]      <block atomic="false" info="">
+[00:43:58.856]        Sequence("EnableTraceSWO");                                           // Call SWO Trace Setup
+[00:43:58.856]          <sequence name="EnableTraceSWO" Pname="" disable="false" info="">
+[00:43:58.857]            <block atomic="false" info="">
+[00:43:58.857]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:43:58.857]                // -> [dbgmcu_val <= 0x00000000]
+[00:43:58.857]              __var dbgmcu_trace_val = 0;                                                   // DBGMCU_CR Value
+[00:43:58.857]                // -> [dbgmcu_trace_val <= 0x00000000]
+[00:43:58.857]              dbgmcu_val        = Read32(0xE0042004) & (~0xE0);                         // Read DBGMCU_CR and clear trace setup
+[00:43:58.858]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.858]                // -> [dbgmcu_val <= 0x00000007]
+[00:43:58.858]              dbgmcu_trace_val  = (1 << 5);                                           // Trace I/O Enable + Trace Mode Asynchronous
+[00:43:58.858]                // -> [dbgmcu_trace_val <= 0x00000020]
+[00:43:58.858]              Sequence("ConfigureTraceSWOPin");
+[00:43:58.858]                <sequence name="ConfigureTraceSWOPin" Pname="" disable="false" info="">
+[00:43:58.858]                  <block atomic="false" info="">
+[00:43:58.858]                    __var pin     = 0;
+[00:43:58.859]                      // -> [pin <= 0x00000000]
+[00:43:58.859]                    __var port    = 0;
+[00:43:58.859]                      // -> [port <= 0x00000000]
+[00:43:58.859]                    __var portAdr = 0;
+[00:43:58.859]                      // -> [portAdr <= 0x00000000]
+[00:43:58.859]                    __var pos     = 0;
+[00:43:58.859]                      // -> [pos <= 0x00000000]
+[00:43:58.859]                    __var SWO_Pin = 0x00010003;          // PB3
+[00:43:58.859]                      // -> [SWO_Pin <= 0x00010003]
+[00:43:58.860]                  </block>
+[00:43:58.860]                  <block atomic="false" info="configure SWO">
+[00:43:58.860]                    pin     =               ((SWO_Pin            ) & 0x0000FFFF);
+[00:43:58.860]                      // -> [pin <= 0x00000003]
+[00:43:58.860]                    port    =               ((SWO_Pin >> 16) & 0x0000FFFF);
+[00:43:58.860]                      // -> [port <= 0x00000001]
+[00:43:58.860]                    portAdr = 0x40020000 + (((SWO_Pin >> 16) & 0x0000FFFF) * 0x400);
+[00:43:58.860]                      // -> [portAdr <= 0x40020400]
+[00:43:58.860]                    pos = pin * 2;
+[00:43:58.861]                      // -> [pos <= 0x00000006]
+[00:43:58.861]                    Write32(0x40023830,     ((Read32(0x40023830    )                         ) | (1 << port)) );  // RCC_AHB1ENR:   IO port clock enable
+[00:43:58.861]                      // -> [Read32(0x40023830) => 0x00100000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.862]                      // -> [Write32(0x40023830, 0x00100002)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.862]                    Write32(portAdr + 0x00, ((Read32(portAdr + 0x00) & ~( 3 << pos)) | (2 << pos )) );  // GPIOx_MODER:   Set Mode (Alternate Function)
+[00:43:58.862]                      // -> [Read32(0x40020400) => 0x00000280]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.863]                      // -> [Write32(0x40020400, 0x00000280)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.863]                    Write32(portAdr + 0x08, ((Read32(portAdr + 0x08)                         ) | (3 << pos )) );  // GPIOx_OSPEEDR: Set Speed (Very High Speed)
+[00:43:58.863]                      // -> [Read32(0x40020408) => 0x000000C0]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.864]                      // -> [Write32(0x40020408, 0x000000C0)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.864]                    Write32(portAdr + 0x0C, ((Read32(portAdr + 0x0C) & ~( 3 << pos))                    ) );  // GPIOx_PUPDR:   Set I/O to no pull-up/pull-down
+[00:43:58.864]                      // -> [Read32(0x4002040C) => 0x00000100]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.865]                      // -> [Write32(0x4002040C, 0x00000100)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.865]                  </block>
+[00:43:58.865]                  <control if="pin <  8" while="" timeout="0" info="">
+[00:43:58.865]                    // if-block "pin <  8"
+[00:43:58.865]                      // =>  TRUE
+[00:43:58.865]                    <block atomic="false" info="">
+[00:43:58.865]                      pos = ((pin    ) & 7) * 4;
+[00:43:58.865]                        // -> [pos <= 0x0000000C]
+[00:43:58.865]                      Write32(portAdr + 0x20, ((Read32(portAdr + 0x20) & ~(15 << pos))                    ) );  // GPIOx_AFRL:    Alternate Function to AF0
+[00:43:58.866]                        // -> [Read32(0x40020420) => 0x00000000]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.866]                        // -> [Write32(0x40020420, 0x00000000)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.866]                    </block>
+[00:43:58.867]                    // end if-block "pin <  8"
+[00:43:58.867]                  </control>
+[00:43:58.867]                  <control if="pin >= 8" while="" timeout="0" info="">
+[00:43:58.867]                    // if-block "pin >= 8"
+[00:43:58.867]                      // =>  FALSE
+[00:43:58.867]                    // skip if-block "pin >= 8"
+[00:43:58.867]                  </control>
+[00:43:58.867]                </sequence>
+[00:43:58.867]            </block>
+[00:43:58.868]            <block atomic="false" info="configure Trace I/O Enable + Trace Mode Asynchronous">
+[00:43:58.868]              Write32(0xE0042004, dbgmcu_val | dbgmcu_trace_val);                           // Write DBGMCU_CR: Trace Settings
+[00:43:58.868]                // -> [Write32(0xE0042004, 0x00000027)]   (__dp=0x00000000, __ap=0x00000000)
+[00:43:58.868]            </block>
+[00:43:58.868]          </sequence>
+[00:43:58.868]      </block>
+[00:43:58.869]      // end if-block "traceSWO"
+[00:43:58.869]    </control>
+[00:43:58.869]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:43:58.869]      // if-block "traceTPIU"
+[00:43:58.869]        // =>  FALSE
+[00:43:58.869]      // skip if-block "traceTPIU"
+[00:43:58.869]    </control>
+[00:43:58.869]  </sequence>
+[00:43:58.869]  
+[00:47:48.506]  **********  Sequence "TraceStop"  (Context="Disconnect", Pname="", info="")
+[00:47:48.506]  
+[00:47:48.506]  <debugvars>
+[00:47:48.506]    // Pre-defined
+[00:47:48.506]    __protocol=0x00010002      (Protocol="SWD", SWJ-DP="True")
+[00:47:48.506]    __connection=0x00010201    (Connection Type="Debug", Reset Type="System Reset", Connection Under HW Reset)
+[00:47:48.507]    __dp=0x00000000
+[00:47:48.507]    __ap=0x00000000
+[00:47:48.507]    __traceout=0x00000001      (SWO Trace)
+[00:47:48.507]    __errorcontrol=0x00000000  (Skip Errors="False")
+[00:47:48.507]    __FlashAddr=0x00000000
+[00:47:48.508]    __FlashLen=0x00000000
+[00:47:48.508]    __FlashArg=0x00000000
+[00:47:48.508]    __FlashOp=0x00000000
+[00:47:48.508]    __Result=0x00000000
+[00:47:48.508]    
+[00:47:48.508]    // User-defined
+[00:47:48.508]    DbgMCU_CR=0x00000007
+[00:47:48.509]    DbgMCU_APB1_Fz=0x00000000
+[00:47:48.509]    DbgMCU_APB2_Fz=0x00000000
+[00:47:48.509]    TraceClk_Pin=0x00040002
+[00:47:48.509]    TraceD0_Pin=0x00040003
+[00:47:48.509]    TraceD1_Pin=0x00040004
+[00:47:48.509]    TraceD2_Pin=0x00040005
+[00:47:48.510]    TraceD3_Pin=0x00040006
+[00:47:48.510]  </debugvars>
+[00:47:48.510]  
+[00:47:48.510]  <sequence name="TraceStop" Pname="" disable="false" info="">
+[00:47:48.510]    <block atomic="false" info="">
+[00:47:48.510]      __var traceSWO    = (__traceout & 0x1) != 0;                        // SWO enabled?
+[00:47:48.511]        // -> [traceSWO <= 0x00000001]
+[00:47:48.511]      __var traceTPIU   = (__traceout & 0x2) != 0;                        // Synchronous trace port enabled?
+[00:47:48.511]        // -> [traceTPIU <= 0x00000000]
+[00:47:48.511]    </block>
+[00:47:48.511]    <control if="traceSWO" while="" timeout="0" info="">
+[00:47:48.511]      // if-block "traceSWO"
+[00:47:48.511]        // =>  TRUE
+[00:47:48.512]      <block atomic="false" info="">
+[00:47:48.512]        Sequence("DisableTraceSWO");
+[00:47:48.512]          <sequence name="DisableTraceSWO" Pname="" disable="false" info="">
+[00:47:48.512]            <block atomic="false" info="">
+[00:47:48.512]              __var dbgmcu_val       = 0;                                                   // DBGMCU_CR Value
+[00:47:48.512]                // -> [dbgmcu_val <= 0x00000000]
+[00:47:48.512]            </block>
+[00:47:48.512]            <block atomic="false" info="unconfigure Trace I/O Enable + Trace Mode Asynchronous">
+[00:47:48.512]              dbgmcu_val = Read32(0xE0042004) & (~0xE0);                                // Read DBGMCU_CR and clear trace setup
+[00:47:48.513]                // -> [Read32(0xE0042004) => 0x00000027]   (__dp=0x00000000, __ap=0x00000000)
+[00:47:48.513]                // -> [dbgmcu_val <= 0x00000007]
+[00:47:48.513]              Write32(0xE0042004, dbgmcu_val);                                              // Write DBGMCU_CR: Trace Settings
+[00:47:48.514]                // -> [Write32(0xE0042004, 0x00000007)]   (__dp=0x00000000, __ap=0x00000000)
+[00:47:48.514]            </block>
+[00:47:48.514]          </sequence>
+[00:47:48.514]      </block>
+[00:47:48.514]      // end if-block "traceSWO"
+[00:47:48.514]    </control>
+[00:47:48.514]    <control if="traceTPIU" while="" timeout="0" info="">
+[00:47:48.515]      // if-block "traceTPIU"
+[00:47:48.515]        // =>  FALSE
+[00:47:48.515]      // skip if-block "traceTPIU"
+[00:47:48.515]    </control>
+[00:47:48.515]  </sequence>
+[00:47:48.515]  

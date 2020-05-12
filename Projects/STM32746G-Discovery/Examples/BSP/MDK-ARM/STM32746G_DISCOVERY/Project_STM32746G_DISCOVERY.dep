@@ -117,14 +117,14 @@ I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x5D9B6CC8)
 I (../Inc/ff.h)(0x5C935F86)
 I (../Inc/integer.h)(0x5C935F86)
 I (../Inc/ffconf.h)(0x5E6697EB)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (../Inc/ff_gen_drv.h)(0x5C935F86)
 I (../Inc/diskio.h)(0x5C935F86)
 I (../Inc/sd_diskio.h)(0x5C95393B)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_sd.h)(0x5C86D7D9)
-F (../Src/main.c)(0x5EBA1698)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\main.o --omf_browse stm32746g_discovery\main.crf --depend stm32746g_discovery\main.d)
+F (../Src/main.c)(0x5EBA1AD7)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\main.o --omf_browse stm32746g_discovery\main.crf --depend stm32746g_discovery\main.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5D9B6CCA)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9B6CCA)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5C86D7DC)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E6AACFA)
@@ -251,7 +251,7 @@ I (../Inc/gui/prototipos.h)(0x5EB2B973)
 I (../../../../../Drivers/CMSIS/Include/arm_math.h)(0x5E60B359)
 I (../../../../../Drivers/CMSIS/Include/arm_common_tables.h)(0x5C86D7DB)
 F (../Src/stm32f7xx_it.c)(0x5EABFAA9)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\stm32f7xx_it.o --omf_browse stm32746g_discovery\stm32f7xx_it.crf --depend stm32746g_discovery\stm32f7xx_it.d)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9B6CCA)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5C86D7DC)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E6AACFA)
@@ -514,7 +514,7 @@ I (../../../../../Drivers/CMSIS/Include/arm_common_tables.h)(0x5C86D7DB)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_audio.h)(0x5EB38620)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/wm8994/wm8994.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/wm8994/../Common/audio.h)(0x5C86D7D9)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_sd.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_eeprom.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_camera.h)(0x5C86D7D9)
@@ -669,7 +669,7 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9B6CCA)
 I (../Inc/ff.h)(0x5C935F86)
 I (../Inc/integer.h)(0x5C935F86)
 I (../Inc/ffconf.h)(0x5E6697EB)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5C86D7DC)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E6AACFA)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rcc.h)(0x5C86D7DC)
@@ -811,7 +811,7 @@ I (../../../../../Drivers/CMSIS/Include/arm_common_tables.h)(0x5C86D7DB)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_audio.h)(0x5EB38620)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/wm8994/wm8994.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/wm8994/../Common/audio.h)(0x5C86D7D9)
-F (.\STM32746G_DISCOVERY\Example\User\gui.c)(0x5EBA1A00)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\gui.o --omf_browse stm32746g_discovery\gui.crf --depend stm32746g_discovery\gui.d)
+F (.\STM32746G_DISCOVERY\Example\User\gui.c)(0x5EBA1AF5)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\gui.o --omf_browse stm32746g_discovery\gui.crf --depend stm32746g_discovery\gui.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x5D9B6CCA)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9B6CCA)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery.h)(0x5C86D7D9)
@@ -868,7 +868,7 @@ I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/ft5336/ft5336.h)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/../Components/ft5336/../Common/ts.h)(0x5C86D7D9)
 I (../Inc/gui/gui.h)(0x5EBA192F)
 I (../Inc/ex03/macros.h)(0x56B15AD4)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_sd.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_eeprom.h)(0x5C86D7D9)
 I (../../../../../Drivers/BSP/STM32746G-Discovery/stm32746g_discovery_camera.h)(0x5C86D7D9)
@@ -1249,7 +1249,7 @@ I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim_ex.h)(0x5C8
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart.h)(0x5C86D7DC)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_uart_ex.h)(0x5C86D7DC)
 F (.\STM32746G_DISCOVERY\Example\User\stm32f7xx_hal_msp.c)(0x5D910103)(-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99-I.\RTE\_STM32746G_DISCOVERY-IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include-IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include-D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7-o stm32746g_discovery\stm32f7xx_hal_msp.o --omf_browse stm32746g_discovery\stm32f7xx_hal_msp.crf --depend stm32746g_discovery\stm32f7xx_hal_msp.d)
-I (../Inc/main.h)(0x5EB955C0)
+I (../Inc/main.h)(0x5EBA1C96)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x5D9B6CCA)
 I (../../../../../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h)(0x5C86D7DC)
 I (../Inc/stm32f7xx_hal_conf.h)(0x5E6AACFA)

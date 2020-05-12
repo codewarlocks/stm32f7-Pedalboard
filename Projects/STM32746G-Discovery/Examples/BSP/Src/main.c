@@ -83,12 +83,13 @@ void Tim3_Patalla_Config (void);
 //int32_t Buffer_in[AUDIO_BLOCK_SIZE]={0}, Buffer_out[AUDIO_BLOCK_SIZE]={0}, Buffer_cuentas[AUDIO_BLOCK_HALFSIZE]={0};
 int32_t *Buffer_in=(int32_t*)AUDIO_REC_START_ADDR, *Buffer_out=(int32_t*)(AUDIO_PLAY_BUFFER), *Buffer_cuentas=(int32_t*)(AUDIO_CUENTAS_BUFFER);
 static int32_t cont_muestras=0, cont_pedales=0;
-static uint8_t* AUDIO_RECORD_BUFFER = (uint8_t*)(AUDIO_DELAY_BUFFER+(50000*4)); //Alberga 10 segundos de audio, uso TIM3 (200ms) para copiarlas
+static uint8_t* 	AUDIO_RECORD_BUFFER = (uint8_t*)(AUDIO_WAV_RECORD_BUFFER); //Alberga 10 segundos de audio, uso TIM3 (200ms) para copiarlas
 
 volatile bool estado_grabacion=false;
 static uint32_t timer_grabacion=0, offset_grabacion=0;
 volatile bool screen_refresh_flag=false;
 volatile bool block_machine=false;
+
 static uint32_t escritura_sd=0;
 #define SEGUNDOS 							20
 #define SECTOR_SD_WRITE	256
@@ -176,6 +177,8 @@ int main(void)
 		initPedals();
 		InitEfectos();
 		
+		gui_init();
+		
 		init_wav_header(AUDIO_RECORD_BUFFER);
 		
 		escritura_sd=(DEFAULT_AUDIO_IN_FREQ*3*SEGUNDOS)/SECTOR_SD_WRITE;
@@ -204,8 +207,6 @@ int main(void)
 		Demo_fondito();
 		#endif
 		
-		
-		
 		while (1)
 		{
 				switch (machine_state)
@@ -226,8 +227,8 @@ int main(void)
 							
 								machine_state=NONE_STATE;								
 								#if SCREEN_ENABLE
-							HAL_NVIC_SetPriority(TIM3_IRQn, AUDIO_IN_IRQ_PREPRIO-1, 0);
-							if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
+								HAL_NVIC_SetPriority(TIM3_IRQn, AUDIO_IN_IRQ_PREPRIO-1, 0);
+								if (HAL_TIM_Base_Start_IT(&htimx) != HAL_OK)
 								{
 										/* Starting Error */
 										Error_Handler();

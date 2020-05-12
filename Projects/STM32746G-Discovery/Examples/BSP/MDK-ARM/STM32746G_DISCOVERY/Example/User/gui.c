@@ -9,12 +9,12 @@
 #include "string.h"
 #include "gui/leds.h"
 #include "gui/whaondas.h"
-#include "gui/perilla35x35x25.h"
-#include "gui/perilla42x41x25.h"
-#include "gui/perilla52x52x25.h"
-#include "gui/eq_slider.h"
-//#include "gui/Spritesheet_slider.h"
-//#include "gui/slider5pos.h"
+
+//#include "gui/perilla35x35x25.h"
+//#include "gui/perilla42x41x25.h"
+//#include "gui/perilla52x52x25.h"
+//#include "gui/eq_slider.h"
+
 #include "gui/prototipos.h"
 #include "gui/tremoloondas.h"
 #include "gui/vibratoondas.h"
@@ -57,19 +57,26 @@ LTDC_HandleTypeDef hLtdcHandler;
 extern int seleccion_pedal, seleccion_menu;
 extern int pedal_individual;
 extern LinkElementMenu * Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
+
+FIL perillas_ptr;
+static  uint8_t*	Perillas_Buffer_35x35x25 = (uint8_t*)(PERILLA_35x35x25);
+static uint8_t*	Perillas_Buffer_42x41x25 = (uint8_t*)(PERILLA_42x41x25);
+static uint8_t*	Perillas_Buffer_52x52x25 = (uint8_t*)(PERILLA_52x52x25);
+static uint8_t*	Perillas_Buffer_eq_slider = (uint8_t*)(PERILLA_EQ_SLIDER);
+
 //Varibales Perillas Spritesheet_slider
-static SpriteSheet eq_slider = { .pixels = eq_slider_30,
-		.spriteWidth = 30, .spriteHeight = 83, .numSprites = 26, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla4241 = { .pixels = perilla42x41x25,
-		.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla5252 = { .pixels = perilla52x52x25,
-		.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
-static SpriteSheet perilla3535 = { .pixels = perilla35x35x25,
-		.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
-				CM_ARGB8888};//CM_RGB888
+static SpriteSheet perilla3535;// = { .pixels = Perillas_Buffer_35x35x25,
+		//.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
+				//CM_ARGB8888};
+static SpriteSheet perilla4241; //= { .pixels = Perillas_Buffer_42x41x25,
+		//.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
+				//CM_ARGB8888};
+static SpriteSheet perilla5252;// = { .pixels = perilla52x52x25,
+		//.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
+				//CM_ARGB8888};//CM_RGB888
+static SpriteSheet eq_slider; //= { .pixels = eq_slider_30,
+		//.spriteWidth = 30, .spriteHeight = 83, .numSprites = 26, .format =
+				//CM_ARGB8888};//CM_RGB888
 static SpriteSheet whaonda = { .pixels = whaondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 6, .format =
 				CM_ARGB8888};//CM_RGB888
@@ -79,12 +86,30 @@ static SpriteSheet vibratoonda = { .pixels = vibratoondas,
 static SpriteSheet tremoloonda = { .pixels = tremoloondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
 				CM_ARGB8888};//CM_RGB888
-
-
+				
 static uint8_t buffer_imagenes[10816] = {0}; //10816
 static uint8_t colorModeStrides[5] = { 4, 3, 2, 2, 2 };
 
 #endif
+
+void gui_init	()
+{
+		f_open(&perillas_ptr, "/Perillas/35.bin", FA_READ);
+		f_read(&perillas_ptr, Perillas_Buffer_35x35x25, 122500, NULL);
+		f_close(&perillas_ptr);
+		
+		f_open(&perillas_ptr, "/Perillas/42.bin", FA_READ);
+		f_read(&perillas_ptr, Perillas_Buffer_42x41x25, 172200, NULL);
+		f_close(&perillas_ptr);
+		
+		f_open(&perillas_ptr, "/Perillas/52.bin", FA_READ);
+		f_read(&perillas_ptr, Perillas_Buffer_52x52x25, 270400, NULL);
+		f_close(&perillas_ptr);
+		
+		f_open(&perillas_ptr, "/Perillas/eq.bin", FA_READ);
+		f_read(&perillas_ptr, Perillas_Buffer_eq_slider, 258960, NULL);
+		f_close(&perillas_ptr);
+}	
 
 void init_LL_ConvertLine_DMA2D (uint32_t color_mode)
 {
@@ -989,6 +1014,42 @@ GUI *initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol)
 
 void initPedals() 
 {
+				// = { .pixels = Perillas_Buffer_35x35x25,
+		//.spriteWidth = 35, .spriteHeight = 35, .numSprites = 25, .format =
+				//CM_ARGB8888};//CM_RGB888
+		perilla3535.format=CM_ARGB8888;
+		perilla3535.numSprites=25;
+		perilla3535.pixels=Perillas_Buffer_35x35x25;
+		perilla3535.spriteHeight=35;
+		perilla3535.spriteWidth=35;
+		
+		//= { .pixels = Perillas_Buffer_42x41x25,
+		//.spriteWidth = 42, .spriteHeight = 41, .numSprites = 25, .format =
+				//CM_ARGB8888};
+		perilla4241.format=CM_ARGB8888;
+		perilla4241.numSprites=25;
+		perilla4241.pixels=Perillas_Buffer_42x41x25;
+		perilla4241.spriteHeight=41;
+		perilla4241.spriteWidth=42;
+		
+		// = { .pixels = perilla52x52x25,
+		//.spriteWidth = 52, .spriteHeight = 52, .numSprites = 25, .format =
+				//CM_ARGB8888};//CM_RGB888
+		perilla5252.format=CM_ARGB8888;
+		perilla5252.numSprites=25;
+		perilla5252.pixels=Perillas_Buffer_52x52x25;
+		perilla5252.spriteHeight=52;
+		perilla5252.spriteWidth=52;
+		
+		//= { .pixels = eq_slider_30,
+		//.spriteWidth = 30, .spriteHeight = 83, .numSprites = 26, .format =
+				//CM_ARGB8888};//CM_RGB888
+		eq_slider.format=CM_ARGB8888;
+		eq_slider.numSprites=26;
+		eq_slider.pixels=Perillas_Buffer_eq_slider;
+		eq_slider.spriteHeight=83;
+		eq_slider.spriteWidth=30;
+	
 		#if SCREEN_ENABLE
 		//Inicializo las perillas Pantalla1
 		//Delay

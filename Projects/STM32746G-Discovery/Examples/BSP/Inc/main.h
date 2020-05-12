@@ -88,17 +88,25 @@
   */
 //#define SDRAM_WRITE_READ_ADDR        ((uint32_t)(CAMERA_FRAME_BUFFER + (CAMERA_RES_MAX_X * CAMERA_RES_MAX_Y * RGB565_BYTE_PER_PIXEL)))
 
-#define BMP_IMAGE_BUFFER       					LCD_FRAME_BUFFER + (RK043FN48H_WIDTH * RK043FN48H_HEIGHT * ARBG8888_BYTE_PER_PIXEL)*2		/* El buffer tienen 2 layers (2 * size pantalla) */
+#define BMP_IMAGE_BUFFER       						LCD_FRAME_BUFFER + (RK043FN48H_WIDTH * RK043FN48H_HEIGHT * ARBG8888_BYTE_PER_PIXEL)*2		/* El buffer tienen 2 layers (2 * size pantalla) */
 
-#define AUDIO_REC_START_ADDR         BMP_IMAGE_BUFFER+0x07D000															/* El buffer tienen 512000 bytes */
+#define AUDIO_REC_START_ADDR         	BMP_IMAGE_BUFFER+0x07D000															/* El buffer tienen 512000 bytes */
 
-#define AUDIO_PLAY_BUFFER								AUDIO_REC_START_ADDR+AUDIO_BLOCK_SIZE*4	/* El buffer tienen 512 muestrras */
+#define AUDIO_PLAY_BUFFER									AUDIO_REC_START_ADDR+AUDIO_BLOCK_SIZE*4	/* El buffer tienen 512 muestrras */
 
-#define AUDIO_CUENTAS_BUFFER					AUDIO_PLAY_BUFFER+AUDIO_BLOCK_SIZE*4				/* El buffer tienen 512 muestrras */
+#define AUDIO_CUENTAS_BUFFER						AUDIO_PLAY_BUFFER+AUDIO_BLOCK_SIZE*4				/* El buffer tienen 512 muestrras */
 
-#define AUDIO_DELAY_BUFFER							AUDIO_CUENTAS_BUFFER+AUDIO_BLOCK_SIZE*4  /* El delay tienen 50k muestrras */
+#define AUDIO_DELAY_BUFFER								AUDIO_CUENTAS_BUFFER+AUDIO_BLOCK_SIZE*4  /* El delay tienen 50k muestrras */
 
-#define AUDIO_RECORDER_BUFFER			AUDIO_DELAY_BUFFER+(50000*4)														/*	Alberga 10 segundos de audio (44100*10*3)	*/
+#define PERILLA_35x35x25												AUDIO_DELAY_BUFFER+(50000*4)														/*	Alberga 10 segundos de audio (44100*10*3)	*/
+
+#define PERILLA_42x41x25												PERILLA_35x35x25+(122528)		
+
+#define PERILLA_52x52x25												PERILLA_42x41x25+(172224)
+
+#define	PERILLA_EQ_SLIDER										PERILLA_52x52x25+(270432)
+
+#define AUDIO_WAV_RECORD_BUFFER		PERILLA_EQ_SLIDER+(258976)
 
 typedef enum {
   AUDIO_ERROR_NONE = 0,

@@ -159,7 +159,7 @@ struct PedalElement{
 	Funcion_Efecto efecto;
 };
 /*Escrito por nosotros*/
-void gui_init(void);
+void read_files_perillas(void);
 void Demo_fondito(void);
 void DrawScreen(int num);
 void linkRequestHandler_menu(PedalElement **bt, GUITouchState *touch);

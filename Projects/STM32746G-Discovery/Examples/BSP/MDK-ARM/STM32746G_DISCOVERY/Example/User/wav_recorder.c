@@ -123,3 +123,8 @@ void init_wav_header (uint8_t * buffer)
 ////    wav_hdr_ptr->Subchunk2Size[2]=0x14;
 ////    wav_hdr_ptr->Subchunk2Size[3]=0x00;
 //}
+
+int grabar_wav (int enetrada)
+{
+		return 0;
+}

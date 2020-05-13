@@ -146,4 +146,5 @@ typedef struct /* Caso Generico */
 }wav_header;
 
 void init_wav_header (uint8_t * buffer);
+int grabar_wav (int enetrada);
 //void init_wav_header (wav_header * wav_hdr_ptr);

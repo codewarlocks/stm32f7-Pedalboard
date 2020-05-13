@@ -10,6 +10,8 @@
 #include "gui/leds.h"
 #include "gui/whaondas.h"
 
+#include "gui/cartel.h"
+
 //#include "gui/perilla35x35x25.h"
 //#include "gui/perilla42x41x25.h"
 //#include "gui/perilla52x52x25.h"
@@ -31,20 +33,22 @@
 #define VIBRATO 9
 #define EQ 10
 #define RINGMOD 11
+#define GRABAR		12
 #define IZQUIERDA 0
 #define MENU_1 14
 #define MENU_2 15
+#define MENU_3	16
 #define DERECHA 1
 #define HOME 2
-#define IZQUIERDA_MENU 16
-#define DERECHA_MENU 17
+#define IZQUIERDA_MENU 17
+#define DERECHA_MENU 18
 
 #define PERILLA 0
 #define SLIDER 1
 // private functions
 
 
-extern PedalElement *Pedales[12];
+extern PedalElement *Pedales[13];
 static uint32_t color_mode_init=0;
 
 DMA2D_HandleTypeDef hDma2dHandler;
@@ -87,12 +91,12 @@ static SpriteSheet tremoloonda = { .pixels = tremoloondas,
 		.spriteWidth = 41, .spriteHeight = 41, .numSprites = 4, .format =
 				CM_ARGB8888};//CM_RGB888
 				
-static uint8_t buffer_imagenes[10816] = {0}; //10816
+static uint8_t buffer_imagenes[196000] = {0}; //10816
 static uint8_t colorModeStrides[5] = { 4, 3, 2, 2, 2 };
 
 #endif
 
-void gui_init	()
+void read_files_perillas	(void)
 {
 		f_open(&perillas_ptr, "/Perillas/35.bin", FA_READ);
 		f_read(&perillas_ptr, Perillas_Buffer_35x35x25, 122500, NULL);
@@ -326,12 +330,15 @@ void linkRequestHandler_menu(PedalElement **bt, GUITouchState *touch)
 						bt[i]->link->handler(bt[i], touch);
 				}
 		}
-		else
+		else if (seleccion_menu==MENU_2)
 		{
 				for (uint8_t i = 6; i < 12; i++)
 				{
 						bt[i]->link->handler(bt[i], touch);
 				}
+		}
+		else if (seleccion_menu==MENU_3)
+		{
 		}
 }
 
@@ -349,13 +356,17 @@ void PushRequestHandler_menu(PedalElement **bt, GUITouchState *touch)
 						bt[i]->push->push_menu->handler(bt[i], touch);
 				}
 		}
-		else
+		else	if (seleccion_menu==MENU_2)
 		{
 				for (uint8_t i = 6; i < 12; i++)
 				{
 						bt[i]->push->push_menu->handler(bt[i], touch);
 				}
 		}
+		else if (seleccion_menu==MENU_3 && bt[GRABAR]->push->push_state!=GUI_ON)
+		{
+					bt[GRABAR]->push->push_menu->handler(bt[GRABAR], touch);
+		}		
 }
 
 GUIElement *guiDialButton(uint8_t id, char *label, uint16_t x, uint16_t y,
@@ -432,7 +443,7 @@ void MenuForceRedraw(void)
 						}
 				}
 		}
-		else
+		else	if (seleccion_menu==MENU_2)
 		{
 				for(int aux_i=6; aux_i<12; aux_i++)
 				{
@@ -442,6 +453,14 @@ void MenuForceRedraw(void)
 								Pedales[aux_i]->push->push_state ^= GUI_ONOFF_MASK;
 						}
 				}
+		}
+		else	if (seleccion_menu==MENU_3)
+		{
+						if(Pedales[GRABAR]->push->push_state == GUI_ON || Pedales[GRABAR]->push->push_state == GUI_OFF)
+						{
+								Pedales[GRABAR]->push->push_state |= GUI_HOVER;
+								Pedales[GRABAR]->push->push_state ^= GUI_ONOFF_MASK;
+						}
 		}
 }
 
@@ -744,6 +763,10 @@ void PushCallback(PedalElement *e)
 												memcpy(buffer_imagenes, (uint8_t*)ledprendidoringmodmenu, 144);
 												drawBitmapRaw(373,241,6,6, (uint8_t*)buffer_imagenes, CM_ARGB8888, 1);
 										break;
+										case GRABAR:
+												memcpy(buffer_imagenes, (uint8_t*)cartel, 196000);
+												drawBitmapRaw(65,66,350,140, (uint8_t*)buffer_imagenes, CM_ARGB8888, 1);
+										break;
 								}
 						}
 						else
@@ -802,6 +825,12 @@ void PushCallback(PedalElement *e)
 										case RINGMOD:
 												memcpy(buffer_imagenes, (uint8_t*)ledapagadoringmodmenu, 144);
 												drawBitmapRaw(373,241,6,6, (uint8_t*)buffer_imagenes, CM_ARGB8888, 1);
+										break;
+										case GRABAR:
+//									  DrawScreen(GRABAR);
+												memset(buffer_imagenes, 0, 196000);
+												memset(buffer_imagenes, 0, 196000);
+												drawBitmapRaw(65,66,350,140, (uint8_t*)buffer_imagenes, CM_ARGB8888, 1);
 										break;
 								}
 						}
@@ -987,15 +1016,33 @@ void LinkHomeCallbackPedal(PedalElement *e)
 
 void LinkDerechaCallbackMenu(LinkElementMenu *e)
 {
-		seleccion_menu=MENU_2;
-		DrawScreen(MENU_2);
+		if (seleccion_menu==MENU_1)
+		{
+				seleccion_menu=MENU_2;
+				DrawScreen(MENU_2);
+		}
+		else if (seleccion_menu==MENU_2)
+		{
+				seleccion_menu=MENU_3;
+				DrawScreen(MENU_3);
+		}
+
 		MenuForceRedraw();
 }
 
 void LinkIzquierdaCallbackMenu(LinkElementMenu *e)
 {
-		seleccion_menu=MENU_1;
-		DrawScreen(MENU_1);
+		if (seleccion_menu==MENU_2)
+		{
+				seleccion_menu=MENU_1;
+				DrawScreen(MENU_1);
+		}
+		else if (seleccion_menu==MENU_3)
+		{
+				seleccion_menu=MENU_2;
+				DrawScreen(MENU_2);
+		}
+		
 		MenuForceRedraw();
 }
 
@@ -1162,7 +1209,12 @@ void initPedals()
 
 		Pedales[11]->push=(PushElement*)calloc(1, sizeof(PushElement));
 		Pedales[11]->push->push_menu=initPushLink(RINGMOD,360,149+110/2,68,110/2,PushCallback, handlePushMenuButton);
-
+		
+		//Inicializo los Push (3pdt) Pantalla2
+		//PEDALES Menu
+		Pedales[12]->push=(PushElement*)calloc(1, sizeof(PushElement));
+		Pedales[12]->push->push_menu=initPushLink(GRABAR,100,91,280,90,PushCallback, handlePushMenuButton);
+		
 		//PEDALES Individuales Pantalla1
 		Pedales[0]->push->push_indiv=initPushLink(DELAY,225,189,31,33,PushCallback, handlePushIndividualButton);
 		Pedales[1]->push->push_indiv=initPushLink(OCTAVADOR,219,180,42,42,PushCallback, handlePushIndividualButton);
@@ -1191,6 +1243,8 @@ void initPedals()
 		Pedales[9]->push->push_state=GUI_OFF;
 		Pedales[10]->push->push_state=GUI_OFF;
 		Pedales[11]->push->push_state=GUI_OFF;
+		
+		Pedales[12]->push->push_state=GUI_OFF;
 
 		//Inicializo los links de los pedales Pantalla1
 		Pedales[0]->link=(LinkElement*)calloc(1,sizeof(LinkElement));
@@ -1314,6 +1368,9 @@ void initPedals()
 		Pedales[9]->efecto=vibratoEfecto;
 		Pedales[10]->efecto=eqEfecto;
 		Pedales[11]->efecto=ringmodEfecto;
+
+		//Inicializo los pedales con sus funciones PANTALLA3
+		Pedales[12]->efecto=grabar_wav;
 }
 
 

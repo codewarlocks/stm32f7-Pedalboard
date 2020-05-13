@@ -126,7 +126,7 @@ typedef enum
 static volatile machine_states_t  machine_state=INIT_SCREEN_AUDIO;
 
 //Declaracion de objeto pedales
-PedalElement* Pedales[12];
+PedalElement* Pedales[13];
 /* Private functions ---------------------------------------------------------*/
 
 /**
@@ -177,7 +177,7 @@ int main(void)
 		initPedals();
 		InitEfectos();
 		
-		gui_init();
+		read_files_perillas();
 		
 		init_wav_header(AUDIO_RECORD_BUFFER);
 		
@@ -388,7 +388,7 @@ int main(void)
 								
 								if (estado_grabacion==true)	
 								{
-										if (timer_grabacion<SEGUNDOS*10)			/* 50=10s, 5=1s (200ms) ||	*/
+										if (timer_grabacion<SEGUNDOS*20)			/* 5=1s (200ms) , *10(tim=100ms), *20(tim=100ms)	*/
 										{
 											 timer_grabacion++;
 										}
@@ -400,11 +400,16 @@ int main(void)
 								}
 								else
 								{
-										if(BSP_PB_GetState(BUTTON_KEY)==SET)
-										{
-												machine_state=INICIAR_GRABACION;
-												break;
-										}
+											if(Pedales[12]->push->push_state==GUI_ON)
+											{
+													machine_state=INICIAR_GRABACION;
+													break;
+											}
+//										if(BSP_PB_GetState(BUTTON_KEY)==SET)
+//										{
+//												machine_state=INICIAR_GRABACION;
+//												break;
+//										}
 								}
 								screen_refresh_flag=!screen_refresh_flag;
 								block_machine=false;
@@ -424,6 +429,7 @@ int main(void)
 								timer_grabacion=0;
 								offset_grabacion=44;
 								block_machine=false;
+								MenuForceRedraw();
 								machine_state=NONE_STATE;
 								NVIC_EnableIRQ(TIMx_IRQn);
 								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
@@ -483,6 +489,9 @@ int main(void)
 								block_machine=false;
 								
 								BSP_AUDIO_OUT_SetVolume(80);
+								
+								Pedales[12]->push->push_state=GUI_OFF;
+								MenuForceRedraw();
 								
 								NVIC_EnableIRQ(TIMx_IRQn);
 								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
@@ -615,7 +624,7 @@ void Tim3_Patalla_Config (void)
 		/* Time Base configuration */
 		htimx.Instance = TIMx; //TIM3 utilizado, APB1 (100MHZ de clock source), APB1=HSE/2
 
-		htimx.Init.Period            = 999;//2000-1 0->0.2s (200ms) , 999(100ms)
+		htimx.Init.Period            = 499;//2000-1 0->0.2s (200ms) , 999(100ms), 499(50ms)
 		htimx.Init.Prescaler         = 9999;
 		htimx.Init.ClockDivision     = 0;
 		htimx.Init.CounterMode       = TIM_COUNTERMODE_UP;

@@ -4,18 +4,6 @@ void init_wav_header (uint8_t * buffer)
 {
     memcpy(buffer, "RIFF", 4);
 
-    /* Para 1s */
-    buffer[4]=0xF0;
-    buffer[5]=0x04;
-    buffer[6]=0x02;
-    buffer[7]=0x00;
-
-    /* Para 10s */
-//    buffer->ChunkSize[0]=0x1C;
-//    buffer->ChunkSize[1]=0x30;
-//    buffer->ChunkSize[2]=0x14;
-//    buffer->ChunkSize[3]=0x00;
-
     memcpy(&(buffer[8]), "WAVE", 4);
 
     memcpy(&(buffer[12]), "fmt ", 4);
@@ -49,17 +37,6 @@ void init_wav_header (uint8_t * buffer)
 
     memcpy(&(buffer[36]), "data", 4);
 
-    /* Para 1s */
-    buffer[40]=0xCC;
-    buffer[41]=0x04;
-    buffer[42]=0x02;
-    buffer[43]=0x00;
-
-    /* Para 10s */
-//    buffer->Subchunk2Size[0]=0xF8;
-//    buffer->Subchunk2Size[1]=0x2F;
-//    buffer->Subchunk2Size[2]=0x14;
-//    buffer->Subchunk2Size[3]=0x00;
 }
 
 //void init_wav_header (wav_header * wav_hdr_ptr)

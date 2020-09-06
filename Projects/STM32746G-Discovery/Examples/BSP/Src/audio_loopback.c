@@ -1,11 +1,10 @@
-
 /** @addtogroup STM32F7xx_HAL_Examples
-  * @{
-  */
+ * @{
+ */
 
 /** @addtogroup BSP
-  * @{
-  */
+ * @{
+ */
 //FONDITO
 #ifndef __MAIN_H
 #define __MAIN_H
@@ -22,35 +21,33 @@
 /* Private functions ---------------------------------------------------------*/
 
 /**
-  * @brief  Audio Play demo
-  * @param  None
-  * @retval None
-  */
-void AudioLoopback_demo (void)
-{
-
+ * @brief  Audio Play demo
+ * @param  None
+ * @retval None
+ */
+void AudioLoopback_demo(void) {
 }
 
 /**
-  * @brief  Display Audio Record demo hint
-  * @param  None
-  * @retval None
-  */
+ * @brief  Display Audio Record demo hint
+ * @param  None
+ * @retval None
+ */
 
 
 
 /**
-  * @brief  Audio IN Error callback function.
-  * @param  None
-  * @retval None
-  */
+ * @brief  Audio IN Error callback function.
+ * @param  None
+ * @retval None
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /**
-  * @}
-  */
+ * @}
+ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

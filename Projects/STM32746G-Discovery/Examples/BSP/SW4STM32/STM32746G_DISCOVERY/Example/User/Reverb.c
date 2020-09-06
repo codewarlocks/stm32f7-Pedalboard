@@ -35,93 +35,90 @@ static float32_t d = 0.2;
 static int FBCF_cont = 0;
 static int AP0_cont = 0, AP1_cont = 0, AP2_cont = 0, AP3_cont = 0;
 
-void reverbInit ()
-{
-	reverbParametros();
+void reverbInit() {
+    reverbParametros();
 }
 
-void reverbParametros()
-{
-
+void reverbParametros() {
 }
 
-int reverbEfecto (int entrada)
-{
-	if(FBCF_cont == 1617)
-		FBCF_cont = 0;
-	if(AP0_cont == 225)
-		AP0_cont = 0;
-	if(AP1_cont == 556)
-		AP1_cont = 0;
-	if(AP2_cont == 441)
-		AP2_cont = 0;
-	if(AP3_cont == 341)
-		AP3_cont = 0;
+int reverbEfecto(int entrada) {
+    if (FBCF_cont == 1617) {
+        FBCF_cont = 0;
+    }
 
-	salida = 0.125 * reverbFBCF(entrada,FBCF0_line,1556,FBCF_cont,0);
-	salida += 0.125 * reverbFBCF(entrada,FBCF1_line,1616,FBCF_cont,1);
-	salida += 0.125 * reverbFBCF(entrada,FBCF2_line,1490,FBCF_cont,2);
-	salida += 0.125 * reverbFBCF(entrada,FBCF3_line,1421,FBCF_cont,3);
-	salida += 0.125 * reverbFBCF(entrada,FBCF4_line,1276,FBCF_cont,4);
-	salida += 0.125 * reverbFBCF(entrada,FBCF5_line,1355,FBCF_cont,5);
-	salida += 0.125 * reverbFBCF(entrada,FBCF6_line,1187,FBCF_cont,6);
-	salida += 0.125 * reverbFBCF(entrada,FBCF7_line,1115,FBCF_cont,7);
+    if (AP0_cont == 225) {
+        AP0_cont = 0;
+    }
 
-	salida = reverbAP(salida,AP0_line,224,AP0_cont);
-	salida = reverbAP(salida,AP1_line,555,AP1_cont);
-	salida = reverbAP(salida,AP2_line,440,AP2_cont);
-	salida = reverbAP(salida,AP3_line,340,AP3_cont);
+    if (AP1_cont == 556) {
+        AP1_cont = 0;
+    }
 
-	salida = dry * entrada + wet * salida;
+    if (AP2_cont == 441) {
+        AP2_cont = 0;
+    }
 
-	FBCF_cont++;
-	AP0_cont++;
-	AP1_cont++;
-	AP2_cont++;
-	AP3_cont++;
+    if (AP3_cont == 341) {
+        AP3_cont = 0;
+    }
 
-	return salida;
+    salida = 0.125 * reverbFBCF(entrada, FBCF0_line, 1556, FBCF_cont, 0);
+    salida += 0.125 * reverbFBCF(entrada, FBCF1_line, 1616, FBCF_cont, 1);
+    salida += 0.125 * reverbFBCF(entrada, FBCF2_line, 1490, FBCF_cont, 2);
+    salida += 0.125 * reverbFBCF(entrada, FBCF3_line, 1421, FBCF_cont, 3);
+    salida += 0.125 * reverbFBCF(entrada, FBCF4_line, 1276, FBCF_cont, 4);
+    salida += 0.125 * reverbFBCF(entrada, FBCF5_line, 1355, FBCF_cont, 5);
+    salida += 0.125 * reverbFBCF(entrada, FBCF6_line, 1187, FBCF_cont, 6);
+    salida += 0.125 * reverbFBCF(entrada, FBCF7_line, 1115, FBCF_cont, 7);
+
+    salida = reverbAP(salida, AP0_line, 224, AP0_cont);
+    salida = reverbAP(salida, AP1_line, 555, AP1_cont);
+    salida = reverbAP(salida, AP2_line, 440, AP2_cont);
+    salida = reverbAP(salida, AP3_line, 340, AP3_cont);
+
+    salida = dry * entrada + wet * salida;
+
+    FBCF_cont++;
+    AP0_cont++;
+    AP1_cont++;
+    AP2_cont++;
+    AP3_cont++;
+
+    return(salida);
 }
 
-int reverbFBCF(int in, int line[], int delay, int cont, int inst)
-{
-	line[cont] = in + f * lpo[inst];
-	if(cont >= delay)
-	{
-		lpo[inst] = (1-d) * line[cont-delay] + d * lpo[inst];
-		return line[cont-delay];
-	}
-	else
-	{
-		lpo[inst] = (1-d) * line[1617+cont-delay] + d * lpo[inst];
-		return line[1617+cont-delay];
-	}
+int reverbFBCF(int in, int line[], int delay, int cont, int inst) {
+    line[cont] = in + f * lpo[inst];
+
+    if (cont >= delay) {
+        lpo[inst] = (1 - d) * line[cont - delay] + d * lpo[inst];
+        return(line[cont - delay]);
+    } else {
+        lpo[inst] = (1 - d) * line[1617 + cont - delay] + d * lpo[inst];
+        return(line[1617 + cont - delay]);
+    }
 }
 
-int reverbAP(int in, int* line, int delay, int cont)
-{
-	if(cont >= delay)
-	{
-		line[cont] = in + g * line[cont-delay];
-		return (1+g) * line[cont-delay] - line[cont];
-	}
-	else
-	{
-		line[cont] = in + g * line[delay+1+cont-delay];
-		return (1+g) * line[delay+1+cont-delay] - line[cont];
-	}
+int reverbAP(int in, int *line, int delay, int cont) {
+    if (cont >= delay) {
+        line[cont] = in + g * line[cont - delay];
+        return((1 + g) * line[cont - delay] - line[cont]);
+    } else {
+        line[cont] = in + g * line[delay + 1 + cont - delay];
+        return((1 + g) * line[delay + 1 + cont - delay] - line[cont]);
+    }
 }
 
-void reverbMix (GUIElement *e)
-{
-    DialButtonState *db = (DialButtonState *) (e->userData);
+void reverbMix(GUIElement *e) {
+    DialButtonState *db = (DialButtonState *)(e->userData);
+
     wet = 0.5 * (db->value);
     dry = 1 - wet;
 }
 
-void reverbDecay (GUIElement *e)
-{
-    DialButtonState *db = (DialButtonState *) (e->userData);
-     f = 0.4 * (db->value) + 0.55;
-}
+void reverbDecay(GUIElement *e) {
+    DialButtonState *db = (DialButtonState *)(e->userData);
 
+    f = 0.4 * (db->value) + 0.55;
+}

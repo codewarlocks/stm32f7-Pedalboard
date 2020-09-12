@@ -1,42 +1,40 @@
 #include "gui/prototipos.h"
 
-void init_wav_header (uint8_t * buffer)
-{
+void init_wav_header(uint8_t *buffer) {
     memcpy(buffer, "RIFF", 4);
 
     memcpy(&(buffer[8]), "WAVE", 4);
 
     memcpy(&(buffer[12]), "fmt ", 4);
 
-    buffer[16]=0x10;
-    buffer[17]=0x00;
-    buffer[18]=0x00;
-    buffer[19]=0x00;
+    buffer[16] = 0x10;
+    buffer[17] = 0x00;
+    buffer[18] = 0x00;
+    buffer[19] = 0x00;
 
-    buffer[20]=0x01;
-    buffer[21]=0x00;
+    buffer[20] = 0x01;
+    buffer[21] = 0x00;
 
-    buffer[22]=0x01;
-    buffer[23]=0x00;
+    buffer[22] = 0x01;
+    buffer[23] = 0x00;
 
-    buffer[24]=0x44;
-    buffer[25]=0xAC;
-    buffer[26]=0x00;
-    buffer[27]=0x00;
+    buffer[24] = 0x44;
+    buffer[25] = 0xAC;
+    buffer[26] = 0x00;
+    buffer[27] = 0x00;
 
-    buffer[28]=0xCC;
-    buffer[29]=0x04;
-    buffer[30]=0x02;
-    buffer[31]=0x00;
+    buffer[28] = 0xCC;
+    buffer[29] = 0x04;
+    buffer[30] = 0x02;
+    buffer[31] = 0x00;
 
-    buffer[32]=0x03;
-    buffer[33]=0x00;
+    buffer[32] = 0x03;
+    buffer[33] = 0x00;
 
-    buffer[34]=0x18;
-    buffer[35]=0x00;
+    buffer[34] = 0x18;
+    buffer[35] = 0x00;
 
     memcpy(&(buffer[36]), "data", 4);
-
 }
 
 //void init_wav_header (wav_header * wav_hdr_ptr)
@@ -101,7 +99,6 @@ void init_wav_header (uint8_t * buffer)
 ////    wav_hdr_ptr->Subchunk2Size[3]=0x00;
 //}
 
-int grabar_wav (int enetrada)
-{
-		return 0;
+int grabar_wav(int enetrada) {
+    return 0;
 }

@@ -1,6 +1,6 @@
--c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99
+-c --cpu Cortex-M7.fp.sp -D__MICROLIB -g -O2 -Otime --apcs=interwork --split_sections -I ../Inc -I ../../../../../Drivers/CMSIS/Include -I ../../../../../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I ../../../../../Drivers/STM32F7xx_HAL_Driver/Inc -I ../../../../../Drivers/BSP/STM32746G-Discovery -I ../../../../../Drivers/BSP/Components/Common -I ../../../../../Utilities/Log -I ../../../../../Utilities/Fonts -I ../../../../../Utilities/CPU --C99
 -I.\RTE\_STM32746G_DISCOVERY
--IC:\Users\gonza\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include
--IC:\Users\gonza\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.12.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
+-IC:\Users\gggiu\AppData\Local\Arm\Packs\ARM\CMSIS\5.6.0\CMSIS\Core\Include
+-IC:\Users\gggiu\AppData\Local\Arm\Packs\Keil\STM32F7xx_DFP\2.13.0\Drivers\CMSIS\Device\ST\STM32F7xx\Include
 -D__UVISION_VERSION="529" -D_RTE_ -DSTM32F746xx -DUSE_HAL_DRIVER -DSTM32F746xx -DUSE_STM32746G_DISCO -DUSE_IOEXPANDER -DARM_MATH_CM7 -D__TARGET_FPU_VFP -DSTM32F7
 -o stm32746g_discovery\ff.o --omf_browse stm32746g_discovery\ff.crf --depend stm32746g_discovery\ff.d --feedback "STM32746G_DISCOVERY\STM32746G_DISCOVERY.fed" "STM32746G_DISCOVERY\Example\User\ff.c"

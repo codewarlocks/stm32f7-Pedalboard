@@ -64,7 +64,7 @@
 "stm32746g_discovery\stm32f7xx_hal_adc_ex.o"
 "stm32746g_discovery\lcd_log.o"
 "..\..\..\..\..\Drivers\CMSIS\Lib\ARM\arm_cortexM7lfsp_math.lib"
---library_type=microlib --strict --scatter "STM32746G_DISCOVERY\STM32746G_DISCOVERY.sct"
+--strict --scatter "STM32746G_DISCOVERY\STM32746G_DISCOVERY.sct"
 --diag_suppress=L6329 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers
 --list "STM32746G_DISCOVERY.map" -o STM32746G_DISCOVERY\STM32746G_DISCOVERY.axf

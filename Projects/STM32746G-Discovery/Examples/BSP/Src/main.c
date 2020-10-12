@@ -208,7 +208,7 @@ int main(void) {
             }
 
             case INIT_SCREEN_AUDIO: {
-                /* Start Playback */
+                /* Start  Playback */
                 #if AUDIO_ENABLE
                 BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
                 BSP_AUDIO_IN_Record((uint16_t *)Buffer_in, AUDIO_BLOCK_SIZE);

@@ -732,8 +732,8 @@ void PushCallback(PedalElement *e) {
                         break;
 
                     case WAH:
-                        memcpy(buffer_imagenes, (uint8_t *)ledapagadowahmenu, 100);
-                        drawBitmapRaw(236, 209, 8, 7, (uint8_t *)buffer_imagenes, CM_ARGB8888, 1);
+                        memcpy(buffer_imagenes, (uint8_t *)ledapagadowahmenu, 624);
+                        drawBitmapRaw(233, 205, 13, 12, (uint8_t *)buffer_imagenes, CM_ARGB8888, 1);
                         break;
 
                     case REVERB:

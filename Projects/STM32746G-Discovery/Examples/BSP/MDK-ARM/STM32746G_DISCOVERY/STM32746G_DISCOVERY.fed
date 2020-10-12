@@ -1,4 +1,4 @@
-;#<FEEDBACK># ARM Linker, 5060750: Last Updated: Tue Mar 10 01:44:13 2020
+;#<FEEDBACK># ARM Linker, 5060750: Last Updated: Mon Oct 12 10:52:31 2020
 ;VERSION 0.2
 ;FILE arm_common_tables.o
 __asm___19_arm_common_tables_c_40998086____REV16 <= USED 0
@@ -29,37 +29,33 @@ __asm___8_Chorus_c_ee421597____RRX <= USED 0
 __asm___7_delay_c_43f3865f____REV16 <= USED 0
 __asm___7_delay_c_43f3865f____REVSH <= USED 0
 __asm___7_delay_c_43f3865f____RRX <= USED 0
+delayParametros <= USED 0
 ;FILE diskio.o
 ;FILE distorsion.o
 __asm___12_distorsion_c_8a691028____REV16 <= USED 0
 __asm___12_distorsion_c_8a691028____REVSH <= USED 0
 __asm___12_distorsion_c_8a691028____RRX <= USED 0
-distorsionShelve <= USED 0
+distorsionParametros <= USED 0
 ;FILE ecualizador.o
 __asm___13_Ecualizador_c_eqInit____REV16 <= USED 0
 __asm___13_Ecualizador_c_eqInit____REVSH <= USED 0
 __asm___13_Ecualizador_c_eqInit____RRX <= USED 0
 ;FILE fatfs_storage.o
+Buffercmp <= USED 0
 Storage_GetDirectoryBitmapFiles <= USED 0
-Storage_Init <= USED 0
 __asm___15_fatfs_storage_c_8a341fae____REV16 <= USED 0
 __asm___15_fatfs_storage_c_8a341fae____REVSH <= USED 0
 __asm___15_fatfs_storage_c_8a341fae____RRX <= USED 0
 ;FILE ff.o
-f_closedir <= USED 0
-f_findfirst <= USED 0
-f_findnext <= USED 0
 f_getfree <= USED 0
 f_lseek <= USED 0
 f_mkdir <= USED 0
 f_mkfs <= USED 0
-f_opendir <= USED 0
 f_readdir <= USED 0
 f_rename <= USED 0
 f_stat <= USED 0
 f_truncate <= USED 0
 f_unlink <= USED 0
-f_write <= USED 0
 ;FILE ff_gen_drv.o
 FATFS_GetAttachedDriversNbr <= USED 0
 FATFS_UnLinkDriver <= USED 0
@@ -70,12 +66,13 @@ __asm___9_Flanger_c_447ce57c____REVSH <= USED 0
 __asm___9_Flanger_c_447ce57c____RRX <= USED 0
 ;FILE ft5336.o
 ;FILE gui.o
-__asm___5_gui_c_4fb92087____REV16 <= USED 0
-__asm___5_gui_c_4fb92087____REVSH <= USED 0
-__asm___5_gui_c_4fb92087____RRX <= USED 0
+__asm___5_gui_c_759749a0____REV16 <= USED 0
+__asm___5_gui_c_759749a0____REVSH <= USED 0
+__asm___5_gui_c_759749a0____RRX <= USED 0
+guiElement <= USED 0
 guiForceRedraw <= USED 0
 initGUI <= USED 0
-renderPushButton <= USED 0
+initPushLinkMenu <= USED 0
 ;FILE lcd_log.o
 LCD_LOG_ClearTextZone <= USED 0
 LCD_LOG_DeInit <= USED 0
@@ -90,18 +87,18 @@ __asm___9_lcd_log_c_18c14e27____REVSH <= USED 0
 __asm___9_lcd_log_c_18c14e27____RRX <= USED 0
 fputc <= USED 0
 ;FILE main.o
-ADC_Config <= USED 0
-__asm___6_main_c_NbLoop____REV16 <= USED 0
-__asm___6_main_c_NbLoop____REVSH <= USED 0
-__asm___6_main_c_NbLoop____RRX <= USED 0
+Demo_fondito <= USED 0
+InitEfectos <= USED 0
+LCD_Config <= USED 0
+Tim3_Patalla_Config <= USED 0
+__asm___6_main_c_79bb121a____REV16 <= USED 0
+__asm___6_main_c_79bb121a____REVSH <= USED 0
+__asm___6_main_c_79bb121a____RRX <= USED 0
 ;FILE octavador.o
 __asm___11_Octavador_c_d45651d4____REV16 <= USED 0
 __asm___11_Octavador_c_d45651d4____REVSH <= USED 0
 __asm___11_Octavador_c_d45651d4____RRX <= USED 0
-;FILE ov9655.o
-ov9655_Config <= USED 0
-ov9655_Init <= USED 0
-ov9655_ReadID <= USED 0
+octavadorParametros <= USED 0
 ;FILE phaser.o
 __asm___8_Phaser_c_af901dd1____REV16 <= USED 0
 __asm___8_Phaser_c_af901dd1____REVSH <= USED 0
@@ -110,10 +107,12 @@ __asm___8_Phaser_c_af901dd1____RRX <= USED 0
 __asm___8_Reverb_c_56691edc____REV16 <= USED 0
 __asm___8_Reverb_c_56691edc____REVSH <= USED 0
 __asm___8_Reverb_c_56691edc____RRX <= USED 0
+reverbParametros <= USED 0
 ;FILE ringmod.o
 __asm___9_ringmod_c_96c75381____REV16 <= USED 0
 __asm___9_ringmod_c_96c75381____REVSH <= USED 0
 __asm___9_ringmod_c_96c75381____RRX <= USED 0
+ringmodParametros <= USED 0
 ;FILE sd_diskio.o
 __asm___11_sd_diskio_c_7294e418____REV16 <= USED 0
 __asm___11_sd_diskio_c_7294e418____REVSH <= USED 0
@@ -124,11 +123,8 @@ BSP_COM_DeInit <= USED 0
 BSP_COM_Init <= USED 0
 BSP_GetVersion <= USED 0
 BSP_LED_DeInit <= USED 0
-BSP_LED_Off <= USED 0
-BSP_LED_On <= USED 0
 BSP_PB_DeInit <= USED 0
 BSP_PB_GetState <= USED 0
-BSP_PB_Init <= USED 0
 CAMERA_Delay <= USED 0
 CAMERA_IO_Init <= USED 0
 CAMERA_IO_Read <= USED 0
@@ -147,6 +143,7 @@ BSP_AUDIO_IN_InitEx <= USED 0
 BSP_AUDIO_IN_MspDeInit <= USED 0
 BSP_AUDIO_IN_Pause <= USED 0
 BSP_AUDIO_IN_Resume <= USED 0
+BSP_AUDIO_IN_SetVolume <= USED 0
 BSP_AUDIO_IN_Stop <= USED 0
 BSP_AUDIO_OUT_ChangeBuffer <= USED 0
 BSP_AUDIO_OUT_DeInit <= USED 0
@@ -161,43 +158,6 @@ BSP_AUDIO_OUT_Stop <= USED 0
 __asm___27_stm32746g_discovery_audio_c_6482d46e____REV16 <= USED 0
 __asm___27_stm32746g_discovery_audio_c_6482d46e____REVSH <= USED 0
 __asm___27_stm32746g_discovery_audio_c_6482d46e____RRX <= USED 0
-;FILE stm32746g_discovery_camera.o
-BSP_CAMERA_BlackWhiteConfig <= USED 0
-BSP_CAMERA_ColorEffectConfig <= USED 0
-BSP_CAMERA_ContinuousStart <= USED 0
-BSP_CAMERA_ContrastBrightnessConfig <= USED 0
-BSP_CAMERA_DeInit <= USED 0
-BSP_CAMERA_ErrorCallback <= USED 0
-BSP_CAMERA_FrameEventCallback <= USED 0
-BSP_CAMERA_Init <= USED 0
-BSP_CAMERA_LineEventCallback <= USED 0
-BSP_CAMERA_MspDeInit <= USED 0
-BSP_CAMERA_MspInit <= USED 0
-BSP_CAMERA_PwrDown <= USED 0
-BSP_CAMERA_PwrUp <= USED 0
-BSP_CAMERA_Resume <= USED 0
-BSP_CAMERA_SnapshotStart <= USED 0
-BSP_CAMERA_Stop <= USED 0
-BSP_CAMERA_Suspend <= USED 0
-BSP_CAMERA_VsyncEventCallback <= USED 0
-HAL_DCMI_ErrorCallback <= USED 0
-HAL_DCMI_FrameEventCallback <= USED 0
-HAL_DCMI_LineEventCallback <= USED 0
-HAL_DCMI_VsyncEventCallback <= USED 0
-__asm___28_stm32746g_discovery_camera_c_54dc03f3____REV16 <= USED 0
-__asm___28_stm32746g_discovery_camera_c_54dc03f3____REVSH <= USED 0
-__asm___28_stm32746g_discovery_camera_c_54dc03f3____RRX <= USED 0
-;FILE stm32746g_discovery_eeprom.o
-BSP_EEPROM_DeInit <= USED 0
-BSP_EEPROM_Init <= USED 0
-BSP_EEPROM_ReadBuffer <= USED 0
-BSP_EEPROM_TIMEOUT_UserCallback <= USED 0
-BSP_EEPROM_WaitEepromStandbyState <= USED 0
-BSP_EEPROM_WriteBuffer <= USED 0
-BSP_EEPROM_WritePage <= USED 0
-__asm___28_stm32746g_discovery_eeprom_c_2e65bd02____REV16 <= USED 0
-__asm___28_stm32746g_discovery_eeprom_c_2e65bd02____REVSH <= USED 0
-__asm___28_stm32746g_discovery_eeprom_c_2e65bd02____RRX <= USED 0
 ;FILE stm32746g_discovery_lcd.o
 BSP_LCD_ClearStringLine <= USED 0
 BSP_LCD_DeInit <= USED 0
@@ -229,6 +189,7 @@ BSP_LCD_ResetColorKeying_NoReload <= USED 0
 BSP_LCD_SetBackColor <= USED 0
 BSP_LCD_SetColorKeying <= USED 0
 BSP_LCD_SetColorKeying_NoReload <= USED 0
+BSP_LCD_SetFont <= USED 0
 BSP_LCD_SetLayerAddress <= USED 0
 BSP_LCD_SetLayerAddress_NoReload <= USED 0
 BSP_LCD_SetLayerVisible <= USED 0
@@ -242,26 +203,12 @@ BSP_LCD_SetYSize <= USED 0
 __asm___25_stm32746g_discovery_lcd_c_921028a7____REV16 <= USED 0
 __asm___25_stm32746g_discovery_lcd_c_921028a7____REVSH <= USED 0
 __asm___25_stm32746g_discovery_lcd_c_921028a7____RRX <= USED 0
-;FILE stm32746g_discovery_qspi.o
-BSP_QSPI_DeInit <= USED 0
-BSP_QSPI_EnableMemoryMappedMode <= USED 0
-BSP_QSPI_Erase_Block <= USED 0
-BSP_QSPI_Erase_Chip <= USED 0
-BSP_QSPI_GetInfo <= USED 0
-BSP_QSPI_GetStatus <= USED 0
-BSP_QSPI_Init <= USED 0
-BSP_QSPI_MspDeInit <= USED 0
-BSP_QSPI_MspInit <= USED 0
-BSP_QSPI_Read <= USED 0
-BSP_QSPI_Write <= USED 0
-__asm___26_stm32746g_discovery_qspi_c_e1a23530____REV16 <= USED 0
-__asm___26_stm32746g_discovery_qspi_c_e1a23530____REVSH <= USED 0
-__asm___26_stm32746g_discovery_qspi_c_e1a23530____RRX <= USED 0
 ;FILE stm32746g_discovery_sd.o
 BSP_SD_AbortCallback <= USED 0
 BSP_SD_DeInit <= USED 0
 BSP_SD_Erase <= USED 0
 BSP_SD_ITConfig <= USED 0
+BSP_SD_IsDetected <= USED 0
 BSP_SD_MspDeInit <= USED 0
 BSP_SD_ReadBlocks_DMA <= USED 0
 BSP_SD_ReadCpltCallback <= USED 0
@@ -323,11 +270,16 @@ __asm___15_stm32f7xx_hal_c_3da258af____RRX <= USED 0
 ;FILE stm32f7xx_hal_adc.o
 HAL_ADC_AnalogWDGConfig <= USED 0
 HAL_ADC_ConfigChannel <= USED 0
+HAL_ADC_ConvCpltCallback <= USED 0
 HAL_ADC_ConvHalfCpltCallback <= USED 0
 HAL_ADC_DeInit <= USED 0
+HAL_ADC_ErrorCallback <= USED 0
 HAL_ADC_GetError <= USED 0
 HAL_ADC_GetState <= USED 0
+HAL_ADC_GetValue <= USED 0
+HAL_ADC_IRQHandler <= USED 0
 HAL_ADC_Init <= USED 0
+HAL_ADC_LevelOutOfWindowCallback <= USED 0
 HAL_ADC_PollForConversion <= USED 0
 HAL_ADC_PollForEvent <= USED 0
 HAL_ADC_Start <= USED 0
@@ -335,11 +287,13 @@ HAL_ADC_Start_DMA <= USED 0
 HAL_ADC_Start_IT <= USED 0
 HAL_ADC_Stop <= USED 0
 HAL_ADC_Stop_DMA <= USED 0
+HAL_ADC_Stop_IT <= USED 0
 __asm___19_stm32f7xx_hal_adc_c_52ef8f50____REV16 <= USED 0
 __asm___19_stm32f7xx_hal_adc_c_52ef8f50____REVSH <= USED 0
 __asm___19_stm32f7xx_hal_adc_c_52ef8f50____RRX <= USED 0
 ;FILE stm32f7xx_hal_adc_ex.o
 HAL_ADCEx_InjectedConfigChannel <= USED 0
+HAL_ADCEx_InjectedConvCpltCallback <= USED 0
 HAL_ADCEx_InjectedGetValue <= USED 0
 HAL_ADCEx_InjectedPollForConversion <= USED 0
 HAL_ADCEx_InjectedStart <= USED 0
@@ -376,16 +330,20 @@ HAL_DCMI_ConfigCrop <= USED 0
 HAL_DCMI_DeInit <= USED 0
 HAL_DCMI_DisableCrop <= USED 0
 HAL_DCMI_EnableCrop <= USED 0
+HAL_DCMI_ErrorCallback <= USED 0
+HAL_DCMI_FrameEventCallback <= USED 0
 HAL_DCMI_GetError <= USED 0
 HAL_DCMI_GetState <= USED 0
 HAL_DCMI_IRQHandler <= USED 0
 HAL_DCMI_Init <= USED 0
+HAL_DCMI_LineEventCallback <= USED 0
 HAL_DCMI_MspDeInit <= USED 0
 HAL_DCMI_MspInit <= USED 0
 HAL_DCMI_Resume <= USED 0
 HAL_DCMI_Start_DMA <= USED 0
 HAL_DCMI_Stop <= USED 0
 HAL_DCMI_Suspend <= USED 0
+HAL_DCMI_VsyncEventCallback <= USED 0
 __asm___20_stm32f7xx_hal_dcmi_c_03d7bd62____REV16 <= USED 0
 __asm___20_stm32f7xx_hal_dcmi_c_03d7bd62____REVSH <= USED 0
 __asm___20_stm32f7xx_hal_dcmi_c_03d7bd62____RRX <= USED 0
@@ -402,6 +360,7 @@ __asm___19_stm32f7xx_hal_dma_c_c25f65ec____REV16 <= USED 0
 __asm___19_stm32f7xx_hal_dma_c_c25f65ec____REVSH <= USED 0
 __asm___19_stm32f7xx_hal_dma_c_c25f65ec____RRX <= USED 0
 ;FILE stm32f7xx_hal_dma2d.o
+HAL_DMA2D_Abort <= USED 0
 HAL_DMA2D_BlendingStart <= USED 0
 HAL_DMA2D_BlendingStart_IT <= USED 0
 HAL_DMA2D_CLUTLoad <= USED 0
@@ -984,6 +943,7 @@ SDMMC_CmdSDEraseEndAdd <= USED 0
 SDMMC_CmdSDEraseStartAdd <= USED 0
 SDMMC_CmdStatusRegister <= USED 0
 SDMMC_CmdSwitch <= USED 0
+SDMMC_GetCommandResponse <= USED 0
 SDMMC_GetDataCounter <= USED 0
 SDMMC_GetFIFOCount <= USED 0
 SDMMC_PowerState_OFF <= USED 0
@@ -1004,4 +964,8 @@ __asm___9_tremolo_c_d472335e____RRX <= USED 0
 __asm___9_vibrato_c_2d104565____REV16 <= USED 0
 __asm___9_vibrato_c_2d104565____REVSH <= USED 0
 __asm___9_vibrato_c_2d104565____RRX <= USED 0
+;FILE wav_recorder.o
+__asm___14_wav_recorder_c_de2acb30____REV16 <= USED 0
+__asm___14_wav_recorder_c_de2acb30____REVSH <= USED 0
+__asm___14_wav_recorder_c_de2acb30____RRX <= USED 0
 ;FILE wm8994.o

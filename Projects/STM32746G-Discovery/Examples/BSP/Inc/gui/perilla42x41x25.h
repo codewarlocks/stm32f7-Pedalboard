@@ -1,4 +1,5 @@
 
+#include "stdint.h"
 
 static const uint8_t perilla42x41x25[172200] = {
     // ∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙█░░░░░░░░░∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙∙

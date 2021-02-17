@@ -3,7 +3,6 @@
 "stm32746g_discovery\system_stm32f7xx.o"
 "stm32746g_discovery\ft5336.o"
 "stm32746g_discovery\wm8994.o"
-"stm32746g_discovery\audio_loopback.o"
 "stm32746g_discovery\main.o"
 "stm32746g_discovery\stm32f7xx_it.o"
 "stm32746g_discovery\autowah.o"

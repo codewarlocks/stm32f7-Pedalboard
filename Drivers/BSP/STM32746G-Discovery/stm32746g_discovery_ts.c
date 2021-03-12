@@ -74,6 +74,7 @@ EndDependencies */
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_ts.h"
 #include "stm32746g_discovery_audio.h"
+#include "main.h"
 /** @addtogroup BSP
   * @{
   */
@@ -242,101 +243,103 @@ uint8_t BSP_TS_GetState(TS_StateTypeDef *TS_State)
   
   if(TS_State->touchDetected)
   {
-	if(flag_ts==0)
-	{
-		BSP_AUDIO_OUT_SetVolume(0); //Gonzalo
-		flag_ts=1;
-	}
-	for(index=0; index < TS_State->touchDetected; index++)
-    {
-      /* Get each touch coordinates */
-      tsDriver->GetXY(I2cAddress, &(brute_x[index]), &(brute_y[index]));
+		if(flag_ts==0)
+		{
+			BSP_AUDIO_OUT_SetMute(1);
+			//BSP_AUDIO_OUT_SetVolume(0); //Gonzalo
+			flag_ts=1;
+		}
+		for(index=0; index < TS_State->touchDetected; index++)
+			{
+				/* Get each touch coordinates */
+				tsDriver->GetXY(I2cAddress, &(brute_x[index]), &(brute_y[index]));
 
-      if(tsOrientation == TS_SWAP_NONE)
-      {
-        x[index] = brute_x[index];
-        y[index] = brute_y[index];
-      }
+				if(tsOrientation == TS_SWAP_NONE)
+				{
+					x[index] = brute_x[index];
+					y[index] = brute_y[index];
+				}
 
-      if(tsOrientation & TS_SWAP_X)
-      {
-        x[index] = 4096 - brute_x[index];
-      }
+				if(tsOrientation & TS_SWAP_X)
+				{
+					x[index] = 4096 - brute_x[index];
+				}
 
-      if(tsOrientation & TS_SWAP_Y)
-      {
-        y[index] = 4096 - brute_y[index];
-      }
+				if(tsOrientation & TS_SWAP_Y)
+				{
+					y[index] = 4096 - brute_y[index];
+				}
 
-      if(tsOrientation & TS_SWAP_XY)
-      {
-        y[index] = brute_x[index];
-        x[index] = brute_y[index];
-      }
+				if(tsOrientation & TS_SWAP_XY)
+				{
+					y[index] = brute_x[index];
+					x[index] = brute_y[index];
+				}
 
-      x_diff = x[index] > _x[index]? (x[index] - _x[index]): (_x[index] - x[index]);
-      y_diff = y[index] > _y[index]? (y[index] - _y[index]): (_y[index] - y[index]);
+				x_diff = x[index] > _x[index]? (x[index] - _x[index]): (_x[index] - x[index]);
+				y_diff = y[index] > _y[index]? (y[index] - _y[index]): (_y[index] - y[index]);
 
-      if ((x_diff + y_diff) > 5)
-      {
-        _x[index] = x[index];
-        _y[index] = y[index];
-      }
+				if ((x_diff + y_diff) > 5)
+				{
+					_x[index] = x[index];
+					_y[index] = y[index];
+				}
 
-      if(I2cAddress == FT5336_I2C_SLAVE_ADDRESS)
-      {
-        TS_State->touchX[index] = x[index];
-        TS_State->touchY[index] = y[index];
-      }
-      else
-      {
-        /* 2^12 = 4096 : indexes are expressed on a dynamic of 4096 */
-        TS_State->touchX[index] = (tsXBoundary * _x[index]) >> 12;
-        TS_State->touchY[index] = (tsYBoundary * _y[index]) >> 12;
-      }
+				if(I2cAddress == FT5336_I2C_SLAVE_ADDRESS)
+				{
+					TS_State->touchX[index] = x[index];
+					TS_State->touchY[index] = y[index];
+				}
+				else
+				{
+					/* 2^12 = 4096 : indexes are expressed on a dynamic of 4096 */
+					TS_State->touchX[index] = (tsXBoundary * _x[index]) >> 12;
+					TS_State->touchY[index] = (tsYBoundary * _y[index]) >> 12;
+				}
 
-#if (TS_MULTI_TOUCH_SUPPORTED == 1)
+				#if (TS_MULTI_TOUCH_SUPPORTED == 1)
 
-      /* Get touch info related to the current touch */
-      ft5336_TS_GetTouchInfo(I2cAddress, index, &weight, &area, &event);
+				/* Get touch info related to the current touch */
+				ft5336_TS_GetTouchInfo(I2cAddress, index, &weight, &area, &event);
 
-      /* Update TS_State structure */
-      TS_State->touchWeight[index] = weight;
-      TS_State->touchArea[index]   = area;
+				/* Update TS_State structure */
+				TS_State->touchWeight[index] = weight;
+				TS_State->touchArea[index]   = area;
 
-      /* Remap touch event */
-      switch(event)
-      {
-        case FT5336_TOUCH_EVT_FLAG_PRESS_DOWN	:
-          TS_State->touchEventId[index] = TOUCH_EVENT_PRESS_DOWN;
-          break;
-        case FT5336_TOUCH_EVT_FLAG_LIFT_UP :
-          TS_State->touchEventId[index] = TOUCH_EVENT_LIFT_UP;
-          break;
-        case FT5336_TOUCH_EVT_FLAG_CONTACT :
-          TS_State->touchEventId[index] = TOUCH_EVENT_CONTACT;
-          break;
-        case FT5336_TOUCH_EVT_FLAG_NO_EVENT :
-          TS_State->touchEventId[index] = TOUCH_EVENT_NO_EVT;
-          break;
-        default :
-          ts_status = TS_ERROR;
-          break;
-      } /* of switch(event) */
+				/* Remap touch event */
+				switch(event)
+				{
+					case FT5336_TOUCH_EVT_FLAG_PRESS_DOWN	:
+						TS_State->touchEventId[index] = TOUCH_EVENT_PRESS_DOWN;
+						break;
+					case FT5336_TOUCH_EVT_FLAG_LIFT_UP :
+						TS_State->touchEventId[index] = TOUCH_EVENT_LIFT_UP;
+						break;
+					case FT5336_TOUCH_EVT_FLAG_CONTACT :
+						TS_State->touchEventId[index] = TOUCH_EVENT_CONTACT;
+						break;
+					case FT5336_TOUCH_EVT_FLAG_NO_EVENT :
+						TS_State->touchEventId[index] = TOUCH_EVENT_NO_EVT;
+						break;
+					default :
+						ts_status = TS_ERROR;
+						break;
+				} /* of switch(event) */
 
-#endif /* TS_MULTI_TOUCH_SUPPORTED == 1 */
+				#endif /* TS_MULTI_TOUCH_SUPPORTED == 1 */
 
-    } /* of for(index=0; index < TS_State->touchDetected; index++) */
+			} /* of for(index=0; index < TS_State->touchDetected; index++) */
 
-#if (TS_MULTI_TOUCH_SUPPORTED == 1)
-    /* Get gesture Id */
-    ts_status = BSP_TS_Get_GestureId(TS_State);
-#endif /* TS_MULTI_TOUCH_SUPPORTED == 1 */
+	#if (TS_MULTI_TOUCH_SUPPORTED == 1)
+			/* Get gesture Id */
+			ts_status = BSP_TS_Get_GestureId(TS_State);
+	#endif /* TS_MULTI_TOUCH_SUPPORTED == 1 */
 
   } /* end of if(TS_State->touchDetected != 0) */
   else if (flag_ts==1)
   {
-		BSP_AUDIO_OUT_SetVolume(80); //Gonzalo
+		
+		BSP_AUDIO_OUT_SetVolume(CODEC_OUT_VOLUME);
 	  flag_ts=0;
   }
   return (ts_status);

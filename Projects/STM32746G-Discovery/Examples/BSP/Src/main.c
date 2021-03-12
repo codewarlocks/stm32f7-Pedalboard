@@ -62,7 +62,6 @@ __IO uint16_t uhADCxConvertedValue = 0; /* Variable used to get converted value 
 void ADC_Config(void);
 #endif
 
-#if SCREEN_ENABLE
 char SD_Path[4]; /* SD card logical drive path */
 static uint32_t uwBmplen = 0;
 /* Internal Buffer defined in SDRAM memory */
@@ -77,7 +76,6 @@ volatile int32_t seleccion_pedal = 0;
 /* Private function prototypes -----------------------------------------------*/
 void LCD_Config(void);
 void Tim3_Patalla_Config(void);
-#endif
 
 #if AUDIO_ENABLE
 //int32_t Buffer_in[AUDIO_BLOCK_SIZE]={0}, Buffer_out[AUDIO_BLOCK_SIZE]={0}, Buffer_cuentas[AUDIO_BLOCK_HALFSIZE]={0};
@@ -87,7 +85,6 @@ static uint8_t *AUDIO_RECORD_BUFFER = (uint8_t *)(AUDIO_WAV_RECORD_BUFFER);  //A
 
 volatile bool estado_grabacion = false;
 static uint32_t timer_grabacion = 0, offset_grabacion = 0;
-volatile bool screen_refresh_flag = false;
 volatile bool block_machine = false;
 
 static uint32_t escritura_sd = 0;
@@ -210,10 +207,12 @@ int main(void) {
             case INIT_SCREEN_AUDIO: {
                 /* Start  Playback */
                 #if AUDIO_ENABLE
-                BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ, DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR);
-                BSP_AUDIO_IN_Record((uint16_t *)Buffer_in, AUDIO_BLOCK_SIZE);
+                BSP_AUDIO_IN_OUT_Init(INPUT_DEVICE_INPUT_LINE_1, OUTPUT_DEVICE_HEADPHONE, DEFAULT_AUDIO_IN_FREQ,
+							DEFAULT_AUDIO_IN_BIT_RESOLUTION, DEFAULT_AUDIO_IN_CHANNEL_NBR, CODEC_OUT_VOLUME, CODEC_IN_VOLUME);		
+								BSP_AUDIO_IN_Record((uint16_t *)Buffer_in, AUDIO_BLOCK_SIZE);
                 BSP_AUDIO_OUT_SetAudioFrameSlot(CODEC_AUDIOFRAME_SLOT_02);
                 BSP_AUDIO_OUT_Play((uint16_t *)Buffer_out, AUDIO_BLOCK_SIZE);
+								NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
                 #endif
                 machine_state = NONE_STATE;
                 #if SCREEN_ENABLE
@@ -331,17 +330,14 @@ int main(void) {
             
             #if SCREEN_ENABLE
             case SCREEN_REFRESH: {
-                screen_refresh_flag = !screen_refresh_flag;
                 
                 #if EXTERNAL_WHEEL_ENABLE
                 if (HAL_ADC_Start_IT(&AdcHandle) != HAL_OK) {
                     /* Start Conversation Error */
                     Error_Handler();
                 }
-                #endif
-                
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                                 //DMA2_Stream4_IRQn
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn);                                                 //DMA2_Stream4_IRQn
+                #endif                                                
+                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                            
                 NVIC_DisableIRQ(TIMx_IRQn);
 
                 BSP_TS_GetState(&rawTouchState);
@@ -377,18 +373,15 @@ int main(void) {
                     }
                 }
 
-                screen_refresh_flag = !screen_refresh_flag;
                 block_machine = false;
                 NVIC_EnableIRQ(TIMx_IRQn);
-                NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
-                NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
+								NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
                 break;
             }
             #endif /* if SCREEN_ENABLE */
             
             case INICIAR_GRABACION: {
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                                 //DMA2_Stream4_IRQn
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn);                                                 //DMA2_Stream4_IRQn
+                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                                 
                 NVIC_DisableIRQ(TIMx_IRQn);
                 BSP_LED_On(LED1);
                 estado_grabacion = true;
@@ -398,14 +391,12 @@ int main(void) {
                 MenuForceRedraw();
                 machine_state = NONE_STATE;
                 NVIC_EnableIRQ(TIMx_IRQn);
-                NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
                 NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
                 break;
             }
 
             case GRABACION_TERMINADA: {
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                                                        //DMA2_Stream4_IRQn
-                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream4_IRQn);                                                                        //DMA2_Stream4_IRQn
+                NVIC_DisableIRQ((IRQn_Type)DMA2_Stream7_IRQn);                                                                                                                                             
                 NVIC_DisableIRQ(TIMx_IRQn);
 
                 BSP_AUDIO_OUT_SetVolume(0);
@@ -440,13 +431,12 @@ int main(void) {
 
                 block_machine = false;
 
-                BSP_AUDIO_OUT_SetVolume(80);
+                BSP_AUDIO_OUT_SetVolume(CODEC_OUT_VOLUME);
 
                 Pedales[12]->push->push_state = GUI_OFF;
                 MenuForceRedraw();
 
                 NVIC_EnableIRQ(TIMx_IRQn);
-                NVIC_EnableIRQ((IRQn_Type)DMA2_Stream4_IRQn);
                 NVIC_EnableIRQ((IRQn_Type)DMA2_Stream7_IRQn);
                 break;
             }
@@ -608,7 +598,17 @@ void LCD_Config(void) {
     BSP_LCD_SetTransparency(0, 255);
     BSP_LCD_SetTransparency(1, 255);
 }
-
+/**
+ * @brief  Period elapsed callback in non blocking mode
+ * @param  htim : TIM handle
+ * @retval None
+ */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+    machine_state = SCREEN_REFRESH;
+    block_machine = true;
+    return;
+}
+#endif /* SCREEN_ENABLE */
 void Demo_fondito(void) {
     /* LCD Initialization */
     DrawScreen(MENU_1);
@@ -625,19 +625,6 @@ void DrawScreen(int num) {
     BSP_LCD_SelectLayer(0);
     BSP_LCD_DrawBitmap(0, 0, uwInternelBuffer);
 }
-
-/**
- * @brief  Period elapsed callback in non blocking mode
- * @param  htim : TIM handle
- * @retval None
- */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    machine_state = SCREEN_REFRESH;
-    block_machine = true;
-    return;
-}
-
-#endif /* SCREEN_ENABLE */
 
 #if AUDIO_ENABLE
 /**

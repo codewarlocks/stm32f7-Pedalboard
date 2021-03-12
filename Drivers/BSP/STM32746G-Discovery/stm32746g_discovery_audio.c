@@ -100,7 +100,7 @@ EndDependencies */
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32746g_discovery_audio.h"
-
+#include "main.h"
 /** @addtogroup BSP
   * @{
   */
@@ -214,7 +214,7 @@ uint8_t BSP_AUDIO_OUT_Init(uint16_t OutputDevice, uint8_t Volume, uint32_t Audio
   if(ret == AUDIO_OK)
   {
     /* Initialize the codec internal registers */
-    audio_drv->Init(AUDIO_I2C_ADDRESS, OutputDevice, Volume, AudioFreq);
+    audio_drv->Init(AUDIO_I2C_ADDRESS, OutputDevice, Volume, Volume, AudioFreq);
   }
  
   return ret;
@@ -230,17 +230,17 @@ uint8_t BSP_AUDIO_OUT_Init(uint16_t OutputDevice, uint8_t Volume, uint32_t Audio
 uint8_t BSP_AUDIO_OUT_Play(uint16_t* pBuffer, uint32_t Size)
 {
   /* Call the audio Codec Play function */
-  if(audio_drv->Play(AUDIO_I2C_ADDRESS, pBuffer, Size) != 0)
-  {  
-    return AUDIO_ERROR;
-  }
-  else
-  {
+  //if(audio_drv->Play(AUDIO_I2C_ADDRESS, pBuffer, Size) != 0)
+  //{  
+  //  return AUDIO_ERROR;
+  //}
+  //else
+  //{
     /* Update the Media layer and enable it for play */  
     HAL_SAI_Transmit_DMA(&haudio_out_sai, (uint8_t*) pBuffer, Size);
     
     return AUDIO_OK;
-  }
+  //}
 }
 
 /**
@@ -343,7 +343,7 @@ uint8_t BSP_AUDIO_OUT_Stop(uint32_t Option)
 uint8_t BSP_AUDIO_OUT_SetVolume(uint8_t Volume)
 {
   /* Call the codec volume control function with converted volume value */
-  if(audio_drv->SetVolume(AUDIO_I2C_ADDRESS, Volume) != 0)
+  if(audio_drv->SetOutVolume(AUDIO_I2C_ADDRESS, Volume) != 0)
   {
     return AUDIO_ERROR;
   }
@@ -866,7 +866,7 @@ uint8_t BSP_AUDIO_IN_InitEx(uint16_t InputDevice, uint32_t AudioFreq, uint32_t B
     if(ret == AUDIO_OK)
     {
       /* Initialize the codec internal registers */
-      audio_drv->Init(AUDIO_I2C_ADDRESS, InputDevice, 100, AudioFreq);
+      audio_drv->Init(AUDIO_I2C_ADDRESS, InputDevice, 100, 100, AudioFreq);
     }
   }
   return ret;
@@ -882,7 +882,7 @@ uint8_t BSP_AUDIO_IN_InitEx(uint16_t InputDevice, uint32_t AudioFreq, uint32_t B
   * @param  ChnlNbr: Channel number.
   * @retval AUDIO_OK if correct communication, else wrong communication
   */
-uint8_t BSP_AUDIO_IN_OUT_Init(uint16_t InputDevice, uint16_t OutputDevice, uint32_t AudioFreq, uint32_t BitRes, uint32_t ChnlNbr)
+uint8_t BSP_AUDIO_IN_OUT_Init(uint16_t InputDevice, uint16_t OutputDevice, uint32_t AudioFreq, uint32_t BitRes, uint32_t ChnlNbr, uint8_t outVolume, uint8_t inVolume)
 {
   uint8_t ret = AUDIO_ERROR;
   uint32_t deviceid = 0x00;
@@ -952,7 +952,7 @@ uint8_t BSP_AUDIO_IN_OUT_Init(uint16_t InputDevice, uint16_t OutputDevice, uint3
     if(ret == AUDIO_OK)
     {
       /* Initialize the codec internal registers */
-      audio_drv->Init(AUDIO_I2C_ADDRESS, InputDevice | OutputDevice, 80, AudioFreq);
+      audio_drv->Init(AUDIO_I2C_ADDRESS, InputDevice | OutputDevice, outVolume, inVolume, AudioFreq);
     }
   }
   return ret;
@@ -1042,7 +1042,7 @@ uint8_t BSP_AUDIO_IN_Resume(void)
 uint8_t BSP_AUDIO_IN_SetVolume(uint8_t Volume)
 {
   /* Call the codec volume control function with converted volume value */
-  if(audio_drv->SetVolume(AUDIO_I2C_ADDRESS, Volume) != 0)
+  if(audio_drv->SetInVolume(AUDIO_I2C_ADDRESS, Volume) != 0)
   {
     return AUDIO_ERROR;
   }

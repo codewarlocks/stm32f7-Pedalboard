@@ -142,7 +142,7 @@
                            Audio Codec functions 
 ------------------------------------------------------------------------------*/
 /* High Layer codec functions */
-uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Volume, uint32_t AudioFreq);
+uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t outVolume, uint8_t inVolume, uint32_t AudioFreq);
 void     wm8994_DeInit(void);
 uint32_t wm8994_ReadID(uint16_t DeviceAddr);
 uint32_t wm8994_Play(uint16_t DeviceAddr, uint16_t* pBuffer, uint16_t Size);
@@ -150,6 +150,8 @@ uint32_t wm8994_Pause(uint16_t DeviceAddr);
 uint32_t wm8994_Resume(uint16_t DeviceAddr);
 uint32_t wm8994_Stop(uint16_t DeviceAddr, uint32_t Cmd);
 uint32_t wm8994_SetVolume(uint16_t DeviceAddr, uint8_t Volume);
+uint32_t wm8994_SetInVolume(uint16_t DeviceAddr, uint8_t Volume);
+uint32_t wm8994_SetOutVolume(uint16_t DeviceAddr, uint8_t Volume);
 uint32_t wm8994_SetMute(uint16_t DeviceAddr, uint32_t Cmd);
 uint32_t wm8994_SetOutputMode(uint16_t DeviceAddr, uint8_t Output);
 uint32_t wm8994_SetFrequency(uint16_t DeviceAddr, uint32_t AudioFreq);

@@ -173,5 +173,8 @@ void assert_failed(uint8_t *file, uint32_t line);
 #define AUDIO_ENABLE          1
 
 #define SCREEN_ENABLE         1
+/* CODEC VOLUME SETTINGS */
+#define CODEC_OUT_VOLUME 100
+#define CODEC_IN_VOLUME	 92
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

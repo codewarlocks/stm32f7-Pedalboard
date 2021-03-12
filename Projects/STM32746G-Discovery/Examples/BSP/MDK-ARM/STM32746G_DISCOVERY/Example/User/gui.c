@@ -57,7 +57,6 @@ DMA2D_HandleTypeDef hDma2dHandler;
 
 LTDC_HandleTypeDef hLtdcHandler;
 
-#if SCREEN_ENABLE
 extern int seleccion_pedal, seleccion_menu;
 extern int pedal_individual;
 extern LinkElementMenu *Flecha_Menu_Izquierda, *Flecha_Menu_Derecha;
@@ -93,8 +92,6 @@ static SpriteSheet tremoloonda = { .pixels      = tremoloondas,
 
 static uint8_t buffer_imagenes[196000] = { 0 }; //10816
 static uint8_t colorModeStrides[5] = { 4, 3, 2, 2, 2 };
-
-#endif /* if SCREEN_ENABLE */
 
 void read_files_perillas(void) {
     f_open(&perillas_ptr, "/Perillas/35.bin", FA_READ);
@@ -162,8 +159,6 @@ GUIElement * guiElement(uint8_t id, char *label, uint16_t x, uint16_t y,
     e->state = GUI_OFF | GUI_DIRTY;
     return e;
 }
-
-#if SCREEN_ENABLE
 
 // push button functions
 
@@ -990,8 +985,6 @@ void LinkIzquierdaCallbackMenu(LinkElementMenu *e) {
     MenuForceRedraw();
 }
 
-#endif /* if SCREEN_ENABLE */
-
 GUI * initGUI(uint8_t num, sFONT *font, uint32_t bgCol, uint32_t textCol) {
     GUI *gui = (GUI *)calloc(1, sizeof(GUI));
 
@@ -1040,7 +1033,6 @@ void initPedals() {
     eq_slider.spriteHeight = 83;
     eq_slider.spriteWidth = 30;
 
-                #if SCREEN_ENABLE
     //Inicializo las perillas Pantalla1
     //Delay
     Pedales[0] = (PedalElement *)calloc(1, sizeof(PedalElement));
@@ -1294,7 +1286,6 @@ void initPedals() {
     Flecha_Menu_Izquierda = initPushLinkMenu(IZQUIERDA_MENU, 5, 101, 39, 70, LinkIzquierdaCallbackMenu, handleIzquierdaButtonMenu);
     Flecha_Menu_Derecha = (LinkElementMenu *)calloc(1, sizeof(LinkElementMenu));
     Flecha_Menu_Derecha = initPushLinkMenu(DERECHA_MENU, 435, 101, 39, 70, LinkDerechaCallbackMenu, handleDerechaButtonMenu);
-                #endif /* if SCREEN_ENABLE */
 
     //Inicializo los pedales con sus funciones PANTALLA1
     Pedales[0]->efecto = delayEfecto;

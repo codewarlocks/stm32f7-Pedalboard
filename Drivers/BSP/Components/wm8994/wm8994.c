@@ -96,6 +96,8 @@ AUDIO_DrvTypeDef wm8994_drv =
 
   wm8994_SetFrequency,
   wm8994_SetVolume,
+	wm8994_SetInVolume,
+	wm8994_SetOutVolume,
   wm8994_SetMute,  
   wm8994_SetOutputMode,
 
@@ -134,7 +136,7 @@ static uint8_t CODEC_IO_Write(uint8_t Addr, uint16_t Reg, uint16_t Value);
   * @param AudioFreq: Audio Frequency 
   * @retval 0 if correct communication, else wrong communication
   */
-uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Volume, uint32_t AudioFreq)
+uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t outVolume, uint8_t inVolume, uint32_t AudioFreq)
 {
 	uint32_t counter = 0;
 	uint16_t power_mgnt_reg_1 = 0;
@@ -335,7 +337,6 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Vo
     /* Unmute the AIF1 Timeslot 0 DAC path */
     counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0010);
 
-    //input_device == INPUT_DEVICE_INPUT_LINE_1) || (input_device == INPUT_DEVICE_INPUT_LINE_2))
 
 	/* Disable mute on IN1L, IN2L Volume = +30dB Left Line Input 1&2 Volume */
 	counter += CODEC_IO_Write(DeviceAddr, 0x18, 0x001F);//original 0x000B 0012
@@ -353,69 +354,12 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Vo
 	counter += CODEC_IO_Write(DeviceAddr, 0x410, 0x3000);//1800
 
 	/* Volume Control */
-	wm8994_SetVolume(DeviceAddr, Volume);
+	//wm8994_SetVolume(DeviceAddr, Volume);
+	wm8994_SetInVolume(DeviceAddr, inVolume);
+	wm8994_SetOutVolume(DeviceAddr, outVolume);
 	/* Return communication control value */
 	return counter;
 }
-
-//uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t Volume, uint32_t AudioFreq)
-//{
-//	uint32_t counter = 0;
-//
-//	/* Initialize the Control interface of the Audio Codec */
-//	AUDIO_IO_Init();
-//	/* wm8994 Errata Work-Arounds */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x102, 0x0003);
-//	counter += CODEC_IO_Write(DeviceAddr, 0x817, 0x0000);
-//	counter += CODEC_IO_Write(DeviceAddr, 0x102, 0x0000);
-//
-//	/* Initialize the Headphone Cold Start-Up. Escribe reg: 00, 01, 02, 03, 04, 05, 06, 07  */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0110, 0x8100);
-//	AUDIO_IO_Delay(350);
-//	/*AntiPOP 2*/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0039, 0x000C);
-//	AUDIO_IO_Delay(1);
-//	/* AIF1 ADC1 Left Volume */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0400, 0x00EF);
-//	AUDIO_IO_Delay(1);
-//	/*Input Mixer 1*/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0015, 0x0080);
-//	AUDIO_IO_Delay(1);
-//	/*Input Mixer 2*/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0028, 0x0010);
-//	AUDIO_IO_Delay(1);
-//	/*Input Mixer 3*/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0029, 0x0030);
-//	AUDIO_IO_Delay(1);
-//	/*Left Line Input 1&2 Volume */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0018, 0x001F);
-//	AUDIO_IO_Delay(1);
-//	/*Left Output Volume */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x001C, 0x00FF);
-//	AUDIO_IO_Delay(1);
-//	/*Output Mixer 1*/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x002D, 0x0001);
-//	AUDIO_IO_Delay(1);
-//	/* AIF1 Rate  = 44.1 (KHz), ratio=256 */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x210, 0x0073);
-//	/*AIF1 DAC1 Left Volume */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0402, 0x00C0);
-//	AUDIO_IO_Delay(1);
-//	/*AIF1 ADC1 Filters  */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0410, 0x1000);
-//	AUDIO_IO_Delay(1);
-//	/* AIF1 DAC1 Filters 1 */
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0420, 0x0004);
-//	AUDIO_IO_Delay(1);
-//	/**/
-//	counter += CODEC_IO_Write(DeviceAddr, 0x0402, 0x00C0);
-//	AUDIO_IO_Delay(1);
-//
-//	/* Volume Control */
-//	wm8994_SetVolume(DeviceAddr, Volume);
-//	/* Return communication control value */
-//	return counter;
-//}
 
 /**
   * @brief  Deinitializes the audio codec.
@@ -621,6 +565,64 @@ uint32_t wm8994_SetVolume(uint16_t DeviceAddr, uint8_t Volume)
   return counter;
 }
 
+uint32_t wm8994_SetInVolume(uint16_t DeviceAddr, uint8_t Volume)
+{
+  uint32_t counter = 0;
+  uint8_t convertedvol = VOLUME_IN_CONVERT(Volume);
+
+  /* Input volume */
+  if (inputEnabled != 0)
+  {
+		
+		/* Right AIF1 ADC1 volume */
+    counter += CODEC_IO_Write(DeviceAddr, 0x401, convertedvol | 0x100);
+
+  }
+  return counter;
+}
+
+uint32_t wm8994_SetOutVolume(uint16_t DeviceAddr, uint8_t Volume)
+{
+  uint32_t counter = 0;
+  uint8_t convertedvol = VOLUME_CONVERT(Volume);
+
+  /* Output volume */
+  if (outputEnabled != 0)
+  {
+    if(convertedvol > 0x3E)
+    {
+			
+      /* Unmute audio codec */
+      counter += wm8994_SetMute(DeviceAddr, AUDIO_MUTE_OFF);
+
+      /* Left Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1C, 0x3F | 0x140);
+			
+			/* Right Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1D, 0x3F | 0x140);
+
+    }
+    else if (Volume == 0)
+    {
+      /* Mute audio codec */
+      counter += wm8994_SetMute(DeviceAddr, AUDIO_MUTE_ON);
+    }
+    else
+    {
+      /* Unmute audio codec */
+      counter += wm8994_SetMute(DeviceAddr, AUDIO_MUTE_OFF);
+
+      /* Left Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1C, convertedvol | 0x140);
+
+      /* Right Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1D, convertedvol | 0x140);
+    }
+  }
+
+  return counter;
+}
+
 /**
   * @brief Enables or disables the mute feature on the audio codec.
   * @param DeviceAddr: Device address on communication Bus.   
@@ -637,19 +639,44 @@ uint32_t wm8994_SetMute(uint16_t DeviceAddr, uint32_t Cmd)
     /* Set the Mute mode */
     if(Cmd == AUDIO_MUTE_ON)
     {
-      /* Soft Mute the AIF1 Timeslot 0 DAC1 path L&R */
-      counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0200);
+			
+			/* Left Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1C, 0x180);
+			
+			/* Right Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1D, 0x180);
+			
+			/* Soft Mute the AIF1 Timeslot 0 DAC1 path L&R */
+      counter += CODEC_IO_Write(DeviceAddr, 0x610, 0x0200);
 
       /* Soft Mute the AIF1 Timeslot 1 DAC2 path L&R */
-      counter += CODEC_IO_Write(DeviceAddr, 0x422, 0x0200);
+      counter += CODEC_IO_Write(DeviceAddr, 0x611, 0x0200);
+			
+			/* Soft Mute DAC2 L */
+      counter += CODEC_IO_Write(DeviceAddr, 0x612, 0x0200);
+
+      /* Soft Mute DAC2 R */
+      counter += CODEC_IO_Write(DeviceAddr, 0x613, 0x0200);
     }
     else /* AUDIO_MUTE_OFF Disable the Mute */
     {
-      /* Unmute the AIF1 Timeslot 0 DAC1 path L&R */
-      counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0010);
+      			/* Left Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1C, 0x1ED);
+			
+			/* Right Headphone Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x1D, 0x1ED);
+			
+			/* Soft Mute the AIF1 Timeslot 0 DAC1 path L&R */
+      counter += CODEC_IO_Write(DeviceAddr, 0x610, 0xFF);
 
-      /* Unmute the AIF1 Timeslot 1 DAC2 path L&R */
-      counter += CODEC_IO_Write(DeviceAddr, 0x422, 0x0010);
+      /* Soft Mute the AIF1 Timeslot 1 DAC2 path L&R */
+      counter += CODEC_IO_Write(DeviceAddr, 0x611, 0xFF);
+			
+			/* Soft Mute DAC2 L */
+      counter += CODEC_IO_Write(DeviceAddr, 0x612, 0xFF);
+
+      /* Soft Mute DAC2 R */
+      counter += CODEC_IO_Write(DeviceAddr, 0x613, 0xFF);
     }
   }
   return counter;

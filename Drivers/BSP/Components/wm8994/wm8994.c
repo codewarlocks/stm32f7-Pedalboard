@@ -140,7 +140,10 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t ou
 {
 	uint32_t counter = 0;
 	uint16_t power_mgnt_reg_1 = 0;
-
+	
+	uint16_t output_device = OutputInputDevice & 0xFF;
+  uint16_t input_device = OutputInputDevice & 0xFF00;
+	
 	/* Initialize the Control interface of the Audio Codec */
 	AUDIO_IO_Init();
 	/* wm8994 Errata Work-Arounds */
@@ -161,23 +164,46 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t ou
 	/* Path Configurations for Output */
     //OUTPUT_DEVICE_HEADPHONE
 	outputEnabled = 1;
-	/* Disable DAC1 (Left), Disable DAC1 (Right),
-	Enable DAC2 (Left), Enable DAC2 (Right)*/
-	counter += CODEC_IO_Write(DeviceAddr, 0x05, 0x0303);
+	
+	switch (output_device) {
+		case OUTPUT_DEVICE_SPEAKER:
+      /* Enable DAC1 (Left), Enable DAC1 (Right),
+      Disable DAC2 (Left), Disable DAC2 (Right)*/
+      //counter += CODEC_IO_Write(DeviceAddr, 0x05, 0x0C0C);
+			counter += CODEC_IO_Write(DeviceAddr, 0x05, 0x0303);
 
-	/* Enable the AIF1 Timeslot 0 (Left) to DAC 1 (Left) mixer path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x601, 0x0001);
+      /* Enable the AIF1 Timeslot 0 (Left) to DAC 1 (Left) mixer path */
+      //counter += CODEC_IO_Write(DeviceAddr, 0x601, 0x0000);
+			counter += CODEC_IO_Write(DeviceAddr, 0x601, 0x0001);
 
-	/* Enable the AIF1 Timeslot 0 (Right) to DAC 1 (Right) mixer path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x602, 0x0001);
+      /* Enable the AIF1 Timeslot 0 (Right) to DAC 1 (Right) mixer path */
+      //counter += CODEC_IO_Write(DeviceAddr, 0x602, 0x0000);
+			counter += CODEC_IO_Write(DeviceAddr, 0x602, 0x0001);
+      /* Disable the AIF1 Timeslot 1 (Left) to DAC 2 (Left) mixer path */
+      //counter += CODEC_IO_Write(DeviceAddr, 0x604, 0x0002);
 
-	/* Disable the AIF1 Timeslot 1 (Left) to DAC 2 (Left) mixer path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x604, 0x0000);
+      /* Disable the AIF1 Timeslot 1 (Right) to DAC 2 (Right) mixer path */
+      //counter += CODEC_IO_Write(DeviceAddr, 0x605, 0x0002);
+      break;
+		case OUTPUT_DEVICE_HEADPHONE:
+			/* Disable DAC1 (Left), Disable DAC1 (Right),
+			Enable DAC2 (Left), Enable DAC2 (Right)*/
+			counter += CODEC_IO_Write(DeviceAddr, 0x05, 0x0303);
 
-	/* Disable the AIF1 Timeslot 1 (Right) to DAC 2 (Right) mixer path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x605, 0x0000);
+			/* Enable the AIF1 Timeslot 0 (Left) to DAC 1 (Left) mixer path */
+			counter += CODEC_IO_Write(DeviceAddr, 0x601, 0x0001);
 
+			/* Enable the AIF1 Timeslot 0 (Right) to DAC 1 (Right) mixer path */
+			counter += CODEC_IO_Write(DeviceAddr, 0x602, 0x0001);
 
+			/* Disable the AIF1 Timeslot 1 (Left) to DAC 2 (Left) mixer path */
+			//counter += CODEC_IO_Write(DeviceAddr, 0x604, 0x0000);
+
+			/* Disable the AIF1 Timeslot 1 (Right) to DAC 2 (Right) mixer path */
+			//counter += CODEC_IO_Write(DeviceAddr, 0x605, 0x0000);
+		break;
+	}
+	
 	/* Path Configurations for input */
 	inputEnabled = 1;
 	//INPUT_DEVICE_INPUT_LINE_1 :
@@ -269,55 +295,82 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t ou
 
 	/* Enable AIF1 Clock, AIF1 Clock Source = MCLK1 pin */
 	counter += CODEC_IO_Write(DeviceAddr, 0x200, 0x0001);
+	if (output_device == OUTPUT_DEVICE_HEADPHONE) {
+			//OUTPUT_DEVICE_HEADPHONE
+			/* Select DAC1 (Left) to Left Headphone Output PGA (HPOUT1LVOL) path */
+			counter += CODEC_IO_Write(DeviceAddr, 0x2D, 0x0100);
+			/* Select DAC1 (Right) to Right Headphone Output PGA (HPOUT1RVOL) path */
+			counter += CODEC_IO_Write(DeviceAddr, 0x2E, 0x0100);
 
-    //OUTPUT_DEVICE_HEADPHONE
-	/* Select DAC1 (Left) to Left Headphone Output PGA (HPOUT1LVOL) path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x2D, 0x0100);
+			/* Startup sequence for Headphone */
+			if(ColdStartup)	{
+				counter += CODEC_IO_Write(DeviceAddr,0x110,0x8100);
 
-	/* Select DAC1 (Right) to Right Headphone Output PGA (HPOUT1RVOL) path */
-	counter += CODEC_IO_Write(DeviceAddr, 0x2E, 0x0100);
+				ColdStartup=0;
+				/* Add Delay */
+				AUDIO_IO_Delay(300);
+			}
+			else /* Headphone Warm Start-Up */	{
+				counter += CODEC_IO_Write(DeviceAddr,0x110,0x8108);
+				/* Add Delay */
+				AUDIO_IO_Delay(50);
+			}
 
-	/* Startup sequence for Headphone */
-	if(ColdStartup)
-	{
-	counter += CODEC_IO_Write(DeviceAddr,0x110,0x8100);
+			/* Soft un-Mute the AIF1 Timeslot 0 DAC1 path L&R */
+			counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0000);
+			
+			/* Enable bias generator, Enable VMID, Enable SPKOUTL, Enable SPKOUTR */
+			counter += CODEC_IO_Write(DeviceAddr, 0x01, 0x0303);
+			
+			/* Enable HPOUT1 (Left) and HPOUT1 (Right) intermediate stages */
+			counter += CODEC_IO_Write(DeviceAddr, 0x60, 0x0022);
+			
+			
+		} else if (output_device == OUTPUT_DEVICE_SPEAKER) {
+			/* Analog Output Configuration */
 
-	ColdStartup=0;
-	/* Add Delay */
-	AUDIO_IO_Delay(300);
-	}
-	else /* Headphone Warm Start-Up */
-	{
-	counter += CODEC_IO_Write(DeviceAddr,0x110,0x8108);
-	/* Add Delay */
-	AUDIO_IO_Delay(50);
-	}
+			/* Enable SPKRVOL PGA, Enable SPKMIXR, Enable SPKLVOL PGA, Enable SPKMIXL */
+			counter += CODEC_IO_Write(DeviceAddr, 0x03, 0x0300);
 
-	/* Soft un-Mute the AIF1 Timeslot 0 DAC1 path L&R */
-	counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0000);
+			/* Left Speaker Mixer Volume = 0dB */
+			counter += CODEC_IO_Write(DeviceAddr, 0x22, 0x0000);
+
+			/* Speaker output mode = Class D, Right Speaker Mixer Volume = 0dB ((0x23, 0x0100) = class AB)*/
+			counter += CODEC_IO_Write(DeviceAddr, 0x23, 0x0000);
+
+			/* Unmute DAC2 (Left) to Left Speaker Mixer (SPKMIXL) path,
+			Unmute DAC2 (Right) to Right Speaker Mixer (SPKMIXR) path */
+			counter += CODEC_IO_Write(DeviceAddr, 0x36, 0x0003);
+
+			/* Enable bias generator, Enable VMID, Enable SPKOUTL, Enable SPKOUTR */
+			counter += CODEC_IO_Write(DeviceAddr, 0x01, 0x3003);
+		}
 
     /* Enable Class W, Class W Envelope Tracking = AIF1 Timeslot 0 */
-    counter += CODEC_IO_Write(DeviceAddr, 0x51, 0x0001);
+    counter += CODEC_IO_Write(DeviceAddr, 0x51, 0x0000);
 
     /* Enable bias generator, Enable VMID, Enable HPOUT1 (Left) and Enable HPOUT1 (Right) input stages */
     /* idem for Speaker */
-    power_mgnt_reg_1 |= 0x0303 | 0x3003;
-    counter += CODEC_IO_Write(DeviceAddr, 0x01, power_mgnt_reg_1);
-
-    /* Enable HPOUT1 (Left) and HPOUT1 (Right) intermediate stages */
-    counter += CODEC_IO_Write(DeviceAddr, 0x60, 0x0022);
+    //power_mgnt_reg_1 |= 0x0303 | 0x3003;
+    //counter += CODEC_IO_Write(DeviceAddr, 0x01, power_mgnt_reg_1);
 
     /* Enable Charge Pump */
     counter += CODEC_IO_Write(DeviceAddr, 0x4C, 0x9F25);
 
     /* Add Delay */
     AUDIO_IO_Delay(15);
+		
+		/* Select DAC1 (Left) to Left Headphone Output PGA (HPOUT1LVOL) path */
+    counter += CODEC_IO_Write(DeviceAddr, 0x2D, 0x0001);
+
+    /* Select DAC1 (Right) to Right Headphone Output PGA (HPOUT1RVOL) path */
+    counter += CODEC_IO_Write(DeviceAddr, 0x2E, 0x0001);
 
     /* Enable Left Output Mixer (MIXOUTL), Enable Right Output Mixer (MIXOUTR) */
     /* idem for SPKOUTL and SPKOUTR */
-    counter += CODEC_IO_Write(DeviceAddr, 0x03, 0x0030 | 0x0300);
+    //counter += CODEC_IO_Write(DeviceAddr, 0x03, 0x0030 | 0x0300);
 
-    /* Enable DC Servo and trigger start-up mode on left and right channels */
+    /* Enable DC Servo and trigger start-up mode on left and right channels for HPOUT */
     counter += CODEC_IO_Write(DeviceAddr, 0x54, 0x0033);
 
     /* Add Delay */
@@ -336,29 +389,37 @@ uint32_t wm8994_Init(uint16_t DeviceAddr, uint16_t OutputInputDevice, uint8_t ou
 
     /* Unmute the AIF1 Timeslot 0 DAC path */
     counter += CODEC_IO_Write(DeviceAddr, 0x420, 0x0010);
+		
+		/* Unmute DAC 2 (Left) */
+    counter += CODEC_IO_Write(DeviceAddr, 0x612, 0x00C0);
 
+    /* Unmute DAC 2 (Right) */
+    counter += CODEC_IO_Write(DeviceAddr, 0x613, 0x00C0);
 
-	/* Disable mute on IN1L, IN2L Volume = +30dB Left Line Input 1&2 Volume */
-	counter += CODEC_IO_Write(DeviceAddr, 0x18, 0x001F);//original 0x000B 0012
+    /* Unmute the AIF1 Timeslot 1 DAC2 path */
+    //counter += CODEC_IO_Write(DeviceAddr, 0x422, 0x0010);
 
-	/* Disable mute on IN3L, IN4L Volume = +30dB Left Line Input 3&5 Volume*/
-	counter += CODEC_IO_Write(DeviceAddr, 0x19, 0x0080);//original 0x000B
+		/* Disable mute on IN1L, IN2L Volume = +30dB Left Line Input 1&2 Volume */
+		counter += CODEC_IO_Write(DeviceAddr, 0x18, 0x001F);//original 0x000B 0012
 
-	/* Disable mute on IN1R, IN2R Volume = +30dB Right Line Input 3&5 Volume*/
-	counter += CODEC_IO_Write(DeviceAddr, 0x1A, 0x0080);//original 0x000B 0012
+		/* Disable mute on IN3L, IN4L Volume = +30dB Left Line Input 3&5 Volume*/
+		counter += CODEC_IO_Write(DeviceAddr, 0x19, 0x0080);//original 0x000B
 
-	/* Disable mute on IN3R, IN4R Volume = +30dB Right Line Input 3&5 Volume*/
-	counter += CODEC_IO_Write(DeviceAddr, 0x1B, 0x0080);//original 0x000B
+		/* Disable mute on IN1R, IN2R Volume = +30dB Right Line Input 3&5 Volume*/
+		counter += CODEC_IO_Write(DeviceAddr, 0x1A, 0x0080);//original 0x000B 0012
 
-	/* AIF ADC1 HPF enable, HPF cut = hifi mode fc=4Hz at fs=48kHz */
-	counter += CODEC_IO_Write(DeviceAddr, 0x410, 0x3000);//1800
+		/* Disable mute on IN3R, IN4R Volume = +30dB Right Line Input 3&5 Volume*/
+		counter += CODEC_IO_Write(DeviceAddr, 0x1B, 0x0080);//original 0x000B
 
-	/* Volume Control */
-	//wm8994_SetVolume(DeviceAddr, Volume);
-	wm8994_SetInVolume(DeviceAddr, inVolume);
-	wm8994_SetOutVolume(DeviceAddr, outVolume);
-	/* Return communication control value */
-	return counter;
+		/* AIF ADC1 HPF enable, HPF cut = hifi mode fc=4Hz at fs=48kHz */
+		counter += CODEC_IO_Write(DeviceAddr, 0x410, 1800);//1800
+
+		/* Volume Control */
+		//wm8994_SetVolume(DeviceAddr, Volume);
+		wm8994_SetInVolume(DeviceAddr, inVolume);
+		wm8994_SetOutVolume(DeviceAddr, outVolume);
+		/* Return communication control value */
+		return counter;
 }
 
 /**
@@ -600,6 +661,12 @@ uint32_t wm8994_SetOutVolume(uint16_t DeviceAddr, uint8_t Volume)
 			
 			/* Right Headphone Volume */
       counter += CODEC_IO_Write(DeviceAddr, 0x1D, 0x3F | 0x140);
+			
+      /* Left Speaker Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x26, 0x3F | 0x140);
+
+      /* Right Speaker Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x27, 0x3F | 0x140);
 
     }
     else if (Volume == 0)
@@ -612,11 +679,11 @@ uint32_t wm8994_SetOutVolume(uint16_t DeviceAddr, uint8_t Volume)
       /* Unmute audio codec */
       counter += wm8994_SetMute(DeviceAddr, AUDIO_MUTE_OFF);
 
-      /* Left Headphone Volume */
-      counter += CODEC_IO_Write(DeviceAddr, 0x1C, convertedvol | 0x140);
+      /* Left Speaker Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x26, convertedvol | 0x140);
 
-      /* Right Headphone Volume */
-      counter += CODEC_IO_Write(DeviceAddr, 0x1D, convertedvol | 0x140);
+      /* Right Speaker Volume */
+      counter += CODEC_IO_Write(DeviceAddr, 0x27, convertedvol | 0x140);
     }
   }
 

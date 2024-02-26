@@ -38,3 +38,4 @@ Documentation
 *.gggiu
 *.uvoptx
 *.__i
+!/assets/**

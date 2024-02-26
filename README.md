@@ -4,7 +4,8 @@ Greetings, within this repository lies the culmination of our Electronic Enginee
 
 Here you can find a functional demo:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/V-5spfllwe8?si=3IBq79IgztJ8RXuU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+[![Watch the video](https://img.youtube.com/vi/V-5spfllwe8/maxresdefault.jpg)](https://youtu.be/V-5spfllwe8)
+
 
 ### Quick Links
 

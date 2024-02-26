@@ -89,6 +89,14 @@ Circuits by Numerical Solution of Ordinary Differential Equations”, 2007.
 
 To compile the project, install [MDK-ARM](https://www.keil.com/demo/eval/arm.htm) from Keil as this is a uVision project. Alternatively, consider using the new [MDK v6 Community Edition](https://www.keil.arm.com/community/) with [VsCode](https://code.visualstudio.com/download). Refactoring the project to not require a paid IDE is planned.
 
+Currently the project is compatible with Arm compiler 5 which is no more included with [MDK-ARM](https://www.keil.com/demo/eval/arm.htm). In order to install it follow this steps:
+
+- Download it from [here](https://developer.arm.com/downloads/view/ACOMP5?).
+- Replace default location with `C:\Keil_v5\ARM\ARMCCv506u7`.
+- Open Keil and add the new compiler, [here](https://developer.arm.com/documentation/101407/0539/Creating-Applications/Tips-and-Tricks/Manage-Arm-Compiler-Versions) you can find a guide to do it.
+
+As mention before, you will need a commercial license to compile the project because it exceeds the maximum allowed by the free version.
+
 ### Installation
 
 `git clone https://github.com/codewarlocks/stm32f7-Pedalboard.git`

@@ -50,7 +50,7 @@ For detailed information, refer to this [document](https://drive.google.com/file
 - Non-linear Effects:
     - Distortion
 
-### Hardware Information::
+### Hardware Information:
 
 Discovery kit [STM32F746G](https://www.st.com/en/evaluation-tools/32f746gdiscovery.html):
 - Cortex M7, 1Mb flash and 340Kb RAM
@@ -62,7 +62,7 @@ Discovery kit [STM32F746G](https://www.st.com/en/evaluation-tools/32f746gdiscove
 
 ### Software parts
 
-- GUI: Manages the UI, controlling the rendering of knobs, LEDs, and buttons. UI elements' positions are based on the 480×272 display resolution.
+- GUI: Manages the UI, controlling the rendering of knobs, LEDs, and buttons. UI element's positions are based on the 480×272 display resolution.
 - Effects: All effects code files are on the same directory and are explained in the [document](https://drive.google.com/file/d/16MncO3Z1pbzFfrqieCRYZ0KL5QBh5DHn/view?usp=sharing) with equations and diagrams.
 - Finite-state machine: Renders the UI, applies effects to audio buffers, and records audio based on the state value. 
 
